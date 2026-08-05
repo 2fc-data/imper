@@ -113,11 +113,10 @@ export default function OrcamentoPage() {
             className="rounded-xl border bg-card p-8 text-center shadow-sm sm:p-12"
           >
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Pedido recebido!
+              Contato recebido!
             </h2>
             <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-              Recebemos sua solicitação de orçamento. Nossa equipe entrará em
-              contato pelo telefone informado o mais rápido possível.
+              Nossa equipe entrará em contato pelo telefone informado o mais rápido possível.
             </p>
             <Link
               to="/"
@@ -135,11 +134,10 @@ export default function OrcamentoPage() {
     <section className="border-y bg-card/60 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Orçamento
+          Formulário para contato
         </h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Preencha o formulário com o serviço desejado e retornaremos com uma
-          proposta sob medida.
+          Preencha o formulário com o serviço desejado.
         </p>
         <m.div
           ref={gridRef}
@@ -150,192 +148,192 @@ export default function OrcamentoPage() {
         >
           <m.div variants={fadeUp} className="w-full">
             <Card className="w-full">
-            <CardHeader>
-              <CardTitle className="text-xl">Solicitação de orçamento</CardTitle>
-              <CardDescription>
-                Os campos marcados com * são obrigatórios.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nome">
-                    Nome <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="nome"
-                    required
-                    autoComplete="name"
-                    placeholder="Seu nome"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="telefone">
-                    Telefone <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="telefone"
-                    type="tel"
-                    required
-                    autoComplete="tel"
-                    placeholder="(00) 00000-0000"
-                    value={telefone}
-                    onChange={(e) => setTelefone(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="voce@empresa.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="servico">
-                    Serviço <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="servico"
-                    required
-                    className={cn(selectClasses)}
-                    value={servico}
-                    onChange={(e) => setServico(e.target.value)}
-                  >
-                    <option value="">Selecione um serviço...</option>
-                    {servicos.map((s) => (
-                      <option key={s.id} value={s.titulo}>
-                        {s.titulo}
-                      </option>
-                    ))}
-                  </select>
-                  {loadingServicos && (
+              <CardHeader>
+                <CardTitle className="text-xl">Solicitação de orçamento</CardTitle>
+                <CardDescription>
+                  Os campos marcados com * são obrigatórios.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nome">
+                      Nome <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="nome"
+                      required
+                      autoComplete="name"
+                      placeholder="Seu nome"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="telefone">
+                      Telefone <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="telefone"
+                      type="tel"
+                      required
+                      autoComplete="tel"
+                      placeholder="(00) 00000-0000"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">E-mail</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="voce@empresa.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="servico">
+                      Serviço <span className="text-destructive">*</span>
+                    </Label>
+                    <select
+                      id="servico"
+                      required
+                      className={cn(selectClasses)}
+                      value={servico}
+                      onChange={(e) => setServico(e.target.value)}
+                    >
+                      <option value="">Selecione um serviço...</option>
+                      {servicos.map((s) => (
+                        <option key={s.id} value={s.titulo}>
+                          {s.titulo}
+                        </option>
+                      ))}
+                    </select>
+                    {loadingServicos && (
+                      <p className="text-xs text-muted-foreground">
+                        Carregando serviços...
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cep">CEP (Local da visita técnica)</Label>
+                    <Input
+                      id="cep"
+                      inputMode="numeric"
+                      autoComplete="postal-code"
+                      placeholder="00000-000"
+                      value={cep}
+                      onChange={(e) => {
+                        const valor = formatarCep(e.target.value);
+                        setCep(valor);
+                        if (valor.replace(/\D/g, "").length === 8) {
+                          buscarCep(valor.replace(/\D/g, ""));
+                        }
+                      }}
+                    />
                     <p className="text-xs text-muted-foreground">
-                      Carregando serviços...
+                      Ao informar o CEP, preenchemos endereço, bairro, cidade e
+                      UF automaticamente.
+                    </p>
+                  </div>
+                  {cepValido && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="endereco">Endereço</Label>
+                        <Input
+                          id="endereco"
+                          autoComplete="street-address"
+                          placeholder="Rua, avenida..."
+                          value={endereco}
+                          onChange={(e) => setEndereco(e.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-4 sm:grid-cols-[1fr_1fr_120px]">
+                        <div className="space-y-2">
+                          <Label htmlFor="bairro">Bairro</Label>
+                          <Input
+                            id="bairro"
+                            autoComplete="address-level2"
+                            placeholder="Bairro"
+                            value={bairro}
+                            onChange={(e) => setBairro(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="cidade">Cidade</Label>
+                          <Input
+                            id="cidade"
+                            autoComplete="address-level1"
+                            placeholder="Cidade"
+                            value={cidade}
+                            onChange={(e) => setCidade(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="estado">UF</Label>
+                          <Input
+                            id="estado"
+                            autoComplete="address-level1"
+                            maxLength={2}
+                            placeholder="UF"
+                            value={estado}
+                            onChange={(e) => setEstado(e.target.value.toUpperCase())}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="numero">Número</Label>
+                          <Input
+                            id="numero"
+                            inputMode="numeric"
+                            autoComplete="address-line1"
+                            placeholder="Número"
+                            value={numero}
+                            onChange={(e) => setNumero(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="complemento">Complemento</Label>
+                          <Input
+                            id="complemento"
+                            placeholder="Apto, bloco..."
+                            value={complemento}
+                            onChange={(e) => setComplemento(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="mensagem">Mensagem</Label>
+                        <textarea
+                          id="mensagem"
+                          className={cn(textareaClasses)}
+                          placeholder="Descreva o problema e/ou a referência do local (opcional)"
+                          maxLength={700}
+                          value={mensagem}
+                          onChange={(e) => setMensagem(e.target.value)}
+                        />
+                        <p className="text-right text-xs text-muted-foreground">
+                          {mensagem.length}/700
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  <Turnstile onChange={setTurnstileToken} />
+                  {error && (
+                    <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                      {error}
                     </p>
                   )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cep">CEP (Local da visita técnica)</Label>
-                  <Input
-                    id="cep"
-                    inputMode="numeric"
-                    autoComplete="postal-code"
-                    placeholder="00000-000"
-                    value={cep}
-                    onChange={(e) => {
-                      const valor = formatarCep(e.target.value);
-                      setCep(valor);
-                      if (valor.replace(/\D/g, "").length === 8) {
-                        buscarCep(valor.replace(/\D/g, ""));
-                      }
-                    }}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Ao informar o CEP, preenchemos endereço, bairro, cidade e
-                    UF automaticamente.
-                  </p>
-                </div>
-                {cepValido && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="endereco">Endereço</Label>
-                      <Input
-                        id="endereco"
-                        autoComplete="street-address"
-                        placeholder="Rua, avenida..."
-                        value={endereco}
-                        onChange={(e) => setEndereco(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-[1fr_1fr_120px]">
-                      <div className="space-y-2">
-                        <Label htmlFor="bairro">Bairro</Label>
-                        <Input
-                          id="bairro"
-                          autoComplete="address-level2"
-                          placeholder="Bairro"
-                          value={bairro}
-                          onChange={(e) => setBairro(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cidade">Cidade</Label>
-                        <Input
-                          id="cidade"
-                          autoComplete="address-level1"
-                          placeholder="Cidade"
-                          value={cidade}
-                          onChange={(e) => setCidade(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="estado">UF</Label>
-                        <Input
-                          id="estado"
-                          autoComplete="address-level1"
-                          maxLength={2}
-                          placeholder="UF"
-                          value={estado}
-                          onChange={(e) => setEstado(e.target.value.toUpperCase())}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="numero">Número</Label>
-                        <Input
-                          id="numero"
-                          inputMode="numeric"
-                          autoComplete="address-line1"
-                          placeholder="Número"
-                          value={numero}
-                          onChange={(e) => setNumero(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="complemento">Complemento</Label>
-                        <Input
-                          id="complemento"
-                          placeholder="Apto, bloco..."
-                          value={complemento}
-                          onChange={(e) => setComplemento(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="mensagem">Mensagem</Label>
-                      <textarea
-                        id="mensagem"
-                        className={cn(textareaClasses)}
-                        placeholder="Descreva o problema e/ou a referência do local (opcional)"
-                        maxLength={700}
-                        value={mensagem}
-                        onChange={(e) => setMensagem(e.target.value)}
-                      />
-                      <p className="text-right text-xs text-muted-foreground">
-                        {mensagem.length}/700
-                      </p>
-                    </div>
-                  </>
-                )}
-                <Turnstile onChange={setTurnstileToken} />
-                {error && (
-                  <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                    {error}
-                  </p>
-                )}
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Enviando..." : "Solicitar orçamento"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Enviando..." : "Solicitar orçamento"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </m.div>
           <m.div variants={fadeUp} className="space-y-4">
             <div className="rounded-xl border bg-card p-5 shadow-sm">

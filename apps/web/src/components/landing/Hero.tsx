@@ -20,34 +20,34 @@ export function Hero() {
         animate="visible"
       />
       <m.div
-        className="absolute inset-0 flex flex-col gap-3 px-4 sm:flex-row sm:items-center sm:justify-center"
+        className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 sm:flex-row sm:items-center sm:justify-center"
         variants={stagger(0.12)}
         initial="hidden"
         animate="visible"
       >
-        <m.div variants={fadeUp}>
-          <WhatsAppButton className="px-6 py-3.5 text-lg">
-            Orçamento
+        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
+          <WhatsAppButton className="w-full justify-center px-6 py-3.5 text-base sm:text-lg sm:w-auto">
+            Orçamento WhatsApp
           </WhatsAppButton>
         </m.div>
-        <m.div variants={fadeUp}>
+        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
           <Link
             to="/orcamento"
-            className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
+            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
             text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
-            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
+            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
-            Orçamento online
+            Orçamento Online
           </Link>
         </m.div>
-        <m.div variants={fadeUp}>
+        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
           <Link
             to="/servicos"
-            className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
+            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
             text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
-            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
+            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
-            Conhecer serviços
+            Conhecer Serviços
           </Link>
         </m.div>
       </m.div>

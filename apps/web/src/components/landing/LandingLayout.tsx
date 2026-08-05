@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { m } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 
@@ -110,43 +110,66 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             </button>
           </div>
         </div>
-        {menuOpen && (
-          <m.nav
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="border-t lg:hidden"
-          >
-            <ul className="mx-auto flex max-w-5xl flex-col gap-y-1 px-4 py-3">
-              {NAV_LINKS.map((link) => (
-                <li key={link.to}>
-                  <NavLink
-                    to={link.to}
-                    end={link.to === "/"}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      cn(
-                        "block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
-                        isActive && "text-primary",
-                      )
-                    }
-                  >
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-              <li>
-                <Link
-                  to="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
-                  Área do cliente
-                </Link>
-              </li>
-            </ul>
-          </m.nav>
-        )}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              {/* Backdrop para escurecer o fundo da página */}
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMenuOpen(false)}
+                className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden"
+              />
+              
+              {/* Menu com efeito drawer deslizando de cima para baixo */}
+              <m.nav
+                initial={{ y: "-100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0 }}
+                transition={{ type: "spring", damping: 26, stiffness: 280 }}
+                className="absolute top-full left-0 right-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md shadow-2xl lg:hidden"
+              >
+                <ul className="mx-auto flex max-w-6xl flex-col gap-y-1 px-4 py-5 sm:px-6">
+                  {NAV_LINKS.map((link) => (
+                    <li key={link.to}>
+                      <NavLink
+                        to={link.to}
+                        end={link.to === "/"}
+                        onClick={() => setMenuOpen(false)}
+                        className={({ isActive }) =>
+                          cn(
+                            "block rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-accent/50",
+                            isActive && "text-foreground font-semibold bg-accent/70",
+                          )
+                        }
+                      >
+                        {link.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                  <li className="pt-3 border-t border-border/60 flex flex-col gap-2.5 mt-2">
+                    <Link
+                      to="/orcamento"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center rounded-md bg-gold px-4 py-3 text-sm font-semibold text-slate-950 shadow-xs hover:bg-gold-hover transition-all"
+                    >
+                      Solicitar Orçamento
+                    </Link>
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent/40 transition-colors"
+                    >
+                      Área do cliente
+                    </Link>
+                  </li>
+                </ul>
+              </m.nav>
+            </>
+          )}
+        </AnimatePresence>
       </m.header>
 
       <main className="flex-1 bg-white dark:bg-background h-full">{children}</main>
