@@ -250,3 +250,176 @@ export async function solicitarOrcamento(
 ): Promise<OrcamentoResult> {
   return api.post<OrcamentoResult>("/publico/orcamento", input);
 }
+
+export type StatusContato = "NOVO" | "EM_ANDAMENTO" | "ENCAMINHADO" | "CONCLUIDO" | "INATIVO";
+export type CanalContato = "WHATSAPP" | "FORMULARIO" | "LOJA" | "TELEFONE";
+export type TipoContato = "DUVIDA" | "AGENDAR_VISITA" | "COMPRA_MATERIAL" | "COMPRA_EQUIPAMENTO";
+export type Urgencia = "NORMAL" | "URGENTE" | "URGENTISSIMO";
+
+export interface ContatoItem {
+  id: number;
+  nome: string;
+  telefone: string;
+  email: string | null;
+  endereco: string | null;
+  cep: string | null;
+  bairro: string | null;
+  cidade: string | null;
+  estado: string | null;
+  numero: string | null;
+  complemento: string | null;
+  canal: CanalContato;
+  tipo: TipoContato;
+  urgencia: Urgencia | null;
+  status: StatusContato;
+  descricao: string | null;
+  clienteId: number | null;
+  cliente?: { id: number; nome: string; telefone: string | null } | null;
+  atendenteId: number | null;
+  atendente?: { id: number; nome: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { visitas: number; os: number };
+}
+
+export interface CriarContatoInput {
+  clienteId?: number | null;
+  nome: string;
+  telefone: string;
+  canal: CanalContato;
+  tipo: TipoContato;
+  urgencia?: Urgencia;
+  assunto: string;
+  descricao?: string;
+  endereco?: string;
+}
+
+export async function listarContatos(params?: { status?: string; q?: string }): Promise<ContatoItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.q) searchParams.set("q", params.q);
+  const queryStr = searchParams.toString();
+  return api.get<ContatoItem[]>(`/contatos${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function criarContato(input: CriarContatoInput): Promise<ContatoItem> {
+  return api.post<ContatoItem>("/contatos", input);
+}
+
+export async function atualizarStatusContato(id: number, status: StatusContato): Promise<ContatoItem> {
+  return api.patch<ContatoItem>(`/contatos/${id}/status`, { status });
+}
+
+export type StatusOrcamento = "RASCUNHO" | "ENVIADO" | "APROVADO" | "RECUSADO" | "EXPIRADO" | "CANCELADO";
+export type TipoItemServico = "SERVICO" | "MATERIAL" | "EQUIPAMENTO";
+export type UnidadeMedida = "UN" | "KG" | "L" | "M2" | "ML" | "CX" | "GL" | "PC" | "MT";
+
+export interface ItemOrcamentoInput {
+  servicoItemId?: number | null;
+  nome: string;
+  tipo: TipoItemServico;
+  quantidade: number;
+  unidade: UnidadeMedida;
+  valorUnitario: number;
+}
+
+export interface OrcamentoAdminItem {
+  id: number;
+  codigo: string;
+  visitaId: number;
+  urgencia: Urgencia;
+  status: StatusOrcamento;
+  valorTotal: string | number;
+  validade: string;
+  observacoes: string | null;
+  criadoPorId: number;
+  aprovadoPorId: number | null;
+  aprovadoEm: string | null;
+  confirmadoPorCliente: boolean;
+  dataConfirmacao: string | null;
+  createdAt: string;
+  updatedAt: string;
+  visita?: { id: number; contato: { id: number; nome: string } };
+  ordemServico?: { id: number; codigo: string; status: string } | null;
+  _count?: { itens: number };
+}
+
+export interface CriarOrcamentoInput {
+  visitaId: number;
+  observacoes?: string;
+  itens: ItemOrcamentoInput[];
+}
+
+export async function listarOrcamentosAdmin(params?: { status?: string; q?: string }): Promise<OrcamentoAdminItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.q) searchParams.set("q", params.q);
+  const queryStr = searchParams.toString();
+  return api.get<OrcamentoAdminItem[]>(`/orcamentos${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function criarOrcamentoAdmin(input: CriarOrcamentoInput): Promise<OrcamentoAdminItem> {
+  return api.post<OrcamentoAdminItem>("/orcamentos", input);
+}
+
+export async function enviarOrcamentoAdmin(id: number): Promise<OrcamentoAdminItem> {
+  return api.post<OrcamentoAdminItem>(`/orcamentos/${id}/enviar`);
+}
+
+export type StatusOS =
+  | "AGUARDANDO_APROVACAO"
+  | "AGENDADO"
+  | "EM_ANDAMENTO"
+  | "CONCLUIDO"
+  | "CONFIRMADO"
+  | "EM_SEPARACAO"
+  | "SEPARADO"
+  | "ENTREGUE"
+  | "CANCELADO";
+
+export interface OrdemServicoAdminItem {
+  id: number;
+  codigo: string;
+  orcamentoId: number;
+  clienteId: number | null;
+  contatoId: number | null;
+  urgencia: Urgencia;
+  status: StatusOS;
+  valorTotal: string | number;
+  endereco: string | null;
+  dataInicioPrevista: string | null;
+  tecnicoResponsavelId: number | null;
+  createdAt: string;
+  updatedAt: string;
+  cliente?: { id: number; nome: string } | null;
+  contato?: { id: number; nome: string } | null;
+  tecnicoResponsavel?: { id: number; nome: string } | null;
+  _count?: { fases: number; compras: number; vendas: number };
+}
+
+export async function listarOSAdmin(params?: { status?: string; q?: string }): Promise<OrdemServicoAdminItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.q) searchParams.set("q", params.q);
+  const queryStr = searchParams.toString();
+  return api.get<OrdemServicoAdminItem[]>(`/os${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function aprovarOSAdmin(id: number): Promise<OrdemServicoAdminItem> {
+  return api.post<OrdemServicoAdminItem>(`/os/${id}/aprovar`);
+}
+
+export async function iniciarOSAdmin(id: number): Promise<OrdemServicoAdminItem> {
+  return api.post<OrdemServicoAdminItem>(`/os/${id}/iniciar`);
+}
+
+export async function concluirOSAdmin(id: number): Promise<OrdemServicoAdminItem> {
+  return api.post<OrdemServicoAdminItem>(`/os/${id}/concluir`);
+}
+
+export async function cancelarOSAdmin(id: number, motivo?: string): Promise<OrdemServicoAdminItem> {
+  return api.post<OrdemServicoAdminItem>(`/os/${id}/cancelar`, { motivo });
+}
+
+
+

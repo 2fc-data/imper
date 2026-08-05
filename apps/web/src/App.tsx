@@ -1,13 +1,16 @@
 import { type ReactNode, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
 import { Papel } from "@imper/shared";
 import { homeFor } from "./lib/nav";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import {
   ClienteSidebar,
+  ContatosSidebar,
   DashboardSidebar,
   EmBreveSidebar,
+  OrcamentosSidebar,
+  OSSidebar,
   UsuariosSidebar,
 } from "./components/layout/sidebarContent";
 import LoginPage from "./pages/LoginPage";
@@ -21,6 +24,9 @@ import LandingContent from "./pages/LandingContent";
 import OrcamentoPage from "./pages/OrcamentoPage";
 import { LandingLayout } from "./components/landing/LandingLayout";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { ContatosAdminPage } from "./pages/ContatosAdminPage";
+import { OrcamentosAdminPage } from "./pages/OrcamentosAdminPage";
+import { OSAdminPage } from "./pages/OSAdminPage";
 
 function ProtectedLayout({
   children,
@@ -65,6 +71,53 @@ function UsuariosRoute() {
       }
     >
       <UsuariosPage filtroPapel={filtroPapel ?? undefined} />
+    </ProtectedLayout>
+  );
+}
+
+function ContatosRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE]}
+      sidebar={<ContatosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <ContatosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function OrcamentosRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE, Papel.CONTABILIDADE]}
+      sidebar={<OrcamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <OrcamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function OSRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+  const navigate = useNavigate();
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[
+        Papel.ADMIN,
+        Papel.SUPERVISOR,
+        Papel.ATENDENTE,
+        Papel.TECNICO,
+        Papel.ALMOXARIFE,
+        Papel.CONTABILIDADE,
+      ]}
+      sidebar={<OSSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <OSAdminPage key={viewAtiva} viewAtiva={viewAtiva} onGoToOrcamentos={() => navigate("/orcamentos")} />
     </ProtectedLayout>
   );
 }
@@ -184,70 +237,9 @@ export default function App() {
           </ProtectedLayout>
         }
       />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-            ]}
-            sidebar={
-              <EmBreveSidebar texto="Gestão de contatos e atendimento em breve." />
-            }
-          >
-            <PlaceholderPage
-              title="Contatos"
-              description="Gestão de contatos e atendimento (em breve)"
-            />
-          </ProtectedLayout>
-        }
-        path="/contatos"
-      />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-              Papel.CONTABILIDADE,
-            ]}
-            sidebar={
-              <EmBreveSidebar texto="Gestão de orçamentos em breve." />
-            }
-          >
-            <PlaceholderPage
-              title="Orçamentos"
-              description="Gestão de orçamentos (em breve)"
-            />
-          </ProtectedLayout>
-        }
-        path="/orcamentos"
-      />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-              Papel.TECNICO,
-              Papel.ALMOXARIFE,
-              Papel.CONTABILIDADE,
-            ]}
-            sidebar={
-              <EmBreveSidebar texto="Gestão de ordens de serviço em breve." />
-            }
-          >
-            <PlaceholderPage
-              title="Ordens de Serviço"
-              description="Gestão de ordens de serviço (em breve)"
-            />
-          </ProtectedLayout>
-        }
-        path="/os"
-      />
+      <Route element={<ContatosRoute />} path="/contatos" />
+      <Route element={<OrcamentosRoute />} path="/orcamentos" />
+      <Route element={<OSRoute />} path="/os" />
       <Route
         element={
           <ProtectedLayout
