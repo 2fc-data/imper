@@ -1,7 +1,8 @@
 import { useEffect, type ReactNode } from "react";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { NAV_ITEMS } from "../../lib/nav";
+import { NAV_ITEMS, itensPara } from "../../lib/nav";
+import { useAuth } from "../../auth/AuthContext";
 import { cn } from "../../lib/utils";
 
 interface AdminSidebarProps {
@@ -21,14 +22,56 @@ export function AdminSidebar({
   sidebar,
 }: AdminSidebarProps) {
   const { pathname } = useLocation();
+  const { user } = useAuth();
+  const itens = itensPara(user?.papel ?? null);
 
   useEffect(() => {
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  const navegacao = itens.length > 0 && (
+    <div className="flex flex-col gap-1">
+      {itens.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.to === "/painel"}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-accent-foreground",
+              isActive && "bg-accent/60 text-foreground",
+            )
+          }
+        >
+          {item.icon}
+          <span>{item.label}</span>
+        </NavLink>
+      ))}
+    </div>
+  );
+
   const conteudo = (
     <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {tituloDaRota(pathname)}
+        </p>
+        <p className="mt-1 text-sm font-medium">Ações</p>
+      </div>
+      <div className="flex flex-1 flex-col gap-3">{sidebar}</div>
+    </div>
+  );
+
+  const conteudoDrawer = (
+    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Menu
+        </p>
+        <div className="mt-2">{navegacao}</div>
+      </div>
+      <div className="h-px bg-border" />
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {tituloDaRota(pathname)}
