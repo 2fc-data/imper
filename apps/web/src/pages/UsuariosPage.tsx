@@ -60,7 +60,11 @@ function FormatoData({ value }: { value: string }) {
   );
 }
 
-export default function UsuariosPage() {
+export default function UsuariosPage({
+  filtroPapel,
+}: {
+  filtroPapel?: Papel;
+}) {
   const { user } = useAuth();
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -96,9 +100,11 @@ export default function UsuariosPage() {
     }
   }
 
-  const filtrados = usuarios.filter((u) =>
-    u.nome.toLowerCase().includes(busca.toLowerCase()) ||
-    u.email.toLowerCase().includes(busca.toLowerCase()),
+  const filtrados = usuarios.filter(
+    (u) =>
+      (!filtroPapel || u.papel === filtroPapel) &&
+      (u.nome.toLowerCase().includes(busca.toLowerCase()) ||
+        u.email.toLowerCase().includes(busca.toLowerCase())),
   );
 
   return (

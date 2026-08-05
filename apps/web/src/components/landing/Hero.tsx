@@ -14,7 +14,7 @@ export function Hero() {
         src={heroBg}
         alt="Imperpoços engenharia em impermeabilização"
         loading="eager"
-        className="block w-full object-cover"
+        className="block w-full object-cover transition-opacity dark:opacity-70"
         variants={stagger(0.12)}
         initial="hidden"
         animate="visible"
@@ -33,7 +33,9 @@ export function Hero() {
         <m.div variants={fadeUp}>
           <Link
             to="/orcamento"
-            className="inline-flex items-center justify-center rounded-lg border bg-accent px-6 py-3.5 text-lg font-semibold text-accent-foreground transition-colors hover:bg-white hover:text-black"
+            className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
+            text-black bg-white/84 hover:bg-accent/84 hover:text-accent-foreground
+            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
           >
             Orçamento online
           </Link>
@@ -41,7 +43,9 @@ export function Hero() {
         <m.div variants={fadeUp}>
           <Link
             to="/servicos"
-            className="inline-flex items-center justify-center rounded-lg border bg-accent px-6 py-3.5 text-lg font-semibold text-accent-foreground transition-colors hover:bg-white hover:text-black"
+            className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
+            text-black bg-white/84 hover:bg-accent/84 hover:text-accent-foreground
+            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
           >
             Conhecer serviços
           </Link>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { api } from "../lib/api";
 import type { MinhaConta, MinhaOS } from "../lib/api";
-import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
@@ -46,7 +45,7 @@ const URGENCIA_LABEL: Record<string, string> = {
 };
 
 export default function MinhaContaPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [conta, setConta] = useState<MinhaConta | null>(null);
   const [os, setOs] = useState<MinhaOS[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -74,14 +73,11 @@ export default function MinhaContaPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Olá, {user?.nome}</h1>
-          <p className="text-sm text-muted-foreground">Portal do cliente</p>
-        </div>
-        <Button variant="outline" size="sm" onClick={logout}>
-          Sair
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Olá, {user?.nome}
+        </h1>
+        <p className="text-sm text-muted-foreground">Portal do cliente</p>
       </div>
 
       {error && (

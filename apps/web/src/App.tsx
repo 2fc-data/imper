@@ -1,8 +1,15 @@
-import { type ReactNode } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { type ReactNode, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
 import { Papel } from "@imper/shared";
-import { AppLayout } from "./components/layout/AppLayout";
+import { homeFor } from "./lib/nav";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import {
+  ClienteSidebar,
+  DashboardSidebar,
+  EmBreveSidebar,
+  UsuariosSidebar,
+} from "./components/layout/sidebarContent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -15,19 +22,16 @@ import OrcamentoPage from "./pages/OrcamentoPage";
 import { LandingLayout } from "./components/landing/LandingLayout";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 
-function homeFor(papel: Papel): string {
-  return papel === Papel.CLIENTE ? "/minha-conta" : "/painel";
-}
-
 function ProtectedLayout({
   children,
   allowedRoles,
+  sidebar,
 }: {
   children: ReactNode;
   allowedRoles?: Papel[];
+  sidebar?: ReactNode;
 }) {
   const { user, loading } = useAuth();
-  const location = useLocation();
 
   if (loading) {
     return (
@@ -38,14 +42,31 @@ function ProtectedLayout({
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user.papel)) {
     return <Navigate to={homeFor(user.papel)} replace />;
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  return (
+    <AdminLayout sidebar={sidebar}>{children}</AdminLayout>
+  );
+}
+
+function UsuariosRoute() {
+  const [filtroPapel, setFiltroPapel] = useState<Papel | null>(null);
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
+      sidebar={
+        <UsuariosSidebar valor={filtroPapel} onChange={setFiltroPapel} />
+      }
+    >
+      <UsuariosPage filtroPapel={filtroPapel ?? undefined} />
+    </ProtectedLayout>
+  );
 }
 
 function GuestsOnly({ children }: { children: ReactNode }) {
@@ -96,23 +117,7 @@ export default function App() {
           </GuestsOnly>
         }
       />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-              Papel.TECNICO,
-              Papel.ALMOXARIFE,
-              Papel.CONTABILIDADE,
-            ]}
-          >
-            <UsuariosPage />
-          </ProtectedLayout>
-        }
-        path="/usuarios"
-      />
+      <Route element={<UsuariosRoute />} path="/usuarios" />
       <Route
         element={
           <LandingLayout>
@@ -173,6 +178,7 @@ export default function App() {
               Papel.ALMOXARIFE,
               Papel.CONTABILIDADE,
             ]}
+            sidebar={<DashboardSidebar />}
           >
             <DashboardPage />
           </ProtectedLayout>
@@ -186,6 +192,9 @@ export default function App() {
               Papel.SUPERVISOR,
               Papel.ATENDENTE,
             ]}
+            sidebar={
+              <EmBreveSidebar texto="Gestão de contatos e atendimento em breve." />
+            }
           >
             <PlaceholderPage
               title="Contatos"
@@ -204,6 +213,9 @@ export default function App() {
               Papel.ATENDENTE,
               Papel.CONTABILIDADE,
             ]}
+            sidebar={
+              <EmBreveSidebar texto="Gestão de orçamentos em breve." />
+            }
           >
             <PlaceholderPage
               title="Orçamentos"
@@ -224,6 +236,9 @@ export default function App() {
               Papel.ALMOXARIFE,
               Papel.CONTABILIDADE,
             ]}
+            sidebar={
+              <EmBreveSidebar texto="Gestão de ordens de serviço em breve." />
+            }
           >
             <PlaceholderPage
               title="Ordens de Serviço"
@@ -237,6 +252,9 @@ export default function App() {
         element={
           <ProtectedLayout
             allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
+            sidebar={
+              <EmBreveSidebar texto="Gestão de materiais e estoque em breve." />
+            }
           >
             <PlaceholderPage
               title="Materiais"
@@ -248,7 +266,10 @@ export default function App() {
       />
       <Route
         element={
-          <ProtectedLayout allowedRoles={[Papel.CLIENTE]}>
+          <ProtectedLayout
+            allowedRoles={[Papel.CLIENTE]}
+            sidebar={<ClienteSidebar />}
+          >
             <MinhaContaPage />
           </ProtectedLayout>
         }
