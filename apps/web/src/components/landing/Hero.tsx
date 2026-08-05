@@ -34,7 +34,7 @@ export function Hero() {
           <Link
             to="/orcamento"
             className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
-            text-black bg-white/84 hover:bg-accent/84 hover:text-accent-foreground
+            text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
           >
             Orçamento online
@@ -44,7 +44,7 @@ export function Hero() {
           <Link
             to="/servicos"
             className="inline-flex items-center justify-center rounded-lg px-6 py-3.5 text-lg font-semibold transition-colors
-            text-black bg-white/84 hover:bg-accent/84 hover:text-accent-foreground
+            text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground"
           >
             Conhecer serviços

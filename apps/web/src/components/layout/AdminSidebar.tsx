@@ -63,25 +63,6 @@ export function AdminSidebar({
     </div>
   );
 
-  const conteudoDrawer = (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Menu
-        </p>
-        <div className="mt-2">{navegacao}</div>
-      </div>
-      <div className="h-px bg-border" />
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {tituloDaRota(pathname)}
-        </p>
-        <p className="mt-1 text-sm font-medium">Ações</p>
-      </div>
-      <div className="flex flex-1 flex-col gap-3">{sidebar}</div>
-    </div>
-  );
-
   return (
     <>
       {/* Desktop: fixa */}
