@@ -168,3 +168,120 @@ export function EmBreveSidebar({ texto }: { texto: string }) {
     </>
   );
 }
+
+export function ContatosSidebar({
+  viewAtiva,
+  onNavegar,
+}: {
+  viewAtiva: "analises" | "lista" | "novo";
+  onNavegar: (view: "analises" | "lista" | "novo") => void;
+}) {
+  return (
+    <>
+      <SidebarButton
+        active={viewAtiva === "analises"}
+        onClick={() => onNavegar("analises")}
+        icon={icone("M3 3v18h18M18 17V9M13 17V5M8 17v-3")}
+      >
+        Análises
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "lista"}
+        onClick={() => onNavegar("lista")}
+        icon={icone("M4 6h16M4 10h16M4 14h16M4 18h16")}
+      >
+        Lista de Contatos
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "novo"}
+        onClick={() => onNavegar("novo")}
+        icon={icone("M12 4v16m8-8H4")}
+      >
+        Novo Contato
+      </SidebarButton>
+      <div className="pt-4 border-t border-border mt-4">
+        <SidebarLink to="/painel" icon={icone("M19 12H5M12 19l-7-7 7-7")}>
+          Voltar
+        </SidebarLink>
+      </div>
+    </>
+  );
+}
+
+export function OrcamentosSidebar({
+  viewAtiva,
+  onNavegar,
+}: {
+  viewAtiva: "analises" | "lista" | "novo";
+  onNavegar: (view: "analises" | "lista" | "novo") => void;
+}) {
+  return (
+    <>
+      <SidebarButton
+        active={viewAtiva === "analises"}
+        onClick={() => onNavegar("analises")}
+        icon={icone("M3 3v18h18M18 17V9M13 17V5M8 17v-3")}
+      >
+        Análises
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "lista"}
+        onClick={() => onNavegar("lista")}
+        icon={icone("M4 6h16M4 10h16M4 14h16M4 18h16")}
+      >
+        Lista de Orçamentos
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "novo"}
+        onClick={() => onNavegar("novo")}
+        icon={icone("M12 4v16m8-8H4")}
+      >
+        Novo Orçamento
+      </SidebarButton>
+      <div className="pt-4 border-t border-border mt-4">
+        <SidebarLink to="/painel" icon={icone("M19 12H5M12 19l-7-7 7-7")}>
+          Voltar
+        </SidebarLink>
+      </div>
+    </>
+  );
+}
+
+export function OSSidebar({
+  viewAtiva,
+  onNavegar,
+}: {
+  viewAtiva: "analises" | "lista" | "novo";
+  onNavegar: (view: "analises" | "lista" | "novo") => void;
+}) {
+  return (
+    <>
+      <SidebarButton
+        active={viewAtiva === "analises"}
+        onClick={() => onNavegar("analises")}
+        icon={icone("M3 3v18h18M18 17V9M13 17V5M8 17v-3")}
+      >
+        Análises
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "lista"}
+        onClick={() => onNavegar("lista")}
+        icon={icone("M4 6h16M4 10h16M4 14h16M4 18h16")}
+      >
+        Lista de Ordens de Serviço
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "novo"}
+        onClick={() => onNavegar("novo")}
+        icon={icone("M12 4v16m8-8H4")}
+      >
+        Nova OS
+      </SidebarButton>
+      <div className="pt-4 border-t border-border mt-4">
+        <SidebarLink to="/painel" icon={icone("M19 12H5M12 19l-7-7 7-7")}>
+          Voltar
+        </SidebarLink>
+      </div>
+    </>
+  );
+}
