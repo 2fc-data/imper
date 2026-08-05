@@ -1,0 +1,103 @@
+import { useState, type FormEvent } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { redefinirSenha } from "../lib/api";
+import { Button, buttonVariants } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+
+export default function ResetPasswordPage() {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token") ?? "";
+  const [senha, setSenha] = useState("");
+  const [confirmacao, setConfirmacao] = useState("");
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    if (senha !== confirmacao) {
+      setError("As senhas não coincidem");
+      return;
+    }
+    if (!token) {
+      setError("Link inválido: token ausente");
+      return;
+    }
+    setLoading(true);
+    try {
+      await redefinirSenha(token, senha);
+      setDone(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Falha ao redefinir senha");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="flex min-h-full items-center justify-center px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-xl">Redefinir senha</CardTitle>
+          <CardDescription>Digite sua nova senha</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {done ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Senha redefinida com sucesso. Já pode acessar o sistema.
+              </p>
+              <Link to="/login" className={buttonVariants({ className: "w-full" })}>
+                Ir para o login
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="senha">Nova senha</Label>
+                <Input
+                  id="senha"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  placeholder="Mínimo 6 caracteres"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmacao">Confirme a nova senha</Label>
+                <Input
+                  id="confirmacao"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  placeholder="Repita a senha"
+                  value={confirmacao}
+                  onChange={(e) => setConfirmacao(e.target.value)}
+                />
+              </div>
+              {error && (
+                <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </p>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Salvando..." : "Redefinir senha"}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
