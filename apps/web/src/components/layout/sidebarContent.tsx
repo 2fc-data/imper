@@ -151,6 +151,27 @@ export function UsuariosSidebar({
   );
 }
 
+export function ServicosSidebar() {
+  return (
+    <>
+      <SidebarButton
+        active
+        icon={icone("M19 9l-7 12-7-12a7 7 0 1114 0z")}
+      >
+        Serviços
+      </SidebarButton>
+      <SidebarNote>
+        Gerencia os serviços de marketing exibidos na página de orçamento.
+      </SidebarNote>
+      <div className="pt-4 border-t border-border mt-4">
+        <SidebarLink to="/painel" icon={icone("M19 12H5M12 19l-7-7 7-7")}>
+          Voltar
+        </SidebarLink>
+      </div>
+    </>
+  );
+}
+
 export function ClienteSidebar() {
   return (
     <>

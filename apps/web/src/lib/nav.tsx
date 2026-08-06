@@ -80,6 +80,12 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE],
   },
   {
+    to: "/servicos-admin",
+    label: "Serviços",
+    icon: <Icon d="M19 9l-7 12-7-12a7 7 0 1114 0z" />,
+    roles: [Papel.ADMIN, Papel.SUPERVISOR],
+  },
+  {
     to: "/usuarios",
     label: "Usuários",
     icon: (

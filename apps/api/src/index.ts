@@ -23,6 +23,7 @@ import notificacoesRoutes from "./routes/notificacoes.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
 import clienteRoutes from "./routes/cliente.routes";
 import publicoRoutes from "./routes/publico.routes";
+import servicosAdminRoutes from "./routes/servicosAdmin.routes";
 
 fs.mkdirSync(config.uploadsDir, { recursive: true });
 
@@ -51,6 +52,7 @@ app.use("/notificacoes", notificacoesRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/cliente", clienteRoutes);
 app.use("/publico", publicoRoutes);
+app.use("/servicos-admin", servicosAdminRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() });

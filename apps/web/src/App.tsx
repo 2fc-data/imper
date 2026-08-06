@@ -11,6 +11,7 @@ import {
   EmBreveSidebar,
   OrcamentosSidebar,
   OSSidebar,
+  ServicosSidebar,
   UsuariosSidebar,
 } from "./components/layout/sidebarContent";
 import LoginPage from "./pages/LoginPage";
@@ -27,6 +28,7 @@ import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ContatosAdminPage } from "./pages/ContatosAdminPage";
 import { OrcamentosAdminPage } from "./pages/OrcamentosAdminPage";
 import { OSAdminPage } from "./pages/OSAdminPage";
+import ServicosAdminPage from "./pages/ServicosAdminPage";
 
 function ProtectedLayout({
   children,
@@ -171,6 +173,17 @@ export default function App() {
         }
       />
       <Route element={<UsuariosRoute />} path="/usuarios" />
+      <Route
+        element={
+          <ProtectedLayout
+            allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
+            sidebar={<ServicosSidebar />}
+          >
+            <ServicosAdminPage />
+          </ProtectedLayout>
+        }
+        path="/servicos-admin"
+      />
       <Route
         element={
           <LandingLayout>
