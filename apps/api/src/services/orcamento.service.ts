@@ -30,12 +30,14 @@ export const orcamentoService = {
         OR: filtro.q
           ? [
               { codigo: { contains: filtro.q } },
-              { visita: { contato: { nome: { contains: filtro.q } } } },
+              { atendimento: { cliente: { nome: { contains: filtro.q } } } },
             ]
           : undefined,
       },
       include: {
-        visita: { include: { contato: { select: { id: true, nome: true } } } },
+        atendimento: { select: { id: true, cliente: { select: { id: true, nome: true } } } },
+        cliente: { select: { id: true, nome: true } },
+        endereco: true,
         ordemServico: { select: { id: true, codigo: true, status: true } },
         _count: { select: { itens: true } },
       },
@@ -47,7 +49,14 @@ export const orcamentoService = {
     const orc = await prisma.orcamento.findUnique({
       where: { id },
       include: {
-        visita: { include: { contato: true } },
+        atendimento: {
+          include: {
+            cliente: { include: { enderecos: true } },
+          },
+        },
+        cliente: true,
+        endereco: true,
+        visita: true,
         itens: { include: { servicoItem: { select: { id: true, nome: true, materialId: true, faseId: true } } } },
         ordemServico: { include: { fases: { include: { materiais: { include: { material: true } } } } } },
         criadoPor: { select: { id: true, nome: true } },
@@ -59,17 +68,19 @@ export const orcamentoService = {
   },
 
   async criar(data: {
-    visitaId: number;
+    atendimentoId: number;
+    visitaId?: number;
+    enderecoId?: number;
     observacoes?: string;
     itens: ItemOrcamentoInput[];
   }, ctx: Ctx) {
     if (!data.itens.length) throw new AppError(400, "Informe ao menos um item");
     return prisma.$transaction(async (tx) => {
-      const visita = await tx.visitaTecnica.findUnique({
-        where: { id: data.visitaId },
-        include: { contato: { select: { id: true, nome: true } } },
+      const atendimento = await tx.atendimento.findUnique({
+        where: { id: data.atendimentoId },
+        select: { id: true, urgencia: true, clienteId: true },
       });
-      if (!visita) throw new AppError(404, "Visita não encontrada");
+      if (!atendimento) throw new AppError(404, "Atendimento não encontrado");
 
       const itens = data.itens.map((i) => {
         const quantidade = Number(i.quantidade);
@@ -91,8 +102,11 @@ export const orcamentoService = {
       const orcamento = await tx.orcamento.create({
         data: {
           codigo,
-          visitaId: data.visitaId,
-          urgencia: visita.urgencia ?? "NORMAL",
+          atendimentoId: data.atendimentoId,
+          visitaId: data.visitaId ?? null,
+          clienteId: atendimento.clienteId ?? null,
+          enderecoId: data.enderecoId ?? null,
+          urgencia: atendimento.urgencia ?? "NORMAL",
           status: "RASCUNHO",
           valorTotal,
           validade,
@@ -129,7 +143,8 @@ export const orcamentoService = {
       where: { tokenConfirmacao: token },
       include: {
         itens: true,
-        visita: { include: { contato: { select: { nome: true, endereco: true } } } },
+        atendimento: { include: { cliente: true } },
+        endereco: true,
       },
     });
     if (!orc || orc.tokenConfirmacao !== token) {
@@ -146,7 +161,8 @@ export const orcamentoService = {
       where: { tokenConfirmacao: token },
       include: {
         itens: { include: { servicoItem: { select: { faseId: true, materialId: true } } } },
-        visita: { include: { contato: { select: { id: true, nome: true, clienteId: true, endereco: true } } } },
+        atendimento: { include: { cliente: { select: { id: true, nome: true } } } },
+        endereco: true,
       },
     });
     if (!orc || orc.tokenConfirmacao !== token) throw new AppError(404, "Convite inválido");
@@ -156,6 +172,10 @@ export const orcamentoService = {
       throw new AppError(409, "Orçamento expirado");
     }
 
+    const clienteId = orc.clienteId ?? orc.atendimento?.cliente?.id ?? null;
+    const clienteNome = orc.atendimento?.cliente?.nome ?? null;
+    const enderecoId = orc.enderecoId ?? null;
+
     const os = await prisma.$transaction(async (tx) => {
       const codigoOS = await gerarCodigo(tx, "OS");
       const dataInicioPrevista = addBusinessDays(new Date(), await prazoExecucao(tx, orc.urgencia));
@@ -163,11 +183,11 @@ export const orcamentoService = {
         data: {
           codigo: codigoOS,
           orcamentoId: orc.id,
-          clienteId: orc.visita.contato.clienteId,
-          contatoId: orc.visita.contato.id,
+          clienteId,
+          atendimentoId: orc.atendimentoId,
           urgencia: orc.urgencia,
           valorTotal: orc.valorTotal,
-          endereco: orc.visita.contato.endereco,
+          enderecoId,
           dataInicioPrevista,
           status: "AGUARDANDO_APROVACAO",
         },
@@ -270,17 +290,19 @@ export const orcamentoService = {
           tokenConfirmacao: null,
         },
       });
-      await tx.contato.update({
-        where: { id: orc.visita.contato.id },
-        data: { status: "CONCLUIDO" },
-      });
+      if (orc.atendimentoId) {
+        await tx.atendimento.update({
+          where: { id: orc.atendimentoId },
+          data: { status: "CONCLUIDO" },
+        });
+      }
 
       const linkDias = Number(await getConfig(tx, "acesso.linkDias", "30"));
       await tx.acessoCliente.create({
         data: {
           ordemServicoId: osCriada.id,
-          clienteId: orc.visita.contato.clienteId,
-          nome: orc.visita.contato.nome,
+          clienteId,
+          nome: clienteNome ?? "Cliente",
           token: crypto.randomBytes(24).toString("hex"),
           expiraEm: new Date(Date.now() + (Number.isFinite(linkDias) ? linkDias : 30) * 86_400_000),
         },
@@ -316,7 +338,7 @@ export const orcamentoService = {
   async recusarPorToken(token: string) {
     const orc = await prisma.orcamento.findUnique({
       where: { tokenConfirmacao: token },
-      include: { visita: { include: { contato: { select: { id: true, nome: true } } } } },
+      select: { id: true, codigo: true, status: true, atendimentoId: true, tokenConfirmacao: true },
     });
     if (!orc || orc.tokenConfirmacao !== token) throw new AppError(404, "Convite inválido");
     if (orc.status !== "ENVIADO") throw new AppError(409, "Orçamento não está aguardando decisão");
@@ -326,10 +348,12 @@ export const orcamentoService = {
         where: { id: orc.id },
         data: { status: "RECUSADO", tokenConfirmacao: null },
       });
-      await tx.contato.update({
-        where: { id: orc.visita.contato.id },
-        data: { status: "ENCAMINHADO" },
-      });
+      if (orc.atendimentoId) {
+        await tx.atendimento.update({
+          where: { id: orc.atendimentoId },
+          data: { status: "CONCLUIDO" },
+        });
+      }
     });
     await notificarPapeis(["ATENDENTE"], {
       titulo: "Orçamento recusado",

@@ -198,6 +198,10 @@ export async function buscarMinhaConta(): Promise<MinhaConta> {
   return api.get<MinhaConta>("/cliente/me");
 }
 
+export async function buscarClientes(q: string): Promise<MeuCliente[]> {
+  return api.get<MeuCliente[]>(`/cliente?q=${encodeURIComponent(q)}`);
+}
+
 export async function listarMinhasOS(): Promise<MinhaOS[]> {
   return api.get<MinhaOS[]>("/cliente/os");
 }
@@ -262,7 +266,7 @@ export interface OrcamentoInput {
   nome: string;
   telefone: string;
   email?: string;
-  servico?: string;
+  motivo?: MotivoAtendimento;
   mensagem?: string;
   cep?: string;
   endereco?: string;
@@ -278,7 +282,7 @@ export interface OrcamentoResult {
   id: number;
   nome: string;
   canal: string;
-  tipo: string;
+  motivo: string;
   status: string;
   createdAt: string;
 }
@@ -289,27 +293,27 @@ export async function solicitarOrcamento(
   return api.post<OrcamentoResult>("/publico/orcamento", input);
 }
 
-export type StatusContato = "NOVO" | "EM_ANDAMENTO" | "ENCAMINHADO" | "CONCLUIDO" | "INATIVO";
-export type CanalContato = "WHATSAPP" | "FORMULARIO" | "LOJA" | "TELEFONE";
-export type TipoContato = "DUVIDA" | "AGENDAR_VISITA" | "COMPRA_MATERIAL" | "COMPRA_EQUIPAMENTO";
+export type StatusAtendimento = "NOVO" | "EM_ANDAMENTO" | "CONCLUIDO" | "INATIVO";
+export type CanalAtendimento = "WHATSAPP" | "FORMULARIO" | "LOJA" | "TELEFONE";
+export type MotivoAtendimento = "DUVIDA" | "AGENDAR_VISITA" | "COMPRAR_MATERIAL" | "COMPRAR_EQUIPAMENTO";
 export type Urgencia = "NORMAL" | "URGENTE" | "URGENTISSIMO";
 
-export interface ContatoItem {
+export interface DadosEndereco {
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+}
+
+export interface AtendimentoItem {
   id: number;
-  nome: string;
-  telefone: string;
-  email: string | null;
-  endereco: string | null;
-  cep: string | null;
-  bairro: string | null;
-  cidade: string | null;
-  estado: string | null;
-  numero: string | null;
-  complemento: string | null;
-  canal: CanalContato;
-  tipo: TipoContato;
+  canal: CanalAtendimento;
+  motivo: MotivoAtendimento;
   urgencia: Urgencia | null;
-  status: StatusContato;
+  status: StatusAtendimento;
   descricao: string | null;
   clienteId: number | null;
   cliente?: { id: number; nome: string; telefone: string | null } | null;
@@ -320,32 +324,63 @@ export interface ContatoItem {
   _count?: { visitas: number; os: number };
 }
 
-export interface CriarContatoInput {
-  clienteId?: number | null;
-  nome: string;
-  telefone: string;
-  canal: CanalContato;
-  tipo: TipoContato;
-  urgencia?: Urgencia;
-  assunto: string;
-  descricao?: string;
-  endereco?: string;
+export interface AtendimentoLogItem {
+  id: number;
+  atendimentoId: number;
+  atendenteId: number | null;
+  atendente?: { id: number; nome: string } | null;
+  tipo: "TEXTO" | "STATUS";
+  descricao: string | null;
+  statusDe: StatusAtendimento | null;
+  statusPara: StatusAtendimento | null;
+  createdAt: string;
 }
 
-export async function listarContatos(params?: { status?: string; q?: string }): Promise<ContatoItem[]> {
+export interface CriarAtendimentoInput {
+  clienteId?: number | null;
+  nome?: string;
+  telefone?: string;
+  email?: string;
+  canal: CanalAtendimento;
+  motivo: MotivoAtendimento;
+  urgencia?: Urgencia;
+  descricao?: string;
+  enderecoNovo?: DadosEndereco;
+}
+
+export async function listarAtendimentos(params?: {
+  status?: string;
+  q?: string;
+  criadoDe?: string;
+  criadoAte?: string;
+  atualizadoDe?: string;
+  atualizadoAte?: string;
+}): Promise<AtendimentoItem[]> {
   const searchParams = new URLSearchParams();
   if (params?.status) searchParams.set("status", params.status);
   if (params?.q) searchParams.set("q", params.q);
+  if (params?.criadoDe) searchParams.set("criadoDe", params.criadoDe);
+  if (params?.criadoAte) searchParams.set("criadoAte", params.criadoAte);
+  if (params?.atualizadoDe) searchParams.set("atualizadoDe", params.atualizadoDe);
+  if (params?.atualizadoAte) searchParams.set("atualizadoAte", params.atualizadoAte);
   const queryStr = searchParams.toString();
-  return api.get<ContatoItem[]>(`/contatos${queryStr ? `?${queryStr}` : ""}`);
+  return api.get<AtendimentoItem[]>(`/atendimentos${queryStr ? `?${queryStr}` : ""}`);
 }
 
-export async function criarContato(input: CriarContatoInput): Promise<ContatoItem> {
-  return api.post<ContatoItem>("/contatos", input);
+export async function criarAtendimento(input: CriarAtendimentoInput): Promise<AtendimentoItem> {
+  return api.post<AtendimentoItem>("/atendimentos", input);
 }
 
-export async function atualizarStatusContato(id: number, status: StatusContato): Promise<ContatoItem> {
-  return api.patch<ContatoItem>(`/contatos/${id}/status`, { status });
+export async function atualizarStatusAtendimento(id: number, status: StatusAtendimento): Promise<AtendimentoItem> {
+  return api.patch<AtendimentoItem>(`/atendimentos/${id}/status`, { status });
+}
+
+export async function listarLogsAtendimento(id: number): Promise<AtendimentoLogItem[]> {
+  return api.get<AtendimentoLogItem[]>(`/atendimentos/${id}/atendimentos`);
+}
+
+export async function registrarLogAtendimento(id: number, descricao: string): Promise<AtendimentoLogItem> {
+  return api.post<AtendimentoLogItem>(`/atendimentos/${id}/atendimentos`, { descricao });
 }
 
 export type StatusOrcamento = "RASCUNHO" | "ENVIADO" | "APROVADO" | "RECUSADO" | "EXPIRADO" | "CANCELADO";
@@ -364,7 +399,7 @@ export interface ItemOrcamentoInput {
 export interface OrcamentoAdminItem {
   id: number;
   codigo: string;
-  visitaId: number;
+  atendimentoId: number;
   urgencia: Urgencia;
   status: StatusOrcamento;
   valorTotal: string | number;
@@ -377,13 +412,16 @@ export interface OrcamentoAdminItem {
   dataConfirmacao: string | null;
   createdAt: string;
   updatedAt: string;
-  visita?: { id: number; contato: { id: number; nome: string } };
+  atendimento?: { id: number; cliente: { id: number; nome: string } | null };
+  cliente?: { id: number; nome: string } | null;
   ordemServico?: { id: number; codigo: string; status: string } | null;
   _count?: { itens: number };
 }
 
 export interface CriarOrcamentoInput {
-  visitaId: number;
+  atendimentoId: number;
+  visitaId?: number;
+  enderecoId?: number;
   observacoes?: string;
   itens: ItemOrcamentoInput[];
 }
@@ -420,7 +458,7 @@ export interface OrdemServicoAdminItem {
   codigo: string;
   orcamentoId: number;
   clienteId: number | null;
-  contatoId: number | null;
+  atendimentoId: number | null;
   urgencia: Urgencia;
   status: StatusOS;
   valorTotal: string | number;
@@ -430,7 +468,7 @@ export interface OrdemServicoAdminItem {
   createdAt: string;
   updatedAt: string;
   cliente?: { id: number; nome: string } | null;
-  contato?: { id: number; nome: string } | null;
+  atendimento?: { id: number } | null;
   tecnicoResponsavel?: { id: number; nome: string } | null;
   _count?: { fases: number; compras: number; vendas: number };
 }

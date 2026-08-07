@@ -37,7 +37,7 @@ export function Hero() {
             text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
-            Contato Online
+            Formulário Atendimento
           </Link>
         </m.div>
         <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">

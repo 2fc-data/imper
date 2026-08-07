@@ -5,8 +5,8 @@ import { Papel } from "@imper/shared";
 import { homeFor } from "./lib/nav";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import {
+  AtendimentosSidebar,
   ClienteSidebar,
-  ContatosSidebar,
   DashboardSidebar,
   EmBreveSidebar,
   OrcamentosSidebar,
@@ -25,7 +25,7 @@ import LandingContent from "./pages/LandingContent";
 import OrcamentoPage from "./pages/OrcamentoPage";
 import { LandingLayout } from "./components/landing/LandingLayout";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
-import { ContatosAdminPage } from "./pages/ContatosAdminPage";
+import { AtendimentosAdminPage } from "./pages/AtendimentosAdminPage";
 import { OrcamentosAdminPage } from "./pages/OrcamentosAdminPage";
 import { OSAdminPage } from "./pages/OSAdminPage";
 import ServicosAdminPage from "./pages/ServicosAdminPage";
@@ -77,15 +77,15 @@ function UsuariosRoute() {
   );
 }
 
-function ContatosRoute() {
+function AtendimentosRoute() {
   const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
 
   return (
     <ProtectedLayout
       allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE]}
-      sidebar={<ContatosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+      sidebar={<AtendimentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <ContatosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+      <AtendimentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -250,7 +250,7 @@ export default function App() {
           </ProtectedLayout>
         }
       />
-      <Route element={<ContatosRoute />} path="/contatos" />
+      <Route element={<AtendimentosRoute />} path="/atendimentos" />
       <Route element={<OrcamentosRoute />} path="/orcamentos" />
       <Route element={<OSRoute />} path="/os" />
       <Route

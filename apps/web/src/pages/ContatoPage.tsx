@@ -14,10 +14,10 @@ export default function ContatoPage() {
     <section id="contato" className="bg-card/60 py-12 my-16 sm:py-16 sm:my-24">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Entre em contato conosco
+          Canais de atendimento
         </h2>
         <p className="mt-2 text-muted-foreground">
-          Saiba sobre o melhor sistema impermeabilizante para a sua obra.
+          Saiba qual o melhor sistema impermeabilizante para a sua obra.
         </p>
         <m.div
           ref={cardRef}
@@ -28,10 +28,10 @@ export default function ContatoPage() {
         >
           <div className="p-6 sm:p-10">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Canais de atendimento
+            Solicite uma visita técnica
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/80 sm:text-base">
-              Solicite uma visita técnica, um orçamento ou tire dúvidas sobre nossos serviços.
+              Peça orçamentos ou tire dúvidas sobre nossos serviços.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div>

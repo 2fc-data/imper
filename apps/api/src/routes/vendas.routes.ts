@@ -18,7 +18,7 @@ router.get("/", authMiddleware(...perfil), wrap(async (req, res) => {
 router.post("/", authMiddleware("ADMIN", "ATENDENTE"), wrap(async (req, res) => {
   const body = parseBody(
     z.object({
-      contatoId: z.number().int().positive().optional(),
+      atendimentoId: z.number().int().positive().optional(),
       clienteId: z.number().int().positive().optional(),
       ordemServicoId: z.number().int().positive().optional(),
       itens: z

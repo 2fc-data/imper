@@ -13,7 +13,7 @@ export const vendaService = {
         OR: filtro.q ? [{ codigo: { contains: filtro.q } }] : undefined,
       },
       include: {
-        contato: { select: { id: true, nome: true } },
+        atendimento: { select: { id: true } },
         cliente: { select: { id: true, nome: true } },
         itens: { include: { material: true } },
       },
@@ -25,7 +25,7 @@ export const vendaService = {
     const venda = await prisma.venda.findUnique({
       where: { id },
       include: {
-        contato: true,
+        atendimento: { select: { id: true, cliente: { select: { id: true, nome: true } } } },
         cliente: true,
         ordemServico: { select: { id: true, codigo: true } },
         itens: { include: { material: true } },
@@ -37,7 +37,7 @@ export const vendaService = {
 
   async criar(
     data: {
-      contatoId?: number;
+      atendimentoId?: number;
       clienteId?: number;
       ordemServicoId?: number;
       itens: { materialId: number; quantidade: number; valorUnitario: number }[];
@@ -50,7 +50,7 @@ export const vendaService = {
       const venda = await tx.venda.create({
         data: {
           codigo,
-          contatoId: data.contatoId,
+          atendimentoId: data.atendimentoId,
           clienteId: data.clienteId,
           ordemServicoId: data.ordemServicoId,
           registradoPorId: ctx.userId,

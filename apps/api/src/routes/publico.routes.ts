@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { z } from "zod";
+import { MotivoAtendimento } from "@prisma/client";
 import { parseBody } from "../lib/validators";
 import { wrap } from "../lib/errors";
 import { verificarTurnstile } from "../lib/turnstile";
 import { servicoMarketingService } from "../services/servicoMarketing.service";
 import { cidadeAtendidaService } from "../services/cidadeAtendida.service";
-import { contatoService } from "../services/contato.service";
+import { atendimentoService } from "../services/atendimento.service";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ const OrcamentoSchema = z.object({
   nome: z.string().trim().min(2).max(120),
   telefone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(120).optional(),
-  servico: z.string().trim().min(2).max(150),
+  motivo: z.nativeEnum(MotivoAtendimento).default(MotivoAtendimento.DUVIDA),
   mensagem: z.string().trim().max(700).optional().default(""),
   cep: z.string().trim().regex(/^\d{5}-\d{3}$/).max(9).optional(),
   endereco: z.string().trim().max(255).optional(),
@@ -37,31 +38,30 @@ router.post("/orcamento", wrap(async (req, res) => {
   const body = parseBody(OrcamentoSchema, req.body);
   await verificarTurnstile(body.turnstileToken ?? "", req.ip);
 
-  const descricao = ["Serviço:", body.servico, "", body.mensagem]
-    .filter(Boolean)
-    .join("\n");
-
-  const contato = await contatoService.criarPublico({
+  const atendimento = await atendimentoService.criarPublico({
     nome: body.nome,
     telefone: body.telefone,
     email: body.email,
-    descricao,
-    cep: body.cep,
-    endereco: body.endereco,
-    bairro: body.bairro,
-    cidade: body.cidade,
-    estado: body.estado,
-    numero: body.numero,
-    complemento: body.complemento,
+    motivo: body.motivo,
+    descricao: body.mensagem,
+    endereco: {
+      logradouro: body.endereco,
+      numero: body.numero,
+      complemento: body.complemento,
+      bairro: body.bairro,
+      cidade: body.cidade,
+      estado: body.estado,
+      cep: body.cep,
+    },
   });
 
   res.status(201).json({
-    id: contato.id,
-    nome: contato.nome,
-    canal: contato.canal,
-    tipo: contato.tipo,
-    status: contato.status,
-    createdAt: contato.createdAt,
+    id: atendimento.id,
+    nome: atendimento.cliente?.nome,
+    canal: atendimento.canal,
+    motivo: atendimento.motivo,
+    status: atendimento.status,
+    createdAt: atendimento.createdAt,
   });
 }));
 

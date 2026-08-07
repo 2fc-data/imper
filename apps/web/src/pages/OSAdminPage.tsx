@@ -133,7 +133,7 @@ export function OSList({
           <thead className="border-b bg-muted/40 text-xs font-semibold uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Código</th>
-              <th className="px-4 py-3">Cliente / Contato</th>
+              <th className="px-4 py-3">Cliente</th>
               <th className="px-4 py-3">Valor Total</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Início Previsto</th>
@@ -159,7 +159,7 @@ export function OSList({
                   <td className="px-4 py-3 font-semibold text-foreground">{item.codigo}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-foreground">
-                      {item.cliente?.nome || item.contato?.nome || "N/A"}
+                      {item.cliente?.nome || "N/A"}
                     </div>
                   </td>
                   <td className="px-4 py-3 font-medium">
@@ -365,7 +365,7 @@ export function OSAdminPage({ viewAtiva = "lista", onGoToOrcamentos }: OSAdminPa
           <div className="w-full max-w-lg rounded-xl bg-card p-5 shadow-lg space-y-4 border">
             <h3 className="text-lg font-bold">Ordem de Serviço #{osSelecionada.codigo}</h3>
             <div className="text-sm space-y-2 text-muted-foreground">
-              <p><strong className="text-foreground">Cliente / Contato:</strong> {osSelecionada.cliente?.nome || osSelecionada.contato?.nome || "N/A"}</p>
+              <p><strong className="text-foreground">Cliente:</strong> {osSelecionada.cliente?.nome || "N/A"}</p>
               <p><strong className="text-foreground">Status:</strong> {osSelecionada.status}</p>
               <p><strong className="text-foreground">Urgência:</strong> {osSelecionada.urgencia}</p>
               <p><strong className="text-foreground">Valor Total:</strong> R$ {Number(osSelecionada.valorTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>

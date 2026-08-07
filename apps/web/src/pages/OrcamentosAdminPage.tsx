@@ -105,7 +105,7 @@ export function OrcamentoList({
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Buscar por código ou contato..."
+            placeholder="Buscar por código ou atendimento..."
             value={busca}
             onChange={(e) => onBuscaChange(e.target.value)}
             className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -131,7 +131,7 @@ export function OrcamentoList({
           <thead className="border-b bg-muted/40 text-xs font-semibold uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Código</th>
-              <th className="px-4 py-3">Contato / Visita</th>
+              <th className="px-4 py-3">Atendimento</th>
               <th className="px-4 py-3">Valor Total</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Validade</th>
@@ -157,7 +157,7 @@ export function OrcamentoList({
                   <td className="px-4 py-3 font-semibold text-foreground">{item.codigo}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-foreground">
-                      {item.visita?.contato?.nome || `Visita #${item.visitaId}`}
+                      {item.atendimento?.cliente?.nome || item.cliente?.nome || "N/A"}
                     </div>
                   </td>
                   <td className="px-4 py-3 font-medium">
@@ -219,7 +219,7 @@ interface NovoOrcamentoFormProps {
 }
 
 export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProps) {
-  const [visitaId, setVisitaId] = useState("");
+  const [atendimentoId, setAtendimentoId] = useState("");
   const [observacoes, setObservacoes] = useState("");
   const [itens, setItens] = useState<ItemOrcamentoInput[]>([
     { nome: "", tipo: "SERVICO", quantidade: 1, unidade: "UN", valorUnitario: 0 },
@@ -251,7 +251,7 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
     setErro(null);
     try {
       await criarOrcamentoAdmin({
-        visitaId: Number(visitaId),
+        atendimentoId: Number(atendimentoId),
         observacoes,
         itens,
       });
@@ -268,7 +268,7 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
       <div>
         <h2 className="text-xl font-bold tracking-tight">Novo Orçamento</h2>
         <p className="text-sm text-muted-foreground">
-          Gere uma nova proposta orçamentária associada a uma Visita Técnica.
+          Gere uma nova proposta orçamentária associada a um Atendimento.
         </p>
       </div>
 
@@ -280,12 +280,12 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
 
       <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border bg-card p-5 shadow-sm">
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">ID da Visita Técnica *</label>
+          <label className="text-xs font-semibold text-foreground">ID do Atendimento *</label>
           <input
             type="number"
             required
-            value={visitaId}
-            onChange={(e) => setVisitaId(e.target.value)}
+            value={atendimentoId}
+            onChange={(e) => setAtendimentoId(e.target.value)}
             className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             placeholder="Ex: 1"
           />
@@ -471,7 +471,7 @@ export function OrcamentosAdminPage({ initialView = "lista", onNavegar }: Orcame
           <div className="w-full max-w-lg rounded-xl bg-card p-5 shadow-lg space-y-4 border">
             <h3 className="text-lg font-bold">Orçamento #{orcamentoSelecionado.codigo}</h3>
             <div className="text-sm space-y-2 text-muted-foreground">
-              <p><strong className="text-foreground">Contato:</strong> {orcamentoSelecionado.visita?.contato?.nome || "N/A"}</p>
+              <p><strong className="text-foreground">Atendimento:</strong> {orcamentoSelecionado.atendimento?.cliente?.nome || orcamentoSelecionado.cliente?.nome || "N/A"}</p>
               <p><strong className="text-foreground">Status:</strong> {orcamentoSelecionado.status}</p>
               <p><strong className="text-foreground">Valor Total:</strong> R$ {Number(orcamentoSelecionado.valorTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
               <p><strong className="text-foreground">Validade:</strong> {new Date(orcamentoSelecionado.validade).toLocaleDateString("pt-BR")}</p>

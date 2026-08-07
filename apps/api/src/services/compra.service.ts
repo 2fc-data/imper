@@ -24,7 +24,7 @@ export const compraService = {
     const compra = await prisma.compra.findUnique({
       where: { id },
       include: {
-        ordemServico: { include: { cliente: true, contato: true } },
+        ordemServico: { include: { cliente: true, atendimento: { select: { id: true } } } },
         criadoPor: { select: { id: true, nome: true } },
         aprovadoPor: { select: { id: true, nome: true } },
         itens: { include: { material: { include: { saldo: true } } } },

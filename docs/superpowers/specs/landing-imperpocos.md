@@ -62,7 +62,7 @@ Dark mode via `@custom-variant dark (&:where(.dark, .dark *));`.
 
 ## Landing (`src/pages/LandingPage.tsx`)
 
-Seções: Header (logo + "Área do cliente"), Hero (badge +20 anos, título, CTA WhatsApp), Serviços/Especialidades (4 cards), Como trabalhamos (4 etapas), Área de atuação (chips), Contato (WhatsApp, telefone, e-mail, endereço, horário) e Rodapé (© 2026 + Facebook). Cores: primary quase-preto, secondary azul-claro (CTAs), accent azul (destaques).
+Seções: Header (logo + "Office"), Hero (badge +20 anos, título, CTA WhatsApp), Serviços/Especialidades (4 cards), Como trabalhamos (4 etapas), Área de atuação (chips), Contato (WhatsApp, telefone, e-mail, endereço, horário) e Rodapé (© 2026 + Facebook). Cores: primary quase-preto, secondary azul-claro (CTAs), accent azul (destaques).
 
 ## Arquivos tocados
 

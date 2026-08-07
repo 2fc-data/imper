@@ -9,29 +9,59 @@ export const loginSchema = z.object({
   senha: z.string().min(1),
 });
 
-export const contatoSchema = z.object({
+export const clienteSchema = z.object({
   nome: z.string().min(1).max(120),
   telefone: z.string().min(8).max(20),
   email: z.string().email().optional().nullable(),
-  endereco: z.string().max(255).optional().nullable(),
+});
+
+export const enderecoSchema = z.object({
+  logradouro: z.string().min(1).max(255),
+  numero: z.string().max(20).optional().nullable(),
+  complemento: z.string().max(100).optional().nullable(),
+  bairro: z.string().max(100).optional().nullable(),
+  cidade: z.string().max(100).optional().nullable(),
+  estado: z.string().length(2).optional().nullable(),
+  cep: z.string().max(9).optional().nullable(),
+  rotulo: z.enum(["RESIDENCIAL", "OBRA"]).optional().nullable(),
+  principal: z.boolean().optional().nullable(),
+});
+
+export const atendimentoSchema = z.object({
+  clienteId: optionalId,
   canal: z.enum(["WHATSAPP", "FORMULARIO", "LOJA", "TELEFONE"]),
-  tipo: z.enum(["DUVIDA", "AGENDAR_VISITA", "COMPRA_MATERIAL", "COMPRA_EQUIPAMENTO"]),
+  motivo: z.enum(["DUVIDA", "AGENDAR_VISITA", "COMPRAR_MATERIAL", "COMPRAR_EQUIPAMENTO"]),
   urgencia: z.enum(["NORMAL", "URGENTE", "URGENTISSIMO"]).optional().nullable(),
   descricao: z.string().max(1000).optional().nullable(),
 });
 
+export const atendimentoPublicoSchema = z.object({
+  nome: z.string().min(1).max(120),
+  telefone: z.string().min(8).max(20),
+  email: z.string().email().optional().nullable(),
+  motivo: z.enum(["DUVIDA", "AGENDAR_VISITA", "COMPRAR_MATERIAL", "COMPRAR_EQUIPAMENTO"]),
+  mensagem: z.string().max(1000).optional().nullable(),
+  logradouro: z.string().min(1).max(255),
+  numero: z.string().max(20).optional().nullable(),
+  complemento: z.string().max(100).optional().nullable(),
+  bairro: z.string().max(100).optional().nullable(),
+  cidade: z.string().max(100).optional().nullable(),
+  estado: z.string().length(2).optional().nullable(),
+  cep: z.string().max(9).optional().nullable(),
+  turnstileToken: z.string().min(1),
+});
+
 export const visitaSchema = z.object({
-  contatoId: id,
+  atendimentoId: id,
   dataPrevista: z.coerce.date().optional(),
   tecnicoId: optionalId,
-  endereco: z.string().max(255).optional().nullable(),
+  enderecoId: optionalId,
   observacoes: z.string().max(1000).optional().nullable(),
 });
 
 export const realizarVisitaSchema = z.object({
   urgencia: z.enum(["NORMAL", "URGENTE", "URGENTISSIMO"]).optional().nullable(),
   relatorio: z.string().max(2000).optional().nullable(),
-  endereco: z.string().max(255).optional().nullable(),
 });
 
 export const orcamentoItemSchema = z.object({
@@ -44,7 +74,7 @@ export const orcamentoItemSchema = z.object({
 });
 
 export const orcamentoSchema = z.object({
-  visitaId: id,
+  atendimentoId: id,
   urgencia: z.enum(["NORMAL", "URGENTE", "URGENTISSIMO"]),
   itens: z.array(orcamentoItemSchema).min(1),
   observacoes: z.string().max(2000).optional().nullable(),
@@ -106,7 +136,6 @@ export const vendaItemSchema = z.object({
 });
 
 export const vendaSchema = z.object({
-  contatoId: optionalId,
   clienteId: optionalId,
   itens: z.array(vendaItemSchema).min(1),
   formaPagamento: z.enum([
@@ -186,7 +215,10 @@ export const servicoItemSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
-export type ContatoInput = z.infer<typeof contatoSchema>;
+export type ClienteInput = z.infer<typeof clienteSchema>;
+export type EnderecoInput = z.infer<typeof enderecoSchema>;
+export type AtendimentoInput = z.infer<typeof atendimentoSchema>;
+export type AtendimentoPublicoInput = z.infer<typeof atendimentoPublicoSchema>;
 export type VisitaInput = z.infer<typeof visitaSchema>;
 export type RealizarVisitaInput = z.infer<typeof realizarVisitaSchema>;
 export type OrcamentoInput = z.infer<typeof orcamentoSchema>;

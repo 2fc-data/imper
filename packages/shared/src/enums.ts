@@ -9,30 +9,35 @@ export const Papel = {
 } as const;
 export type Papel = (typeof Papel)[keyof typeof Papel];
 
-export const CanalContato = {
+export const CanalAtendimento = {
   WHATSAPP: "WHATSAPP",
   FORMULARIO: "FORMULARIO",
   LOJA: "LOJA",
   TELEFONE: "TELEFONE",
 } as const;
-export type CanalContato = (typeof CanalContato)[keyof typeof CanalContato];
+export type CanalAtendimento = (typeof CanalAtendimento)[keyof typeof CanalAtendimento];
 
-export const TipoContato = {
+export const MotivoAtendimento = {
   DUVIDA: "DUVIDA",
   AGENDAR_VISITA: "AGENDAR_VISITA",
-  COMPRA_MATERIAL: "COMPRA_MATERIAL",
-  COMPRA_EQUIPAMENTO: "COMPRA_EQUIPAMENTO",
+  COMPRAR_MATERIAL: "COMPRAR_MATERIAL",
+  COMPRAR_EQUIPAMENTO: "COMPRAR_EQUIPAMENTO",
 } as const;
-export type TipoContato = (typeof TipoContato)[keyof typeof TipoContato];
+export type MotivoAtendimento = (typeof MotivoAtendimento)[keyof typeof MotivoAtendimento];
 
-export const StatusContato = {
+export const StatusAtendimento = {
   NOVO: "NOVO",
   EM_ANDAMENTO: "EM_ANDAMENTO",
-  ENCAMINHADO: "ENCAMINHADO",
   CONCLUIDO: "CONCLUIDO",
   INATIVO: "INATIVO",
 } as const;
-export type StatusContato = (typeof StatusContato)[keyof typeof StatusContato];
+export type StatusAtendimento = (typeof StatusAtendimento)[keyof typeof StatusAtendimento];
+
+export const EnderecoRotulo = {
+  RESIDENCIAL: "RESIDENCIAL",
+  OBRA: "OBRA",
+} as const;
+export type EnderecoRotulo = (typeof EnderecoRotulo)[keyof typeof EnderecoRotulo];
 
 export const Urgencia = {
   NORMAL: "NORMAL",

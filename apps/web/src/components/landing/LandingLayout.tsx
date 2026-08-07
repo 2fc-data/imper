@@ -73,14 +73,14 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               to="/login"
               className="hidden rounded-lg px-3 py-2 text-sm font-medium 35% 0.010 240transition-colors hover:text-primary lg:block"
             >
-              Área do cliente
+              Office
             </Link>
             <button
               type="button"
               aria-label="Abrir menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg 35% 0.010 240transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg 35% 0.010 240 transition-colors hover:bg-accent hover:text-foreground lg:hidden"
             >
               {menuOpen ? (
                 <svg
@@ -162,7 +162,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                       onClick={() => setMenuOpen(false)}
                       className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent/40 transition-colors"
                     >
-                      Área do cliente
+                      Office
                     </Link>
                   </li>
                 </ul>
@@ -248,7 +248,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                   to="/login"
                   className="text-sm 35% 0.010 240transition-colors hover:text-secondary"
                 >
-                  Área do cliente
+                  Office
                 </Link>
               </li>
             </ul>

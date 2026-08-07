@@ -77,8 +77,8 @@ const icone = (d: string) => (
 export function DashboardSidebar() {
   return (
     <>
-      <SidebarLink to="/contatos" icon={icone("M12 3a3 3 0 100 6 3 3 0 000-6zM8 21v-2a4 4 0 018 0v2")}>
-        Novo contato
+      <SidebarLink to="/atendimentos" icon={icone("M12 3a3 3 0 100 6 3 3 0 000-6zM8 21v-2a4 4 0 018 0v2")}>
+        Novo atendimento
       </SidebarLink>
       <SidebarLink
         to="/orcamentos"
@@ -190,7 +190,7 @@ export function EmBreveSidebar({ texto }: { texto: string }) {
   );
 }
 
-export function ContatosSidebar({
+export function AtendimentosSidebar({
   viewAtiva,
   onNavegar,
 }: {
@@ -211,14 +211,14 @@ export function ContatosSidebar({
         onClick={() => onNavegar("lista")}
         icon={icone("M4 6h16M4 10h16M4 14h16M4 18h16")}
       >
-        Lista de Contatos
+        Lista de Atendimentos
       </SidebarButton>
       <SidebarButton
         active={viewAtiva === "novo"}
         onClick={() => onNavegar("novo")}
         icon={icone("M12 4v16m8-8H4")}
       >
-        Novo Contato
+        Novo Atendimento
       </SidebarButton>
       <div className="pt-4 border-t border-border mt-4">
         <SidebarLink to="/painel" icon={icone("M19 12H5M12 19l-7-7 7-7")}>

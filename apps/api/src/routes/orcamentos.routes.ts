@@ -29,7 +29,13 @@ router.get("/", authMiddleware(...perfil), wrap(async (req, res) => {
 
 router.post("/", authMiddleware("ADMIN", "SUPERVISOR", "TECNICO"), wrap(async (req, res) => {
   const body = parseBody(
-    z.object({ visitaId: z.number().int().positive(), observacoes: z.string().optional(), itens: z.array(schemaItem).min(1) }),
+    z.object({
+      atendimentoId: z.number().int().positive(),
+      visitaId: z.number().int().positive().optional(),
+      enderecoId: z.number().int().positive().optional(),
+      observacoes: z.string().optional(),
+      itens: z.array(schemaItem).min(1),
+    }),
     req.body,
   );
   res.status(201).json(await orcamentoService.criar(body, toCtx(req.user!)));

@@ -1,6 +1,22 @@
 import { prisma } from "../db";
 
 export const clienteService = {
+  async buscar(q: string) {
+    return prisma.cliente.findMany({
+      where: { nome: { contains: q } },
+      select: {
+        id: true,
+        nome: true,
+        cpfCnpj: true,
+        telefone: true,
+        email: true,
+        enderecos: true,
+      },
+      orderBy: { nome: "asc" },
+      take: 20,
+    });
+  },
+
   async me(userId: number) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -17,7 +33,7 @@ export const clienteService = {
             cpfCnpj: true,
             telefone: true,
             email: true,
-            endereco: true,
+            enderecos: { select: { id: true, logradouro: true, numero: true, bairro: true, cidade: true, estado: true, rotulo: true, principal: true } },
           },
         },
       },

@@ -16,14 +16,14 @@ export const osService = {
         OR: filtro.q
           ? [
               { codigo: { contains: filtro.q } },
-              { contato: { nome: { contains: filtro.q } } },
+              { atendimento: { cliente: { nome: { contains: filtro.q } } } },
               { cliente: { nome: { contains: filtro.q } } },
             ]
           : undefined,
       },
       include: {
         cliente: { select: { id: true, nome: true } },
-        contato: { select: { id: true, nome: true } },
+        atendimento: { select: { id: true } },
         orcamento: { select: { codigo: true, valorTotal: true } },
         tecnicoResponsavel: { select: { id: true, nome: true } },
         _count: { select: { fases: true, pagamentos: true } },
@@ -37,7 +37,7 @@ export const osService = {
       where: { id },
       include: {
         cliente: true,
-        contato: true,
+        atendimento: { select: { id: true } },
         orcamento: { include: { itens: true } },
         tecnicoResponsavel: { select: { id: true, nome: true } },
         aprovadoPor: { select: { id: true, nome: true } },
@@ -202,10 +202,10 @@ export const osService = {
         where: { id },
         data: { status: "CANCELADO", motivoRejeicao: motivo },
       });
-      if (os.contatoId) {
-        await tx.contato.update({
-          where: { id: os.contatoId },
-          data: { status: "ENCAMINHADO" },
+      if (os.atendimentoId) {
+        await tx.atendimento.update({
+          where: { id: os.atendimentoId },
+          data: { status: "INATIVO" },
         });
       }
       return atualizada;

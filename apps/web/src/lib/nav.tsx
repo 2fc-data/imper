@@ -45,8 +45,8 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    to: "/contatos",
-    label: "Contatos",
+    to: "/atendimentos",
+    label: "Atendimentos",
     icon: <Icon d="M12 3a3 3 0 100 6 3 3 0 000-6zM8 21v-2a4 4 0 018 0v2" />,
     roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE],
   },

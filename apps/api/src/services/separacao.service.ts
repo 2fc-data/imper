@@ -53,7 +53,7 @@ export const separacaoService = {
     const separacao = await prisma.separacao.findUnique({
       where: { id },
       include: {
-        faseOs: { include: { ordemServico: { include: { cliente: true, contato: true } } } },
+        faseOs: { include: { ordemServico: { include: { cliente: true, atendimento: { select: { id: true } } } } } },
         itens: { include: { material: { include: { saldo: true } } } },
       },
     });

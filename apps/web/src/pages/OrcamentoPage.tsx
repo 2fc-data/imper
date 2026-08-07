@@ -1,5 +1,5 @@
-import { useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { m, useInView } from "framer-motion";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -13,8 +13,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { cn } from "../lib/utils";
-import { solicitarOrcamento } from "../lib/api";
-import { useServicos } from "../lib/useServicos";
+import { solicitarOrcamento, type MotivoAtendimento } from "../lib/api";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 
 const selectClasses =
@@ -23,14 +22,21 @@ const selectClasses =
 const textareaClasses =
   "flex min-h-[110px] w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
+const MOTIVOS: { valor: MotivoAtendimento; rotulo: string }[] = [
+  { valor: "DUVIDA", rotulo: "Dúvida" },
+  { valor: "AGENDAR_VISITA", rotulo: "Agendar visita" },
+  { valor: "COMPRAR_MATERIAL", rotulo: "Comprar material" },
+  { valor: "COMPRAR_EQUIPAMENTO", rotulo: "Comprar equipamento" },
+];
+
 export default function OrcamentoPage() {
-  const { servicos, loading: loadingServicos } = useServicos();
+  const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, VIEWPORT);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const [servico, setServico] = useState("");
+  const [motivo, setMotivo] = useState<MotivoAtendimento | "">("");
   const [mensagem, setMensagem] = useState("");
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -44,6 +50,12 @@ export default function OrcamentoPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [enviado, setEnviado] = useState(false);
+
+  useEffect(() => {
+    if (!enviado) return;
+    const timer = setTimeout(() => navigate("/"), 5000);
+    return () => clearTimeout(timer);
+  }, [enviado, navigate]);
 
   async function buscarCep(digitos: string) {
     if (!/^\d{8}$/.test(digitos)) return;
@@ -83,7 +95,7 @@ export default function OrcamentoPage() {
         nome,
         telefone,
         email: email || undefined,
-        servico: servico || undefined,
+        motivo: motivo || undefined,
         mensagem: mensagem || undefined,
         cep: cep || undefined,
         endereco: endereco || undefined,
@@ -116,7 +128,7 @@ export default function OrcamentoPage() {
               Contato recebido!
             </h2>
             <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-              Nossa equipe entrará em contato pelo telefone informado o mais rápido possível.
+              Nossa equipe entrará em contato o mais rápido possível.
             </p>
             <Link
               to="/"
@@ -124,6 +136,9 @@ export default function OrcamentoPage() {
             >
               Voltar ao início
             </Link>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Redirecionando em 5 segundos...
+            </p>
           </m.div>
         </div>
       </section>
@@ -134,7 +149,7 @@ export default function OrcamentoPage() {
     <section className="border-y bg-card/60 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Formulário para contato
+          Entre em Contato
         </h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Preencha o formulário com o serviço desejado.
@@ -149,7 +164,7 @@ export default function OrcamentoPage() {
           <m.div variants={fadeUp} className="w-full">
             <Card className="w-full">
               <CardHeader>
-                <CardTitle className="text-xl">Solicitação de orçamento</CardTitle>
+                <CardTitle className="text-xl">Formulário para atendimento</CardTitle>
                 <CardDescription>
                   Os campos marcados com * são obrigatórios.
                 </CardDescription>
@@ -195,28 +210,23 @@ export default function OrcamentoPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="servico">
-                      Serviço <span className="text-destructive">*</span>
+                    <Label htmlFor="motivo">
+                      Motivo do Contato <span className="text-destructive">*</span>
                     </Label>
                     <select
-                      id="servico"
+                      id="motivo"
                       required
                       className={cn(selectClasses)}
-                      value={servico}
-                      onChange={(e) => setServico(e.target.value)}
+                      value={motivo}
+                      onChange={(e) => setMotivo(e.target.value as MotivoAtendimento)}
                     >
-                      <option value="">Selecione um serviço...</option>
-                      {servicos.map((s) => (
-                        <option key={s.id} value={s.titulo}>
-                          {s.titulo}
+                      <option value="">Selecione o motivo...</option>
+                      {MOTIVOS.map((m) => (
+                        <option key={m.valor} value={m.valor}>
+                          {m.rotulo}
                         </option>
                       ))}
                     </select>
-                    {loadingServicos && (
-                      <p className="text-xs text-muted-foreground">
-                        Carregando serviços...
-                      </p>
-                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cep">CEP (Local da visita técnica)</Label>
@@ -329,7 +339,7 @@ export default function OrcamentoPage() {
                     </p>
                   )}
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Enviando..." : "Solicitar orçamento"}
+                    {loading ? "Enviando..." : "Enviar mensagem"}
                   </Button>
                 </form>
               </CardContent>

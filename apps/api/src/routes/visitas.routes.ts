@@ -20,11 +20,11 @@ router.get("/", authMiddleware(...perfil), wrap(async (req, res) => {
 router.post("/", authMiddleware("ADMIN", "SUPERVISOR", "ATENDENTE"), wrap(async (req, res) => {
   const body = parseBody(
     z.object({
-      contatoId: z.number().int().positive(),
+      atendimentoId: z.number().int().positive(),
       tecnicoId: z.number().int().positive(),
       dataPrevista: z.string().optional(),
       urgencia: z.nativeEnum(Urgencia).optional(),
-      endereco: z.string().optional(),
+      enderecoId: z.number().int().positive().optional(),
     }),
     req.body,
   );
@@ -36,7 +36,6 @@ router.post("/:id/realizar", authMiddleware("ADMIN", "SUPERVISOR", "TECNICO"), w
   const body = parseBody(
     z.object({
       relatorio: z.string().optional(),
-      endereco: z.string().optional(),
       urgencia: z.nativeEnum(Urgencia).optional(),
     }),
     req.body,

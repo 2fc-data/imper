@@ -2,9 +2,9 @@ import { prisma } from "../db";
 
 export const dashboardService = {
   async resumo() {
-    const [contatosNovos, osAguardando, osAgendadas, osAndamento, orcamentosAbertos, comprasPendentes, materiaisBaixo] =
+    const [atendimentosNovos, osAguardando, osAgendadas, osAndamento, orcamentosAbertos, comprasPendentes, materiaisBaixo] =
       await Promise.all([
-        prisma.contato.count({ where: { status: "NOVO" } }),
+        prisma.atendimento.count({ where: { status: "NOVO" } }),
         prisma.ordemServico.count({ where: { status: "AGUARDANDO_APROVACAO" } }),
         prisma.ordemServico.count({ where: { status: "AGENDADO" } }),
         prisma.ordemServico.count({ where: { status: "EM_ANDAMENTO" } }),
@@ -19,7 +19,7 @@ export const dashboardService = {
       (m) => m.saldo && Number(m.saldo.saldo) <= Number(m.quantidadeMinima ?? 0),
     );
     return {
-      contatosNovos,
+      atendimentosNovos,
       osAguardando,
       osAgendadas,
       osAndamento,

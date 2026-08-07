@@ -21,26 +21,35 @@ enum Papel {
   CLIENTE
 }
 
-enum CanalContato {
+enum CanalAtendimento {
   WHATSAPP
   FORMULARIO
   LOJA
   TELEFONE
 }
 
-enum TipoContato {
+enum MotivoAtendimento {
   DUVIDA
   AGENDAR_VISITA
-  COMPRA_MATERIAL
-  COMPRA_EQUIPAMENTO
+  COMPRAR_MATERIAL
+  COMPRAR_EQUIPAMENTO
 }
 
-enum StatusContato {
+enum StatusAtendimento {
   NOVO
   EM_ANDAMENTO
-  ENCAMINHADO
   CONCLUIDO
   INATIVO
+}
+
+enum TipoAtendimento {
+  TEXTO
+  STATUS
+}
+
+enum EnderecoRotulo {
+  RESIDENCIAL
+  OBRA
 }
 
 enum Urgencia {
@@ -195,7 +204,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  atendimentos        Contato[]            @relation("ContatoAtendente")
+  atendimentos         Atendimento[]       @relation("AtendimentoAtendente")
+  atendimentosLog      AtendimentoLog[]    @relation("AtendimentoLogAtendente")
   visitas             VisitaTecnica[]      @relation("TecnicoVisita")
   osExecutadas        OrdemServico[]       @relation("TecnicoOS")
   osAprovadas         OrdemServico[]       @relation("AprovadorOS")
@@ -244,43 +254,75 @@ model Cliente {
   cpfCnpj   String?  @unique @db.VarChar(20)
   telefone  String?  @db.VarChar(20)
   email     String?  @db.VarChar(120)
-  endereco  String?  @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  contatos  Contato[]
-  acessos   AcessoCliente[]
-  vendas    Venda[]
-  os        OrdemServico[]
-  usuario   User?
+  atendimentos Atendimento[]
+  enderecos    Endereco[]
+  acessos      AcessoCliente[]
+  vendas       Venda[]
+  orcamentos   Orcamento[]
+  os           OrdemServico[]
+  usuario      User?
 }
 
-model Contato {
-  id         Int           @id @default(autoincrement())
-  nome       String        @db.VarChar(120)
-  telefone   String        @db.VarChar(20)
-  email      String?       @db.VarChar(120)
-  endereco   String?       @db.VarChar(255)
-  cep        String?       @db.VarChar(9)
-  bairro     String?       @db.VarChar(120)
-  cidade     String?       @db.VarChar(120)
-  estado     String?       @db.VarChar(2)
-  numero     String?       @db.VarChar(10)
-  complemento String?      @db.VarChar(120)
-  canal      CanalContato
-  tipo       TipoContato
-  urgencia   Urgencia?
-  status     StatusContato @default(NOVO)
-  descricao  String?       @db.VarChar(1000)
-  clienteId  Int?
-  cliente    Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+model Atendimento {
+  id          Int           @id @default(autoincrement())
+  canal       CanalAtendimento
+  motivo      MotivoAtendimento
+  urgencia    Urgencia?
+  status      StatusAtendimento @default(NOVO)
+  descricao   String?       @db.VarChar(1000)
+  clienteId   Int?
+  cliente     Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
   atendenteId Int?
-  atendente  User?         @relation("ContatoAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
-  visitas    VisitaTecnica[]
-  vendas     Venda[]
-  os         OrdemServico[]
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  atendente   User?         @relation("AtendimentoAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
+  logs        AtendimentoLog[]
+  visitas     VisitaTecnica[]
+  vendas      Venda[]
+  orcamentos  Orcamento[]
+  os          OrdemServico[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("atendimentos")
+}
+
+model AtendimentoLog {
+  id            Int              @id @default(autoincrement())
+  atendimentoId Int
+  atendimento   Atendimento      @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
+  atendenteId   Int?
+  atendente     User?            @relation("AtendimentoLogAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
+  tipo          TipoAtendimento  @default(TEXTO)
+  descricao     String?          @db.VarChar(1000)
+  statusDe      StatusAtendimento?
+  statusPara    StatusAtendimento?
+  createdAt     DateTime         @default(now())
+
+  @@map("atendimento_logs")
+}
+
+model Endereco {
+  id          Int            @id @default(autoincrement())
+  clienteId   Int
+  cliente     Cliente        @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  rotulo      EnderecoRotulo @default(RESIDENCIAL)
+  logradouro  String         @db.VarChar(255)
+  numero      String?        @db.VarChar(10)
+  complemento String?        @db.VarChar(120)
+  bairro      String?        @db.VarChar(120)
+  cidade      String?        @db.VarChar(120)
+  estado      String?        @db.VarChar(2)
+  cep         String?        @db.VarChar(9)
+  principal   Boolean        @default(false)
+  orcamentos  Orcamento[]
+  visitas     VisitaTecnica[]
+  os          OrdemServico[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("enderecos")
 }
 
 model ServicoMarketing {
@@ -312,15 +354,16 @@ model CidadeAtendida {
 
 model VisitaTecnica {
   id           Int          @id @default(autoincrement())
-  contatoId    Int
-  contato      Contato      @relation(fields: [contatoId], references: [id], onDelete: Cascade)
+  atendimentoId Int
+  atendimento  Atendimento  @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
   tecnicoId    Int?
   tecnico      User?        @relation("TecnicoVisita", fields: [tecnicoId], references: [id], onDelete: SetNull)
   dataPrevista DateTime
   dataRealizada DateTime?
   status       StatusVisita @default(AGENDADA)
   urgencia     Urgencia?
-  endereco     String?      @db.VarChar(255)
+  enderecoId   Int?
+  endereco     Endereco?    @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
   relatorio    String?      @db.VarChar(2000)
   fotos        FotosVisita[]
   orcamentos   Orcamento[]
@@ -376,8 +419,14 @@ model ServicoItem {
 model Orcamento {
   id             Int            @id @default(autoincrement())
   codigo         String         @unique @db.VarChar(20)
-  visitaId       Int
-  visita         VisitaTecnica  @relation(fields: [visitaId], references: [id], onDelete: Restrict)
+  atendimentoId  Int
+  atendimento    Atendimento    @relation(fields: [atendimentoId], references: [id], onDelete: Restrict)
+  visitaId       Int?
+  visita         VisitaTecnica? @relation(fields: [visitaId], references: [id], onDelete: Restrict)
+  clienteId      Int?
+  cliente        Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  enderecoId     Int?
+  endereco       Endereco?      @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
   urgencia       Urgencia
   status         StatusOrcamento @default(RASCUNHO)
   valorTotal     Decimal        @default(0) @db.Decimal(12, 2)
@@ -397,6 +446,8 @@ model Orcamento {
   ordemServico   OrdemServico?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+
+  @@index([atendimentoId])
 }
 
 model OrcamentoItem {
@@ -426,12 +477,13 @@ model OrdemServico {
   orcamento          Orcamento      @relation(fields: [orcamentoId], references: [id], onDelete: Restrict)
   clienteId          Int?
   cliente            Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  contatoId          Int?
-  contato            Contato?       @relation(fields: [contatoId], references: [id], onDelete: SetNull)
+  atendimentoId      Int?
+  atendimento        Atendimento?   @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
   urgencia           Urgencia
   status             StatusOS       @default(AGUARDANDO_APROVACAO)
   valorTotal         Decimal        @default(0) @db.Decimal(12, 2)
-  endereco           String?        @db.VarChar(255)
+  enderecoId         Int?
+  endereco           Endereco?      @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
   dataInicioPrevista DateTime?
   dataInicioReal     DateTime?
   dataFimReal        DateTime?
@@ -641,8 +693,8 @@ model CompraItem {
 model Venda {
   id              Int           @id @default(autoincrement())
   codigo          String        @unique @db.VarChar(20)
-  contatoId       Int?
-  contato         Contato?      @relation(fields: [contatoId], references: [id], onDelete: SetNull)
+  atendimentoId   Int?
+  atendimento     Atendimento?  @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
   clienteId       Int?
   cliente         Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
   ordemServicoId  Int?

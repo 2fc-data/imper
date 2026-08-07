@@ -6,7 +6,7 @@ import { fadeUp, stagger } from "../lib/motion";
 import { cn } from "../lib/utils";
 
 interface DashboardResumo {
-  contatosNovos: number;
+  atendimentosNovos: number;
   orcamentosAbertos: number;
   osAndamento: number;
   baixaEstoque: number;
@@ -111,9 +111,9 @@ export default function DashboardPage() {
 
   const itens = [
     {
-      label: "Contatos novos",
-      value: resumo?.contatosNovos,
-      to: "/contatos",
+      label: "Atendimentos novos",
+      value: resumo?.atendimentosNovos,
+      to: "/atendimentos",
       tendencia: "primario" as Tendencia,
       icon: icone("M12 3a3 3 0 100 6 3 3 0 000-6zM8 21v-2a4 4 0 018 0v2"),
     },

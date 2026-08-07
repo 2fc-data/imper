@@ -9,7 +9,7 @@ import { errorHandler, notFoundHandler } from "./lib/errors";
 
 import authRoutes from "./routes/auth.routes";
 import usuariosRoutes from "./routes/usuarios.routes";
-import contatosRoutes from "./routes/contatos.routes";
+import atendimentosRoutes from "./routes/atendimentos.routes";
 import visitasRoutes from "./routes/visitas.routes";
 import orcamentosRoutes from "./routes/orcamentos.routes";
 import osRoutes from "./routes/os.routes";
@@ -38,7 +38,7 @@ app.use("/uploads", express.static(config.uploadsDir));
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
-app.use("/contatos", contatosRoutes);
+app.use("/atendimentos", atendimentosRoutes);
 app.use("/visitas", visitasRoutes);
 app.use("/orcamentos", orcamentosRoutes);
 app.use("/os", osRoutes);
