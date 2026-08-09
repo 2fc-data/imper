@@ -41,22 +41,22 @@ export function OSAnalises({ osList }: OSAnalisesProps) {
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-amber-600 dark:text-amber-400">Aguardando Aprovação</p>
+          <p className="text-xs font-medium text-warning">Aguardando Aprovação</p>
           <p className="mt-2 text-2xl font-bold">{aguardandoAprovacao}</p>
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Agendadas / Em Separação</p>
+          <p className="text-xs font-medium text-info">Agendadas / Em Separação</p>
           <p className="mt-2 text-2xl font-bold">{agendadas}</p>
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400">Em Andamento</p>
+          <p className="text-xs font-medium text-accent">Em Andamento</p>
           <p className="mt-2 text-2xl font-bold">{emAndamento}</p>
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Concluídas / Entregues</p>
+          <p className="text-xs font-medium text-success">Concluídas / Entregues</p>
           <p className="mt-2 text-2xl font-bold">{concluidas}</p>
           <p className="text-xs text-muted-foreground mt-1">{canceladas} canceladas</p>
         </div>
@@ -169,14 +169,14 @@ export function OSList({
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         item.status === "AGUARDANDO_APROVACAO"
-                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                          ? "bg-warning/15 text-warning dark:bg-warning/20 dark:text-warning"
                           : item.status === "EM_ANDAMENTO"
-                          ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300"
+                          ? "bg-accent/15 text-accent dark:bg-accent/20 dark:text-accent"
                           : item.status === "CONCLUIDO" || item.status === "ENTREGUE" || item.status === "CONFIRMADO"
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                          ? "bg-success/15 text-success dark:bg-success/20 dark:text-success"
                           : item.status === "CANCELADO"
-                          ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300"
-                          : "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                          ? "bg-destructive/15 text-destructive dark:bg-destructive/20 dark:text-destructive"
+                          : "bg-info/15 text-info dark:bg-info/20 dark:text-info"
                       }`}
                     >
                       {item.status}
@@ -200,7 +200,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onAprovar(item.id)}
-                          className="rounded-md bg-emerald-600 px-2 py-1 text-xs font-medium text-white hover:bg-emerald-700 transition-colors"
+                          className="rounded-md bg-success px-2 py-1 text-xs font-medium text-white hover:bg-success/90 transition-colors"
                         >
                           Aprovar
                         </button>
@@ -209,7 +209,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onIniciar(item.id)}
-                          className="rounded-md bg-indigo-600 px-2 py-1 text-xs font-medium text-white hover:bg-indigo-700 transition-colors"
+                          className="rounded-md bg-accent px-2 py-1 text-xs font-medium text-white hover:bg-accent/90 transition-colors"
                         >
                           Iniciar
                         </button>
@@ -218,7 +218,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onConcluir(item.id)}
-                          className="rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
+                          className="rounded-md bg-info px-2 py-1 text-xs font-medium text-white hover:bg-info/90 transition-colors"
                         >
                           Concluir
                         </button>
@@ -227,7 +227,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onCancelar(item.id)}
-                          className="rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-100 transition-colors"
+                          className="rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors"
                         >
                           Cancelar
                         </button>

@@ -11,7 +11,7 @@ export default function ContatoPage() {
   const inView = useInView(cardRef, VIEWPORT);
 
   return (
-    <section id="contato" className="bg-card/60 py-12 my-16 sm:py-16 sm:my-24">
+    <section id="contato" className="bg-white py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Canais de atendimento
@@ -105,7 +105,14 @@ export default function ContatoPage() {
               Endereço
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Rua São Paulo, 511 — Centro
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-accent"
+              >
+                Rua São Paulo, 511 — Centro
+              </a>
               <br />
               Poços de Caldas/MG
             </p>

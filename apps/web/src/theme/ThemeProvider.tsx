@@ -39,7 +39,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const meta = document.querySelector<HTMLMetaElement>(
       'meta[name="theme-color"]',
     );
-    if (meta) meta.content = theme === "dark" ? "#211b15" : "#f7f1e3";
+    if (meta) {
+      const bg = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-background")
+        .trim();
+      if (bg) meta.content = bg;
+    }
   }, [theme]);
 
   useEffect(() => {

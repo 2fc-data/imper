@@ -47,7 +47,7 @@ export function OrcamentosAnalises({ orcamentos }: OrcamentosAnalisesProps) {
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Total Aprovado</p>
+          <p className="text-xs font-medium text-success">Total Aprovado</p>
           <p className="mt-2 text-2xl font-bold">
             R$ {valorAprovadoSum.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </p>
@@ -55,13 +55,13 @@ export function OrcamentosAnalises({ orcamentos }: OrcamentosAnalisesProps) {
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Aguardando Envio/Aprovação</p>
+          <p className="text-xs font-medium text-info">Aguardando Envio/Aprovação</p>
           <p className="mt-2 text-2xl font-bold">{rascunho + enviados}</p>
           <p className="text-xs text-muted-foreground mt-1">{rascunho} rascunho / {enviados} enviados</p>
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-rose-600 dark:text-rose-400">Recusados / Expirados</p>
+          <p className="text-xs font-medium text-destructive">Recusados / Expirados</p>
           <p className="mt-2 text-2xl font-bold">{recusados}</p>
         </div>
       </div>
@@ -167,14 +167,14 @@ export function OrcamentoList({
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         item.status === "RASCUNHO"
-                          ? "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300"
+                          ? "bg-muted text-muted-foreground"
                           : item.status === "ENVIADO"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                          ? "bg-info/15 text-info dark:bg-info/20 dark:text-info"
                           : item.status === "APROVADO"
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                          ? "bg-success/15 text-success dark:bg-success/20 dark:text-success"
                           : item.status === "RECUSADO" || item.status === "CANCELADO"
-                          ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300"
-                          : "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                          ? "bg-destructive/15 text-destructive dark:bg-destructive/20 dark:text-destructive"
+                          : "bg-warning/15 text-warning dark:bg-warning/20 dark:text-warning"
                       }`}
                     >
                       {item.status}
@@ -196,7 +196,7 @@ export function OrcamentoList({
                         <button
                           type="button"
                           onClick={() => onEnviar(item.id)}
-                          className="rounded-md border border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/40 px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors"
+                          className="rounded-md border border-info/30 bg-info/10 px-2.5 py-1 text-xs font-medium text-info hover:bg-info/20 transition-colors"
                         >
                           Enviar
                         </button>
@@ -273,7 +273,7 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
       </div>
 
       {erro && (
-        <div className="rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 p-3 text-sm text-rose-700 dark:text-rose-300">
+        <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-3 text-sm text-destructive">
           {erro}
         </div>
       )}
@@ -356,7 +356,7 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
                 <button
                   type="button"
                   onClick={() => removerItem(idx)}
-                  className="text-xs text-rose-500 hover:underline"
+                  className="text-xs text-destructive hover:underline"
                 >
                   Remover
                 </button>

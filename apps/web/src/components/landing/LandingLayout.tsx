@@ -153,7 +153,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     <Link
                       to="/orcamento"
                       onClick={() => setMenuOpen(false)}
-                      className="block text-center rounded-md bg-gold px-4 py-3 text-sm font-semibold text-slate-950 shadow-xs hover:bg-gold-hover transition-all"
+                      className="block text-center rounded-md bg-gold px-4 py-3 text-sm font-semibold text-gold-foreground shadow-xs hover:bg-gold-hover transition-all"
                     >
                       Solicitar Orçamento
                     </Link>
@@ -182,7 +182,14 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               Engenharia em Impermeabilização.
             </p>
             <p className="max-w-xl text-sm">
-              Rua São Paulo, 511 — Centro, Poços de Caldas/MG.
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-accent"
+              >
+                Rua São Paulo, 511 — Centro, Poços de Caldas/MG.
+              </a>
             </p>
           </div>
           <div className="flex flex-col items-center gap-3 text-center sm:items-center">

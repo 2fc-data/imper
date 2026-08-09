@@ -51,19 +51,19 @@ export function AtendimentosAnalises({ atendimentos }: AtendimentosAnalisesProps
           <p className="mt-2 text-2xl font-bold">{total}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Novos</p>
+          <p className="text-xs font-medium text-info">Novos</p>
           <p className="mt-2 text-2xl font-bold">{novos}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-amber-600 dark:text-amber-400">Em Andamento</p>
+          <p className="text-xs font-medium text-warning">Em Andamento</p>
           <p className="mt-2 text-2xl font-bold">{emAndamento}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Concluídos</p>
+          <p className="text-xs font-medium text-success">Concluídos</p>
           <p className="mt-2 text-2xl font-bold">{concluidos}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-rose-600 dark:text-rose-400">Inativos</p>
+          <p className="text-xs font-medium text-destructive">Inativos</p>
           <p className="mt-2 text-2xl font-bold">{inativos}</p>
         </div>
       </div>
@@ -112,7 +112,7 @@ export function AtendimentosAnalises({ atendimentos }: AtendimentosAnalisesProps
                     </div>
                     <div className="h-2 w-full rounded-full bg-accent/40 overflow-hidden">
                       <div
-                        className="h-full bg-amber-500 transition-all"
+                        className="h-full bg-warning transition-all"
                         style={{ width: `${perc}%` }}
                       />
                     </div>
@@ -339,14 +339,14 @@ export function AtendimentoList({
                         }
                         className={`cursor-pointer rounded-md border bg-background px-2 py-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors ${
                           item.status === "NOVO"
-                            ? "border-blue-200 dark:border-blue-900/40 text-blue-800 dark:text-blue-300"
+                            ? "border-info/40 text-info"
                             : item.status === "EM_ANDAMENTO"
-                            ? "border-amber-200 dark:border-amber-900/40 text-amber-800 dark:text-amber-300"
+                            ? "border-warning/40 text-warning"
                             : item.status === "CONCLUIDO"
-                            ? "border-emerald-200 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-300"
+                            ? "border-success/40 text-success"
                             : item.status === "INATIVO"
-                            ? "border-rose-200 dark:border-rose-900/40 text-rose-800 dark:text-rose-300"
-                            : "border-input text-slate-800 dark:text-slate-300"
+                            ? "border-destructive/40 text-destructive"
+                            : "border-input text-muted-foreground"
                         }`}
                       >
                         <option value="NOVO">NOVO</option>
@@ -612,7 +612,7 @@ export function NovoAtendimentoForm({ onSuccess, onCancel }: NovoAtendimentoForm
       </div>
 
       {erro && (
-        <div className="rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 p-3 text-sm text-rose-700 dark:text-rose-300">
+        <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-3 text-sm text-destructive">
           {erro}
         </div>
       )}
