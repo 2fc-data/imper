@@ -67,8 +67,11 @@ export default function ForgotPasswordPage() {
               <Link
                 to="/login"
                 className={cn(
-                  buttonVariants({ className: "w-full" }),
-                  "hover:bg-accent hover:text-accent-foreground",
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  }),
                 )}
               >
                 Voltar para o login
@@ -96,7 +99,9 @@ export default function ForgotPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full hover:bg-accent hover:text-accent-foreground"
+                  variant="secondary"
+                  size="lg"
+                  className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
                   disabled={loading}
                 >
                   {loading ? "Enviando..." : "Enviar link"}
@@ -104,7 +109,13 @@ export default function ForgotPasswordPage() {
               </form>
               <Link
                 to="/login"
-                className="mt-4 flex items-center justify-center gap-1.5 rounded-md border border-input px-3 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                className={cn(
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  }),
+                )}
               >
                 <svg
                   viewBox="0 0 24 24"

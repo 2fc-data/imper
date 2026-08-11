@@ -112,7 +112,9 @@ export default function RegisterPage() {
             )}
             <Button
               type="submit"
-              className="w-full hover:bg-accent hover:text-accent-foreground"
+              variant="secondary"
+              size="lg"
+              className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
               disabled={loading}
             >
               {loading ? "Cadastrando..." : "Criar conta"}
@@ -122,7 +124,7 @@ export default function RegisterPage() {
             Já tem conta?{" "}
             <Link
               to="/login"
-              className="rounded px-1 font-medium text-primary transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="rounded px-1 font-medium text-primary transition-colors hover:text-accent"
             >
               Entrar
             </Link>

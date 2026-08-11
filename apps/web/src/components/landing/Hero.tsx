@@ -14,7 +14,7 @@ export function Hero() {
         src={heroBg}
         alt="Imperpoços engenharia em impermeabilização"
         loading="eager"
-        className="block w-full object-cover transition-opacity dark:opacity-70"
+        className="block w-full object-cover transition-opacity dark:opacity-70 rounded-sm"
         variants={stagger(0.12)}
         initial="hidden"
         animate="visible"
@@ -34,7 +34,7 @@ export function Hero() {
           <Link
             to="/orcamento"
             className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            text-foreground bg-background/90 hover:bg-accent hover:text-accent-foreground
+            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
             Formulário Atendimento
@@ -44,7 +44,7 @@ export function Hero() {
           <Link
             to="/servicos"
             className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            text-foreground bg-background/90 hover:bg-accent hover:text-accent-foreground
+            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
             Nossos Serviços

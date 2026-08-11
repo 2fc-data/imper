@@ -60,8 +60,11 @@ export default function ResetPasswordPage() {
               <Link
                 to="/login"
                 className={cn(
-                  buttonVariants({ className: "w-full" }),
-                  "hover:bg-accent hover:text-accent-foreground",
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  }),
                 )}
               >
                 Ir para o login
@@ -100,7 +103,9 @@ export default function ResetPasswordPage() {
               )}
               <Button
                 type="submit"
-                className="w-full hover:bg-accent hover:text-accent-foreground"
+                variant="secondary"
+                size="lg"
+                className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
                 disabled={loading}
               >
                 {loading ? "Salvando..." : "Redefinir senha"}

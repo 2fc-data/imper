@@ -2,9 +2,10 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Papel } from "@imper/shared";
-import { Button } from "../components/ui/button";
+import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -80,7 +81,9 @@ export default function LoginPage() {
             )}
             <Button
               type="submit"
-              className="w-full hover:bg-accent hover:text-accent-foreground"
+              variant="secondary"
+              size="lg"
+              className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
@@ -89,20 +92,26 @@ export default function LoginPage() {
           <div className="mt-4 flex items-center justify-between text-sm">
             <Link
               to="/cadastro"
-              className="rounded px-1 font-medium text-primary transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="rounded px-1 font-medium text-primary transition-colors hover:text-accent"
             >
               Criar conta
             </Link>
             <Link
               to="/recuperar-senha"
-              className="rounded px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="rounded px-1 text-muted-foreground transition-colors hover:text-accent"
             >
               Esqueci a senha
             </Link>
           </div>
           <Link
             to="/"
-            className="mt-4 flex items-center justify-center gap-1.5 rounded-md border border-input px-3 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+            className={cn(
+              buttonVariants({
+                variant: "secondary",
+                size: "lg",
+                className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+              }),
+            )}
           >
             <svg
               viewBox="0 0 24 24"

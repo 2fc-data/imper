@@ -42,7 +42,7 @@ export default function ContatoPage() {
                   href={`${WHATSAPP_URL}?text=${encodeURIComponent(WHATSAPP_TEXT)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-primary-foreground"
                 >
                   (35) 99999-4663
                 </a>
@@ -53,7 +53,7 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="tel:+553537211674"
-                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-primary-foreground"
                 >
                   (35) 3721-1674
                 </a>
@@ -64,7 +64,7 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="mailto:impershop@imperpocos.com.br"
-                  className="mt-1 block break-all rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="mt-1 block break-all rounded px-1 font-semibold text-secondary transition-colors hover:text-primary-foreground"
                 >
                   impershop@imperpocos.com.br
                 </a>
@@ -74,8 +74,11 @@ export default function ContatoPage() {
               <Link
                 to="/orcamento"
                 className={cn(
-                  buttonVariants({ variant: "secondary", size: "lg" }),
-                  "hover:bg-accent hover:text-accent-foreground",
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  }),
                 )}
               >
                 Orçamento online

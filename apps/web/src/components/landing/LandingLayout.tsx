@@ -47,7 +47,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-x-4 px-4 py-3">
           <Link
             to="/"
-            className="rounded px-1.5 py-0.5 border-b-6 border-double border-primary text-lg font-bold tracking-tight transition-colors hover:text-accent"
+            className="rounded px-1.5 py-0.5 border-b-3 border-primary text-lg font-bold tracking-tight transition-colors hover:text-accent"
           >
             IMPERPOÇOS
           </Link>
@@ -60,7 +60,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     end={link.to === "/"}
                     className={({ isActive }) =>
                       cn(
-                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-accent",
                         isActive && "text-accent",
                       )
                     }
@@ -75,7 +75,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
             <Link
               to="/login"
-              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground lg:block"
+              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-accent lg:block"
             >
               Office
             </Link>
@@ -164,7 +164,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     <Link
                       to="/login"
                       onClick={() => setMenuOpen(false)}
-                      className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                      className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-accent transition-colors hover:text-foreground"
                     >
                       Office
                     </Link>
@@ -190,7 +190,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:text-accent"
               >
                 Rua São Paulo, 511 — Centro
               </a>
@@ -213,7 +213,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.facebook.com/imperpocos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:text-accent"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -229,7 +229,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.instagram.com/imperpocos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:text-accent"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -256,7 +256,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="rounded px-1.5 py-0.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                    className="rounded px-1.5 py-0.5 text-sm transition-colors hover:text-accent"
                   >
                     {link.label}
                   </Link>

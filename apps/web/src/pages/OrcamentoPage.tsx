@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { m, useInView } from "framer-motion";
-import { Button } from "../components/ui/button";
+import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import Turnstile from "../components/Turnstile";
@@ -132,7 +132,13 @@ export default function OrcamentoPage() {
             </p>
             <Link
               to="/"
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-accent hover:text-accent-foreground"
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                  size: "lg",
+                  className: "mt-6 bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                }),
+              )}
             >
               Voltar ao início
             </Link>
@@ -340,7 +346,9 @@ export default function OrcamentoPage() {
                   )}
                   <Button
                     type="submit"
-                    className="w-full hover:bg-accent hover:text-accent-foreground"
+                    variant="secondary"
+                    size="lg"
+                    className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
                     disabled={loading}
                   >
                     {loading ? "Enviando..." : "Enviar mensagem"}
@@ -358,7 +366,13 @@ export default function OrcamentoPage() {
               </p>
               <Link
                 to="/contato"
-                className="mt-4 flex items-center justify-center gap-1.5 rounded-md border border-input px-3 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                className={cn(
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  }),
+                )}
               >
                 Ir para contato
               </Link>
