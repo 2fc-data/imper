@@ -42,7 +42,7 @@ export default function ContatoPage() {
                   href={`${WHATSAPP_URL}?text=${encodeURIComponent(WHATSAPP_TEXT)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-1 block font-semibold text-secondary hover:underline"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   (35) 99999-4663
                 </a>
@@ -53,7 +53,7 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="tel:+553537211674"
-                  className="mt-1 block font-semibold text-secondary hover:underline"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   (35) 3721-1674
                 </a>
@@ -64,7 +64,7 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="mailto:impershop@imperpocos.com.br"
-                  className="mt-1 block break-all font-semibold text-secondary hover:underline"
+                  className="mt-1 block break-all rounded px-1 font-semibold text-secondary transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   impershop@imperpocos.com.br
                 </a>
@@ -73,7 +73,10 @@ export default function ContatoPage() {
             <div className="mt-6">
               <Link
                 to="/orcamento"
-                className={cn(buttonVariants({ variant: "secondary", size: "lg" }))}
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "lg" }),
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
               >
                 Orçamento online
               </Link>
@@ -109,12 +112,12 @@ export default function ContatoPage() {
                 href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-accent"
+                className="rounded transition-colors hover:bg-accent hover:text-accent-foreground px-0 py-0.5 text-sm font-medium"
               >
                 Rua São Paulo, 511 — Centro
               </a>
               <br />
-              Poços de Caldas/MG
+                Poços de Caldas/MG
             </p>
           </m.div>
           <m.div variants={fadeUp} className="rounded-xl border bg-card p-5">

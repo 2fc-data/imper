@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, m } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { ThemeToggle } from "../../theme/ThemeToggle";
+import logoImper from "../../assets/logo_imper.webp";
 
 const NAV_LINKS = [
   { to: "/", label: "Início" },
@@ -44,7 +45,10 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-md"
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-x-4 px-4 py-3">
-          <Link to="/" className="text-lg font-bold tracking-tight">
+          <Link
+            to="/"
+            className="rounded px-1.5 py-0.5 border-b-6 border-double border-primary text-lg font-bold tracking-tight transition-colors hover:text-accent"
+          >
             IMPERPOÇOS
           </Link>
           <nav className="hidden lg:block">
@@ -56,8 +60,8 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     end={link.to === "/"}
                     className={({ isActive }) =>
                       cn(
-                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-primary",
-                        isActive && "text-primary",
+                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                        isActive && "text-accent",
                       )
                     }
                   >
@@ -71,7 +75,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
             <Link
               to="/login"
-              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-primary lg:block"
+              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground lg:block"
             >
               Office
             </Link>
@@ -122,7 +126,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 onClick={() => setMenuOpen(false)}
                 className="fixed inset-0 z-40 bg-overlay/60 backdrop-blur-xs lg:hidden"
               />
-              
+
               {/* Menu com efeito drawer deslizando de cima para baixo */}
               <m.nav
                 initial={{ y: "-100%", opacity: 0 }}
@@ -140,8 +144,8 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                         onClick={() => setMenuOpen(false)}
                         className={({ isActive }) =>
                           cn(
-                            "block rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-accent/50",
-                            isActive && "text-foreground font-semibold bg-accent/70",
+                            "block rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-accent",
+                            isActive && "text-foreground font-semibold bg-accent",
                           )
                         }
                       >
@@ -160,7 +164,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     <Link
                       to="/login"
                       onClick={() => setMenuOpen(false)}
-                      className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent/40 transition-colors"
+                      className="block text-center rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors"
                     >
                       Office
                     </Link>
@@ -186,11 +190,19 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-accent"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
               >
-                Rua São Paulo, 511 — Centro, Poços de Caldas/MG.
+                Rua São Paulo, 511 — Centro
               </a>
             </p>
+            <p className="max-w-xl px-1.5 text-sm">
+              Poços de Caldas/MG
+            </p>
+            <img
+              src={logoImper}
+              alt="Imperpoços"
+              className="h-45 w-auto rounded-md border-6 border-white object-contain opacity-90"
+            />
           </div>
           <div className="flex flex-col items-center gap-3 text-center sm:items-center">
             <p className="text-sm font-semibold tracking-tight">
@@ -201,7 +213,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.facebook.com/imperpocos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-secondary"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -217,7 +229,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.instagram.com/imperpocos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-secondary"
+                className="inline-flex items-center gap-2 rounded px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -244,7 +256,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm transition-colors hover:text-secondary"
+                    className="rounded px-1.5 py-0.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                   >
                     {link.label}
                   </Link>
@@ -253,7 +265,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               <li>
                 <Link
                   to="/login"
-                  className="text-sm transition-colors hover:text-secondary"
+                  className="rounded px-1.5 py-0.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   Office
                 </Link>
@@ -266,7 +278,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             © 2026 Imperpoços. Todos os direitos reservados.
           </p>
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   );
 }

@@ -4,6 +4,7 @@ import { redefinirSenha } from "../lib/api";
 import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -56,7 +57,13 @@ export default function ResetPasswordPage() {
               <p className="text-sm text-muted-foreground">
                 Senha redefinida com sucesso. Já pode acessar o sistema.
               </p>
-              <Link to="/login" className={buttonVariants({ className: "w-full" })}>
+              <Link
+                to="/login"
+                className={cn(
+                  buttonVariants({ className: "w-full" }),
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
+              >
                 Ir para o login
               </Link>
             </div>
@@ -91,7 +98,11 @@ export default function ResetPasswordPage() {
                   {error}
                 </p>
               )}
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full hover:bg-accent hover:text-accent-foreground"
+                disabled={loading}
+              >
                 {loading ? "Salvando..." : "Redefinir senha"}
               </Button>
             </form>

@@ -4,6 +4,7 @@ import { recuperarSenha } from "../lib/api";
 import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -63,7 +64,13 @@ export default function ForgotPasswordPage() {
                   </p>
                 </div>
               )}
-              <Link to="/login" className={buttonVariants({ className: "w-full" })}>
+              <Link
+                to="/login"
+                className={cn(
+                  buttonVariants({ className: "w-full" }),
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
+              >
                 Voltar para o login
               </Link>
             </div>
@@ -87,7 +94,11 @@ export default function ForgotPasswordPage() {
                     {error}
                   </p>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button
+                  type="submit"
+                  className="w-full hover:bg-accent hover:text-accent-foreground"
+                  disabled={loading}
+                >
                   {loading ? "Enviando..." : "Enviar link"}
                 </Button>
               </form>

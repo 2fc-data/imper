@@ -78,15 +78,25 @@ export default function LoginPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full hover:bg-accent hover:text-accent-foreground"
+              disabled={loading}
+            >
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <Link to="/cadastro" className="font-medium text-primary hover:underline">
+            <Link
+              to="/cadastro"
+              className="rounded px-1 font-medium text-primary transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
               Criar conta
             </Link>
-            <Link to="/recuperar-senha" className="text-muted-foreground hover:underline">
+            <Link
+              to="/recuperar-senha"
+              className="rounded px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
               Esqueci a senha
             </Link>
           </div>

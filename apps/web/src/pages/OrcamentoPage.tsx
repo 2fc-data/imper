@@ -132,7 +132,7 @@ export default function OrcamentoPage() {
             </p>
             <Link
               to="/"
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+              className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-accent hover:text-accent-foreground"
             >
               Voltar ao início
             </Link>
@@ -338,7 +338,11 @@ export default function OrcamentoPage() {
                       {error}
                     </p>
                   )}
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button
+                    type="submit"
+                    className="w-full hover:bg-accent hover:text-accent-foreground"
+                    disabled={loading}
+                  >
                     {loading ? "Enviando..." : "Enviar mensagem"}
                   </Button>
                 </form>

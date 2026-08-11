@@ -110,13 +110,20 @@ export default function RegisterPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full hover:bg-accent hover:text-accent-foreground"
+              disabled={loading}
+            >
               {loading ? "Cadastrando..." : "Criar conta"}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Já tem conta?{" "}
-            <Link to="/login" className="font-medium text-primary hover:underline">
+            <Link
+              to="/login"
+              className="rounded px-1 font-medium text-primary transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
               Entrar
             </Link>
           </p>
