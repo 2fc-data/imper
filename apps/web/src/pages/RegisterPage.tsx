@@ -2,9 +2,10 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Papel } from "@imper/shared";
-import { Button } from "../components/ui/button";
+import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { cn } from "../lib/utils";
 import Turnstile from "../components/Turnstile";
 import {
   Card,
@@ -112,9 +113,8 @@ export default function RegisterPage() {
             )}
             <Button
               type="submit"
-              variant="secondary"
               size="lg"
-              className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
+              className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
               disabled={loading}
             >
               {loading ? "Cadastrando..." : "Criar conta"}
@@ -124,11 +124,35 @@ export default function RegisterPage() {
             Já tem conta?{" "}
             <Link
               to="/login"
-              className="rounded px-1 font-medium text-primary transition-colors hover:text-accent"
+              className="font-medium text-accent transition-colors hover:underline underline-offset-4"
             >
               Entrar
             </Link>
           </p>
+          <Link
+            to="/"
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "mt-4 w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
+              }),
+            )}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4 shrink-0"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Voltar para Home
+          </Link>
         </CardContent>
       </Card>
     </div>

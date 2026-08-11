@@ -1,26 +1,33 @@
-import { useRef } from "react";
-import { m, useInView } from "framer-motion";
+import { useState, useRef } from "react";
+import { m, AnimatePresence, useInView } from "framer-motion";
+import { Link } from "react-router-dom";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 import { useServicos } from "../lib/useServicos";
+import { cn } from "../lib/utils";
 
 export default function ServicosPage() {
   const { servicos, loading, error } = useServicos();
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, VIEWPORT);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  function toggleAccordion(id: string) {
+    setOpenId((prev) => (prev === id ? null : id));
+  }
 
   return (
     <section id="servicos" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto max-w-6xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Nossas especialidades
         </h2>
         <p className="mt-2 text-muted-foreground">
-          Soluções de engenharia para cada tipo de exposição à água e à
-          umidade.
+          Soluções de engenharia para cada tipo de exposição à água e à umidade. Clique em um serviço para ver os detalhes.
         </p>
+
         <m.div
           ref={gridRef}
-          className="mt-8 grid gap-4 sm:grid-cols-2"
+          className="mt-8 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           variants={stagger()}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -29,11 +36,12 @@ export default function ServicosPage() {
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-xl border bg-card p-5 shadow-sm"
+                className="flex flex-col h-full rounded-xl border bg-card p-5 shadow-sm min-h-[88px]"
               >
-                <div className="mb-3 h-10 w-10 animate-pulse rounded-lg bg-accent/20" />
-                <div className="h-5 w-2/3 animate-pulse rounded bg-accent/20" />
-                <div className="mt-2 h-4 w-full animate-pulse rounded bg-accent/20" />
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 animate-pulse rounded-lg bg-accent/20" />
+                  <div className="h-5 w-1/3 animate-pulse rounded bg-accent/20" />
+                </div>
               </div>
             ))}
           {!loading && error && (
@@ -45,32 +53,83 @@ export default function ServicosPage() {
             </p>
           )}
           {!loading &&
-            servicos.map((servico) => (
-              <m.div
-                key={servico.id}
-                variants={fadeUp}
-                className="rounded-xl border bg-card p-5 shadow-sm"
-              >
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                    aria-hidden="true"
+            servicos.map((servico) => {
+              const isOpen = openId === servico.id;
+              return (
+                <m.div
+                  key={servico.id}
+                  variants={fadeUp}
+                  className={cn(
+                    "relative flex flex-col h-full rounded-xl border bg-card shadow-sm transition-all hover:border-accent/40",
+                    isOpen && "z-30 rounded-b-none border-accent/40 shadow-xl",
+                  )}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleAccordion(servico.id)}
+                    aria-expanded={isOpen}
+                    className="flex w-full h-full items-center justify-between gap-4 p-5 text-left transition-colors group focus-gold min-h-[88px]"
                   >
-                    <path d={servico.icone} />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold">{servico.titulo}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  {servico.descricao}
-                </p>
-              </m.div>
-            ))}
+                    <div className="flex items-center gap-3.5">
+                      <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-5 w-5"
+                          aria-hidden="true"
+                        >
+                          <path d={servico.icone} />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-accent">
+                        {servico.titulo}
+                      </h3>
+                    </div>
+                    <m.svg
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-accent shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </m.svg>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <m.div
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute left-[-1px] right-[-1px] top-[calc(100%-1px)] z-30 rounded-b-xl border border-t-0 border-accent/40 bg-card p-5 shadow-2xl"
+                      >
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {servico.descricao}
+                        </p>
+                        <div className="mt-3 flex justify-end">
+                          <Link
+                            to={`/orcamento?servico=${encodeURIComponent(servico.titulo)}`}
+                            className="text-sm text-accent transition-colors hover:text-foreground"
+                          >
+                            Orçamento →
+                          </Link>
+                        </div>
+                      </m.div>
+                    )}
+                  </AnimatePresence>
+                </m.div>
+              );
+            })}
         </m.div>
       </div>
     </section>

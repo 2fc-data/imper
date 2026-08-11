@@ -88,12 +88,12 @@ export default function AreaAtuacaoPage() {
             </div>
           )}
           {!loading && !error && pontos.length > 0 && bounds && (
-            <m.div variants={fadeUp} className="relative">
+            <m.div variants={fadeUp} className="relative rounded-xl border bg-card p-3">
               <MapContainer
                 center={[pontos[0].lat, pontos[0].lng]}
                 zoom={11}
                 scrollWheelZoom={false}
-                className="z-0 h-[360px] w-full rounded-xl border"
+                className="z-0 h-[360px] w-full rounded-lg"
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

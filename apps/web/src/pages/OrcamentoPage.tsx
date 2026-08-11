@@ -346,9 +346,8 @@ export default function OrcamentoPage() {
                   )}
                   <Button
                     type="submit"
-                    variant="secondary"
                     size="lg"
-                    className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
+                    className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
                     disabled={loading}
                   >
                     {loading ? "Enviando..." : "Enviar mensagem"}
@@ -368,9 +367,8 @@ export default function OrcamentoPage() {
                 to="/contato"
                 className={cn(
                   buttonVariants({
-                    variant: "secondary",
                     size: "lg",
-                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
                   }),
                 )}
               >

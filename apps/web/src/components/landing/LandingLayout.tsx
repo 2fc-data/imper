@@ -47,7 +47,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-x-4 px-4 py-3">
           <Link
             to="/"
-            className="rounded px-1.5 py-0.5 border-b-3 border-primary text-lg font-bold tracking-tight transition-colors hover:text-accent"
+            className="rounded px-1.5 py-0.5 text-lg font-bold tracking-tight transition-colors hover:text-accent"
           >
             IMPERPOÇOS
           </Link>
@@ -265,7 +265,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               <li>
                 <Link
                   to="/login"
-                  className="rounded px-1.5 py-0.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="rounded px-1.5 py-0.5 text-sm transition-colors hover:text-accent"
                 >
                   Office
                 </Link>

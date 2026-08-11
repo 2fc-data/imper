@@ -27,7 +27,7 @@ export default function ComoTrabalhamosPage() {
             <m.li
               key={etapa.title}
               variants={fadeUp}
-              className="relative rounded-xl border bg-card p-5"
+              className="relative rounded-xl border bg-card p-5 hover-lift transition-all hover:border-accent/40"
             >
               <span className="text-3xl font-extrabold text-accent/30">
                 {String(index + 1).padStart(2, "0")}

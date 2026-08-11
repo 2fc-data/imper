@@ -68,9 +68,9 @@ export default function ForgotPasswordPage() {
                 to="/login"
                 className={cn(
                   buttonVariants({
-                    variant: "secondary",
+                    variant: "outline",
                     size: "lg",
-                    className: "w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                    className: "w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
                   }),
                 )}
               >
@@ -99,9 +99,8 @@ export default function ForgotPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  variant="secondary"
                   size="lg"
-                  className="w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground"
+                  className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
                   disabled={loading}
                 >
                   {loading ? "Enviando..." : "Enviar link"}
@@ -111,9 +110,9 @@ export default function ForgotPasswordPage() {
                 to="/login"
                 className={cn(
                   buttonVariants({
-                    variant: "secondary",
+                    variant: "outline",
                     size: "lg",
-                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                    className: "mt-4 w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
                   }),
                 )}
               >
@@ -124,7 +123,7 @@ export default function ForgotPasswordPage() {
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-4 w-4"
+                  className="h-4 w-4 shrink-0"
                   aria-hidden="true"
                 >
                   <path d="M19 12H5M12 19l-7-7 7-7" />
