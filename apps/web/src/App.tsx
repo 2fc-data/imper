@@ -6,6 +6,7 @@ import { homeFor } from "./lib/nav";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import {
   AtendimentosSidebar,
+  AgendamentosSidebar,
   ClienteSidebar,
   DashboardSidebar,
   EmBreveSidebar,
@@ -13,6 +14,7 @@ import {
   OSSidebar,
   ServicosSidebar,
   UsuariosSidebar,
+  VisitasSidebar,
 } from "./components/layout/sidebarContent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -26,6 +28,8 @@ import OrcamentoPage from "./pages/OrcamentoPage";
 import { LandingLayout } from "./components/landing/LandingLayout";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { AtendimentosAdminPage } from "./pages/AtendimentosAdminPage";
+import { AgendamentosAdminPage } from "./pages/AgendamentosAdminPage";
+import { VisitasAdminPage } from "./pages/VisitasAdminPage";
 import { OrcamentosAdminPage } from "./pages/OrcamentosAdminPage";
 import { OSAdminPage } from "./pages/OSAdminPage";
 import ServicosAdminPage from "./pages/ServicosAdminPage";
@@ -86,6 +90,32 @@ function AtendimentosRoute() {
       sidebar={<AtendimentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <AtendimentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function AgendamentosRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE]}
+      sidebar={<AgendamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <AgendamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function VisitasRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "agendar" | "realizar">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE, Papel.TECNICO]}
+      sidebar={<VisitasSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <VisitasAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -251,6 +281,8 @@ export default function App() {
         }
       />
       <Route element={<AtendimentosRoute />} path="/atendimentos" />
+      <Route element={<AgendamentosRoute />} path="/agendamentos" />
+      <Route element={<VisitasRoute />} path="/visitas" />
       <Route element={<OrcamentosRoute />} path="/orcamentos" />
       <Route element={<OSRoute />} path="/os" />
       <Route

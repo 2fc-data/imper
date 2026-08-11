@@ -51,6 +51,18 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE],
   },
   {
+    to: "/agendamentos",
+    label: "Agendamentos",
+    icon: <Icon d="M8 7V3m8 4V3M3 11h18M5 5h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" />,
+    roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE],
+  },
+  {
+    to: "/visitas",
+    label: "Visitas",
+    icon: <Icon d="M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3a13 13 0 010 18M12 3a13 13 0 000 18" />,
+    roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE, Papel.TECNICO],
+  },
+  {
     to: "/orcamentos",
     label: "Orçamentos",
     icon: (

@@ -9,7 +9,7 @@ export default function ServicosPage() {
   const inView = useInView(gridRef, VIEWPORT);
 
   return (
-    <section id="servicos" className="bg-white py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
+    <section id="servicos" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Nossas especialidades

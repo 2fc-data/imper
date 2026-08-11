@@ -16,7 +16,6 @@ import osRoutes from "./routes/os.routes";
 import materiaisRoutes from "./routes/materiais.routes";
 import separacoesRoutes from "./routes/separacoes.routes";
 import comprasRoutes from "./routes/compras.routes";
-import vendasRoutes from "./routes/vendas.routes";
 import financeiroRoutes from "./routes/financeiro.routes";
 import configRoutes from "./routes/config.routes";
 import notificacoesRoutes from "./routes/notificacoes.routes";
@@ -24,6 +23,7 @@ import dashboardRoutes from "./routes/dashboard.routes";
 import clienteRoutes from "./routes/cliente.routes";
 import publicoRoutes from "./routes/publico.routes";
 import servicosAdminRoutes from "./routes/servicosAdmin.routes";
+import agendamentosRoutes from "./routes/agendamentos.routes";
 
 fs.mkdirSync(config.uploadsDir, { recursive: true });
 
@@ -45,7 +45,6 @@ app.use("/os", osRoutes);
 app.use("/materiais", materiaisRoutes);
 app.use("/separacoes", separacoesRoutes);
 app.use("/compras", comprasRoutes);
-app.use("/vendas", vendasRoutes);
 app.use("/financeiro", financeiroRoutes);
 app.use("/config", configRoutes);
 app.use("/notificacoes", notificacoesRoutes);
@@ -53,6 +52,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/cliente", clienteRoutes);
 app.use("/publico", publicoRoutes);
 app.use("/servicos-admin", servicosAdminRoutes);
+app.use("/agendamentos", agendamentosRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() });

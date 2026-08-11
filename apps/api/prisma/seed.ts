@@ -164,14 +164,11 @@ async function main() {
       icone: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6",
       ordem: 3,
     },
-    {
-      titulo: "Venda de impermeabilizantes",
-      descricao:
-        "Venda de impermeabilizantes e produtos químicos profissionais para construtoras, engenharias e consumidores.",
-      icone: "M12 2l9 5-9 5-9-5 9-5zM12 12l9-5v9l-9 5-9-5V7l9 5z",
-      ordem: 4,
-    },
   ];
+
+  await prisma.servicoMarketing.deleteMany({
+    where: { titulo: "Venda de impermeabilizantes" },
+  });
 
   for (const s of servicosMarketing) {
     await findOrCreateServicoMarketing(s);

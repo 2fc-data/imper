@@ -123,7 +123,6 @@ export type TipoLancamento = (typeof TipoLancamento)[keyof typeof TipoLancamento
 export const OrigemLancamento = {
   PAGAMENTO: "PAGAMENTO",
   COMPRA: "COMPRA",
-  VENDA: "VENDA",
   ADITIVO: "ADITIVO",
   AJUSTE: "AJUSTE",
   OUTRO: "OUTRO",
@@ -155,13 +154,6 @@ export const StatusCompraItem = {
 } as const;
 export type StatusCompraItem = (typeof StatusCompraItem)[keyof typeof StatusCompraItem];
 
-export const StatusVenda = {
-  PENDENTE: "PENDENTE",
-  PAGA: "PAGA",
-  CANCELADA: "CANCELADA",
-} as const;
-export type StatusVenda = (typeof StatusVenda)[keyof typeof StatusVenda];
-
 export const StatusSeparacao = {
   PENDENTE: "PENDENTE",
   PARCIAL: "PARCIAL",
@@ -190,3 +182,28 @@ export const StatusNotificacao = {
   LIDA: "LIDA",
 } as const;
 export type StatusNotificacao = (typeof StatusNotificacao)[keyof typeof StatusNotificacao];
+
+export const TipoAgendamento = {
+  VISITA: "VISITA",
+  ORCAMENTO: "ORCAMENTO",
+  RETORNO: "RETORNO",
+  REUNIAO: "REUNIAO",
+} as const;
+export type TipoAgendamento = (typeof TipoAgendamento)[keyof typeof TipoAgendamento];
+
+export const StatusAgendamento = {
+  PENDENTE: "PENDENTE",
+  CONFIRMADO: "CONFIRMADO",
+  REALIZADO: "REALIZADO",
+  CANCELADO: "CANCELADO",
+  NAO_COMPARECEU: "NAO_COMPARECEU",
+} as const;
+export type StatusAgendamento = (typeof StatusAgendamento)[keyof typeof StatusAgendamento];
+
+export const ResultadoVisita = {
+  SEM_ACAO: "SEM_ACAO",
+  ORCAMENTO_NECESSARIO: "ORCAMENTO_NECESSARIO",
+  OBRA_NECESSARIA: "OBRA_NECESSARIA",
+  CLIENTE_AUSENTE: "CLIENTE_AUSENTE",
+} as const;
+export type ResultadoVisita = (typeof ResultadoVisita)[keyof typeof ResultadoVisita];

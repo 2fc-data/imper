@@ -129,25 +129,6 @@ export const receberCompraSchema = z.object({
     .min(1),
 });
 
-export const vendaItemSchema = z.object({
-  materialId: id,
-  quantidade: decimal.positive(),
-  valorUnitario: decimal,
-});
-
-export const vendaSchema = z.object({
-  clienteId: optionalId,
-  itens: z.array(vendaItemSchema).min(1),
-  formaPagamento: z.enum([
-    "DINHEIRO",
-    "PIX",
-    "CARTAO_CREDITO",
-    "CARTAO_DEBITO",
-    "BOLETO",
-    "TRANSFERENCIA",
-  ]),
-});
-
 export const lancamentoSchema = z.object({
   tipo: z.enum(["ENTRADA", "SAIDA"]),
   descricao: z.string().min(1).max(255),
@@ -226,7 +207,6 @@ export type ConfirmarOrcamentoInput = z.infer<typeof confirmarOrcamentoSchema>;
 export type AprovarOSInput = z.infer<typeof aprovarOSSchema>;
 export type CompraInput = z.infer<typeof compraSchema>;
 export type ReceberCompraInput = z.infer<typeof receberCompraSchema>;
-export type VendaInput = z.infer<typeof vendaSchema>;
 export type LancamentoInput = z.infer<typeof lancamentoSchema>;
 export type PagamentoOSInput = z.infer<typeof pagamentoOSSchema>;
 export type MaterialInput = z.infer<typeof materialSchema>;
@@ -236,3 +216,33 @@ export type FaseInput = z.infer<typeof faseSchema>;
 export type ServicoItemInput = z.infer<typeof servicoItemSchema>;
 export type ItemSeparacaoInput = z.infer<typeof itemSeparacaoSchema>;
 export type ConferirItemInput = z.infer<typeof conferirItemSchema>;
+
+export const agendamentoSchema = z.object({
+  clienteId: id,
+  atendimentoId: optionalId,
+  enderecoId: optionalId,
+  userId: optionalId,
+  tipo: z.enum(["VISITA", "ORCAMENTO", "RETORNO", "REUNIAO"]).optional().nullable(),
+  status: z.enum(["PENDENTE", "CONFIRMADO", "REALIZADO", "CANCELADO", "NAO_COMPARECEU"]).optional().nullable(),
+  dataPrevista: z.coerce.date(),
+  dataRealizada: z.coerce.date().optional().nullable(),
+  observacoes: z.string().max(1000).optional().nullable(),
+});
+
+export const agendamentoStatusSchema = z.object({
+  status: z.enum(["PENDENTE", "CONFIRMADO", "REALIZADO", "CANCELADO", "NAO_COMPARECEU"]),
+  dataRealizada: z.coerce.date().optional().nullable(),
+});
+
+export const realizarVisitaV2Schema = z.object({
+  urgencia: z.enum(["NORMAL", "URGENTE", "URGENTISSIMO"]).optional().nullable(),
+  relatorio: z.string().max(2000).optional().nullable(),
+  resultado: z.enum(["SEM_ACAO", "ORCAMENTO_NECESSARIO", "OBRA_NECESSARIA", "CLIENTE_AUSENTE"]).optional().nullable(),
+  constatacao: z.string().max(2000).optional().nullable(),
+  necessitaOrcamento: z.boolean().optional().nullable(),
+  necessitaObra: z.boolean().optional().nullable(),
+});
+
+export type AgendamentoInput = z.infer<typeof agendamentoSchema>;
+export type AgendamentoStatusInput = z.infer<typeof agendamentoStatusSchema>;
+export type RealizarVisitaV2Input = z.infer<typeof realizarVisitaV2Schema>;

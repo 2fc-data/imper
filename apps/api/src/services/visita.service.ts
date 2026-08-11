@@ -1,4 +1,4 @@
-import { StatusVisita, Urgencia } from "@prisma/client";
+import { ResultadoVisita, StatusVisita, Urgencia } from "@prisma/client";
 import { prisma } from "../db";
 import { AppError } from "../lib/errors";
 import { addBusinessDays, prazoVisita } from "../lib/prazos";
@@ -12,6 +12,7 @@ export const visitaService = {
         atendimento: { select: { id: true, descricao: true, urgencia: true, status: true } },
         endereco: true,
         tecnico: { select: { id: true, nome: true } },
+        _count: { select: { orcamentos: true } },
       },
       orderBy: { dataPrevista: "asc" },
     });
@@ -65,12 +66,19 @@ export const visitaService = {
   async realizar(id: number, data: {
     relatorio?: string;
     urgencia?: Urgencia;
+    resultado?: ResultadoVisita;
+    constatacao?: string;
+    necessitaOrcamento?: boolean;
+    necessitaObra?: boolean;
   }, tecnicoId: number) {
     const visita = await prisma.visitaTecnica.findUnique({ where: { id } });
     if (!visita) throw new AppError(404, "Visita não encontrada");
     if (visita.tecnicoId && visita.tecnicoId !== tecnicoId) {
       throw new AppError(403, "Você não é o técnico responsável por esta visita");
     }
+    const resultado = data.resultado ?? ResultadoVisita.SEM_ACAO;
+    const necessitaOrcamento = data.necessitaOrcamento ?? (resultado === ResultadoVisita.ORCAMENTO_NECESSARIO);
+    const necessitaObra = data.necessitaObra ?? (resultado === ResultadoVisita.OBRA_NECESSARIA);
     const atualizada = await prisma.visitaTecnica.update({
       where: { id },
       data: {
@@ -78,6 +86,10 @@ export const visitaService = {
         dataRealizada: new Date(),
         relatorio: data.relatorio,
         urgencia: data.urgencia ?? visita.urgencia,
+        resultado,
+        constatacao: data.constatacao,
+        necessitaOrcamento,
+        necessitaObra,
       },
     });
     await prisma.atendimento.update({

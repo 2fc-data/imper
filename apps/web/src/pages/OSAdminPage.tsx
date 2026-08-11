@@ -200,7 +200,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onAprovar(item.id)}
-                          className="rounded-md bg-success px-2 py-1 text-xs font-medium text-white hover:bg-success/90 transition-colors"
+                          className="rounded-md bg-success px-2 py-1 text-xs font-medium text-success-foreground hover:bg-success/90 transition-colors"
                         >
                           Aprovar
                         </button>
@@ -209,7 +209,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onIniciar(item.id)}
-                          className="rounded-md bg-accent px-2 py-1 text-xs font-medium text-white hover:bg-accent/90 transition-colors"
+                          className="rounded-md bg-accent px-2 py-1 text-xs font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
                         >
                           Iniciar
                         </button>
@@ -218,7 +218,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onConcluir(item.id)}
-                          className="rounded-md bg-info px-2 py-1 text-xs font-medium text-white hover:bg-info/90 transition-colors"
+                          className="rounded-md bg-info px-2 py-1 text-xs font-medium text-info-foreground hover:bg-info/90 transition-colors"
                         >
                           Concluir
                         </button>
@@ -361,7 +361,7 @@ export function OSAdminPage({ viewAtiva = "lista", onGoToOrcamentos }: OSAdminPa
 
       {/* Modal de Detalhes da OS */}
       {osSelecionada && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/50 p-4">
           <div className="w-full max-w-lg rounded-xl bg-card p-5 shadow-lg space-y-4 border">
             <h3 className="text-lg font-bold">Ordem de Serviço #{osSelecionada.codigo}</h3>
             <div className="text-sm space-y-2 text-muted-foreground">

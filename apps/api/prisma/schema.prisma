@@ -126,7 +126,6 @@ enum TipoLancamento {
 enum OrigemLancamento {
   PAGAMENTO
   COMPRA
-  VENDA
   ADITIVO
   AJUSTE
   OUTRO
@@ -152,12 +151,6 @@ enum StatusCompra {
 enum StatusCompraItem {
   PENDENTE
   RECEBIDO
-}
-
-enum StatusVenda {
-  PENDENTE
-  PAGA
-  CANCELADA
 }
 
 enum StatusSeparacao {
@@ -186,6 +179,32 @@ enum StatusNotificacao {
 }
 
 // ============================================================
+// CRM (AGENDAMENTOS)
+// ============================================================
+
+enum TipoAgendamento {
+  VISITA
+  ORCAMENTO
+  RETORNO
+  REUNIAO
+}
+
+enum StatusAgendamento {
+  PENDENTE
+  CONFIRMADO
+  REALIZADO
+  CANCELADO
+  NAO_COMPARECEU
+}
+
+enum ResultadoVisita {
+  SEM_ACAO
+  ORCAMENTO_NECESSARIO
+  OBRA_NECESSARIA
+  CLIENTE_AUSENTE
+}
+
+// ============================================================
 // IDENTIDADE E ACESSO
 // ============================================================
 
@@ -204,37 +223,38 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  atendimentos         Atendimento[]       @relation("AtendimentoAtendente")
-  atendimentosLog      AtendimentoLog[]    @relation("AtendimentoLogAtendente")
-  visitas             VisitaTecnica[]      @relation("TecnicoVisita")
-  osExecutadas        OrdemServico[]       @relation("TecnicoOS")
-  osAprovadas         OrdemServico[]       @relation("AprovadorOS")
-  orcamentosCriados   Orcamento[]          @relation("OrcamentoCriador")
-  orcamentosAprovados Orcamento[]          @relation("OrcamentoAprovador")
-  comprasCriadas      Compra[]             @relation("CompraCriador")
-  comprasAprovadas    Compra[]             @relation("CompraAprovador")
-  movimentos          MovimentoEstoque[]   @relation("MovimentoRegistradoPor")
-  separacoesCriadas   Separacao[]          @relation("SeparacaoCriador")
-  itensRetirados      SeparacaoItem[]      @relation("ItemSepRetiradoPor")
-  itensConferidos     SeparacaoItem[]      @relation("ItemSepConferidoPor")
-  lancamentos         LancamentoFinanceiro[] @relation("LancamentoCriadoPor")
-  pagamentosRegistrados PagamentoOS[]      @relation("PagamentoRegistradoPor")
-  vendasRegistradas   Venda[]              @relation("VendaRegistradoPor")
-  uploads             Upload[]             @relation("UploadUploader")
-  notificacoes        Notificacao[]
-  passwordResetTokens PasswordResetToken[]
+  atendimentos             Atendimento[]          @relation("AtendimentoAtendente")
+  atendimentosLog          AtendimentoLog[]       @relation("AtendimentoLogAtendente")
+  visitas                  VisitaTecnica[]        @relation("TecnicoVisita")
+  osExecutadas             OrdemServico[]         @relation("TecnicoOS")
+  osAprovadas              OrdemServico[]         @relation("AprovadorOS")
+  orcamentosCriados        Orcamento[]            @relation("OrcamentoCriador")
+  orcamentosAprovados      Orcamento[]            @relation("OrcamentoAprovador")
+  comprasCriadas           Compra[]               @relation("CompraCriador")
+  comprasAprovadas         Compra[]               @relation("CompraAprovador")
+  movimentos               MovimentoEstoque[]     @relation("MovimentoRegistradoPor")
+  separacoesCriadas        Separacao[]            @relation("SeparacaoCriador")
+  itensRetirados           SeparacaoItem[]        @relation("ItemSepRetiradoPor")
+  itensConferidos          SeparacaoItem[]        @relation("ItemSepConferidoPor")
+  lancamentos              LancamentoFinanceiro[] @relation("LancamentoCriadoPor")
+  pagamentosRegistrados    PagamentoOS[]          @relation("PagamentoRegistradoPor")
+  uploads                  Upload[]               @relation("UploadUploader")
+  notificacoes             Notificacao[]
+  passwordResetTokens      PasswordResetToken[]
+  agendamentosCriados      Agendamento[]          @relation("AgendamentoCriadoPor")
+  agendamentosProfissional Agendamento[]          @relation("AgendamentoProfissional")
 
   @@map("users")
 }
 
 model Cargo {
-  id          Int     @id @default(autoincrement())
-  nome        String  @db.VarChar(120)
-  descricao   String? @db.VarChar(255)
-  ativo       Boolean @default(true)
-  usuarios    User[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  nome      String   @db.VarChar(120)
+  descricao String?  @db.VarChar(255)
+  ativo     Boolean  @default(true)
+  usuarios  User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Configuracao {
@@ -257,70 +277,71 @@ model Cliente {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  atendimentos Atendimento[]
-  enderecos    Endereco[]
-  acessos      AcessoCliente[]
-  vendas       Venda[]
-  orcamentos   Orcamento[]
-  os           OrdemServico[]
-  usuario      User?
+  atendimentos     Atendimento[]
+  enderecos        Endereco[]
+  acessos          AcessoCliente[]
+  orcamentos       Orcamento[]
+  os               OrdemServico[]
+  usuario          User?
+  agendamentos     Agendamento[]
 }
 
 model Atendimento {
-  id          Int           @id @default(autoincrement())
-  canal       CanalAtendimento
-  motivo      MotivoAtendimento
-  urgencia    Urgencia?
-  status      StatusAtendimento @default(NOVO)
-  descricao   String?       @db.VarChar(1000)
-  clienteId   Int?
-  cliente     Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  atendenteId Int?
-  atendente   User?         @relation("AtendimentoAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
-  logs        AtendimentoLog[]
-  visitas     VisitaTecnica[]
-  vendas      Venda[]
-  orcamentos  Orcamento[]
-  os          OrdemServico[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           Int               @id @default(autoincrement())
+  canal        CanalAtendimento
+  motivo       MotivoAtendimento
+  urgencia     Urgencia?
+  status       StatusAtendimento @default(NOVO)
+  descricao    String?           @db.VarChar(1000)
+  clienteId    Int?
+  cliente      Cliente?          @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  atendenteId  Int?
+  atendente    User?             @relation("AtendimentoAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
+  logs         AtendimentoLog[]
+  visitas      VisitaTecnica[]
+  orcamentos   Orcamento[]
+  os           OrdemServico[]
+  agendamentos Agendamento[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@map("atendimentos")
 }
 
 model AtendimentoLog {
-  id            Int              @id @default(autoincrement())
+  id            Int                @id @default(autoincrement())
   atendimentoId Int
-  atendimento   Atendimento      @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
+  atendimento   Atendimento        @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
   atendenteId   Int?
-  atendente     User?            @relation("AtendimentoLogAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
-  tipo          TipoAtendimento  @default(TEXTO)
-  descricao     String?          @db.VarChar(1000)
+  atendente     User?              @relation("AtendimentoLogAtendente", fields: [atendenteId], references: [id], onDelete: SetNull)
+  tipo          TipoAtendimento    @default(TEXTO)
+  descricao     String?            @db.VarChar(1000)
   statusDe      StatusAtendimento?
   statusPara    StatusAtendimento?
-  createdAt     DateTime         @default(now())
+  createdAt     DateTime           @default(now())
 
   @@map("atendimento_logs")
 }
 
 model Endereco {
-  id          Int            @id @default(autoincrement())
-  clienteId   Int
-  cliente     Cliente        @relation(fields: [clienteId], references: [id], onDelete: Cascade)
-  rotulo      EnderecoRotulo @default(RESIDENCIAL)
-  logradouro  String         @db.VarChar(255)
-  numero      String?        @db.VarChar(10)
-  complemento String?        @db.VarChar(120)
-  bairro      String?        @db.VarChar(120)
-  cidade      String?        @db.VarChar(120)
-  estado      String?        @db.VarChar(2)
-  cep         String?        @db.VarChar(9)
-  principal   Boolean        @default(false)
-  orcamentos  Orcamento[]
-  visitas     VisitaTecnica[]
-  os          OrdemServico[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id           Int             @id @default(autoincrement())
+  clienteId    Int
+  cliente      Cliente         @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  rotulo       EnderecoRotulo  @default(RESIDENCIAL)
+  logradouro   String          @db.VarChar(255)
+  numero       String?         @db.VarChar(10)
+  complemento  String?         @db.VarChar(120)
+  bairro       String?         @db.VarChar(120)
+  cidade       String?         @db.VarChar(120)
+  estado       String?         @db.VarChar(2)
+  cep          String?         @db.VarChar(9)
+  principal    Boolean         @default(false)
+  orcamentos   Orcamento[]
+  visitas      VisitaTecnica[]
+  agendamentos Agendamento[]
+  os           OrdemServico[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   @@map("enderecos")
 }
@@ -353,31 +374,64 @@ model CidadeAtendida {
 // ============================================================
 
 model VisitaTecnica {
-  id           Int          @id @default(autoincrement())
-  atendimentoId Int
-  atendimento  Atendimento  @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
-  tecnicoId    Int?
-  tecnico      User?        @relation("TecnicoVisita", fields: [tecnicoId], references: [id], onDelete: SetNull)
-  dataPrevista DateTime
-  dataRealizada DateTime?
-  status       StatusVisita @default(AGENDADA)
-  urgencia     Urgencia?
-  enderecoId   Int?
-  endereco     Endereco?    @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
-  relatorio    String?      @db.VarChar(2000)
-  fotos        FotosVisita[]
-  orcamentos   Orcamento[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id                 Int              @id @default(autoincrement())
+  atendimentoId      Int
+  atendimento        Atendimento      @relation(fields: [atendimentoId], references: [id], onDelete: Cascade)
+  tecnicoId          Int?
+  tecnico            User?            @relation("TecnicoVisita", fields: [tecnicoId], references: [id], onDelete: SetNull)
+  dataPrevista       DateTime
+  dataRealizada      DateTime?
+  status             StatusVisita     @default(AGENDADA)
+  urgencia           Urgencia?
+  enderecoId         Int?
+  endereco           Endereco?        @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
+  relatorio          String?          @db.VarChar(2000)
+  resultado          ResultadoVisita?
+  constatacao        String?          @db.VarChar(2000)
+  necessitaOrcamento Boolean          @default(false)
+  necessitaObra      Boolean          @default(false)
+  fotos              FotosVisita[]
+  orcamentos         Orcamento[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
 
 model FotosVisita {
-  id        Int          @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   visitaId  Int
   visita    VisitaTecnica @relation(fields: [visitaId], references: [id], onDelete: Cascade)
-  url       String       @db.VarChar(255)
-  caption   String?      @db.VarChar(255)
-  createdAt DateTime     @default(now())
+  url       String        @db.VarChar(255)
+  caption   String?       @db.VarChar(255)
+  createdAt DateTime      @default(now())
+}
+
+// ============================================================
+// CRM (AGENDAMENTOS)
+// ============================================================
+
+model Agendamento {
+  id            Int               @id @default(autoincrement())
+  clienteId     Int
+  cliente       Cliente           @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  atendimentoId Int?
+  atendimento   Atendimento?      @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
+  enderecoId    Int?
+  endereco      Endereco?         @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
+  userId        Int?
+  user          User?             @relation("AgendamentoProfissional", fields: [userId], references: [id], onDelete: SetNull)
+  tipo          TipoAgendamento   @default(VISITA)
+  status        StatusAgendamento @default(PENDENTE)
+  dataPrevista  DateTime
+  dataRealizada DateTime?
+  observacoes   String?           @db.VarChar(1000)
+  criadoPorId   Int?
+  criadoPor     User?             @relation("AgendamentoCriadoPor", fields: [criadoPorId], references: [id], onDelete: SetNull)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([clienteId])
+  @@index([dataPrevista])
+  @@index([status])
 }
 
 // ============================================================
@@ -385,31 +439,31 @@ model FotosVisita {
 // ============================================================
 
 model Fase {
-  id          Int          @id @default(autoincrement())
-  nome        String       @db.VarChar(120)
-  ordem       Int          @default(0)
-  ativo       Boolean      @default(true)
+  id           Int           @id @default(autoincrement())
+  nome         String        @db.VarChar(120)
+  ordem        Int           @default(0)
+  ativo        Boolean       @default(true)
   itensServico ServicoItem[]
-  osFases     FaseOS[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  osFases      FaseOS[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model ServicoItem {
-  id           Int           @id @default(autoincrement())
-  nome         String        @db.VarChar(150)
-  tipo         TipoItemServico
-  unidade      UnidadeMedida
-  faseId       Int?
-  fase         Fase?         @relation(fields: [faseId], references: [id], onDelete: SetNull)
-  materialId   Int?
-  material     Material?     @relation(fields: [materialId], references: [id], onDelete: SetNull)
-  precoSugerido Decimal?     @db.Decimal(12, 2)
-  ativo        Boolean       @default(true)
+  id             Int             @id @default(autoincrement())
+  nome           String          @db.VarChar(150)
+  tipo           TipoItemServico
+  unidade        UnidadeMedida
+  faseId         Int?
+  fase           Fase?           @relation(fields: [faseId], references: [id], onDelete: SetNull)
+  materialId     Int?
+  material       Material?       @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  precoSugerido  Decimal?        @db.Decimal(12, 2)
+  ativo          Boolean         @default(true)
   orcamentoItens OrcamentoItem[]
-  aditivoItens AditivoItem[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  aditivoItens   AditivoItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 // ============================================================
@@ -417,51 +471,52 @@ model ServicoItem {
 // ============================================================
 
 model Orcamento {
-  id             Int            @id @default(autoincrement())
-  codigo         String         @unique @db.VarChar(20)
-  atendimentoId  Int
-  atendimento    Atendimento    @relation(fields: [atendimentoId], references: [id], onDelete: Restrict)
-  visitaId       Int?
-  visita         VisitaTecnica? @relation(fields: [visitaId], references: [id], onDelete: Restrict)
-  clienteId      Int?
-  cliente        Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  enderecoId     Int?
-  endereco       Endereco?      @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
-  urgencia       Urgencia
-  status         StatusOrcamento @default(RASCUNHO)
-  valorTotal     Decimal        @default(0) @db.Decimal(12, 2)
-  validade       DateTime
-  observacoes    String?        @db.VarChar(2000)
-  criadoPorId    Int
-  criadoPor      User           @relation("OrcamentoCriador", fields: [criadoPorId], references: [id], onDelete: Restrict)
-  aprovadoPorId  Int?
-  aprovadoPor    User?          @relation("OrcamentoAprovador", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
-  aprovadoEm     DateTime?
-  confirmadoPorCliente Boolean  @default(false)
-  dataConfirmacao DateTime?
-  formaPagamento FormaPagamento?
-  tokenConfirmacao String? @unique @db.VarChar(64)
-  itens          OrcamentoItem[]
-  aditivos       AditivoOS[]
-  ordemServico   OrdemServico?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                   Int             @id @default(autoincrement())
+  codigo               String          @unique @db.VarChar(20)
+  atendimentoId        Int
+  atendimento          Atendimento     @relation(fields: [atendimentoId], references: [id], onDelete: Restrict)
+  visitaId             Int?
+  visita               VisitaTecnica?  @relation(fields: [visitaId], references: [id], onDelete: Restrict)
+  clienteId            Int?
+  cliente              Cliente?        @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  enderecoId           Int?
+  endereco             Endereco?       @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
+  urgencia             Urgencia
+  status               StatusOrcamento @default(RASCUNHO)
+  versao               Int             @default(1)
+  valorTotal           Decimal         @default(0) @db.Decimal(12, 2)
+  validade             DateTime
+  observacoes          String?         @db.VarChar(2000)
+  criadoPorId          Int
+  criadoPor            User            @relation("OrcamentoCriador", fields: [criadoPorId], references: [id], onDelete: Restrict)
+  aprovadoPorId        Int?
+  aprovadoPor          User?           @relation("OrcamentoAprovador", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
+  aprovadoEm           DateTime?
+  confirmadoPorCliente Boolean         @default(false)
+  dataConfirmacao      DateTime?
+  formaPagamento       FormaPagamento?
+  tokenConfirmacao     String?         @unique @db.VarChar(64)
+  itens                OrcamentoItem[]
+  aditivos             AditivoOS[]
+  ordemServico         OrdemServico?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 
   @@index([atendimentoId])
 }
 
 model OrcamentoItem {
-  id            Int           @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   orcamentoId   Int
-  orcamento     Orcamento     @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
+  orcamento     Orcamento       @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
   servicoItemId Int?
-  servicoItem   ServicoItem?  @relation(fields: [servicoItemId], references: [id], onDelete: SetNull)
-  nome          String        @db.VarChar(150)
+  servicoItem   ServicoItem?    @relation(fields: [servicoItemId], references: [id], onDelete: SetNull)
+  nome          String          @db.VarChar(150)
   tipo          TipoItemServico
-  quantidade    Decimal       @db.Decimal(12, 3)
+  quantidade    Decimal         @db.Decimal(12, 3)
   unidade       UnidadeMedida
-  valorUnitario Decimal       @db.Decimal(12, 2)
-  valorTotal    Decimal       @db.Decimal(12, 2)
+  valorUnitario Decimal         @db.Decimal(12, 2)
+  valorTotal    Decimal         @db.Decimal(12, 2)
 
   @@index([orcamentoId])
 }
@@ -471,103 +526,102 @@ model OrcamentoItem {
 // ============================================================
 
 model OrdemServico {
-  id                 Int            @id @default(autoincrement())
-  codigo             String         @unique @db.VarChar(20)
-  orcamentoId        Int            @unique
-  orcamento          Orcamento      @relation(fields: [orcamentoId], references: [id], onDelete: Restrict)
-  clienteId          Int?
-  cliente            Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  atendimentoId      Int?
-  atendimento        Atendimento?   @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
-  urgencia           Urgencia
-  status             StatusOS       @default(AGUARDANDO_APROVACAO)
-  valorTotal         Decimal        @default(0) @db.Decimal(12, 2)
-  enderecoId         Int?
-  endereco           Endereco?      @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
-  dataInicioPrevista DateTime?
-  dataInicioReal     DateTime?
-  dataFimReal        DateTime?
+  id                   Int                @id @default(autoincrement())
+  codigo               String             @unique @db.VarChar(20)
+  orcamentoId          Int                @unique
+  orcamento            Orcamento          @relation(fields: [orcamentoId], references: [id], onDelete: Restrict)
+  clienteId            Int?
+  cliente              Cliente?           @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  atendimentoId        Int?
+  atendimento          Atendimento?       @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
+  urgencia             Urgencia
+  status               StatusOS           @default(AGUARDANDO_APROVACAO)
+  valorTotal           Decimal            @default(0) @db.Decimal(12, 2)
+  enderecoId           Int?
+  endereco             Endereco?          @relation(fields: [enderecoId], references: [id], onDelete: SetNull)
+  dataInicioPrevista   DateTime?
+  dataInicioReal       DateTime?
+  dataFimReal          DateTime?
   tecnicoResponsavelId Int?
-  tecnicoResponsavel User?          @relation("TecnicoOS", fields: [tecnicoResponsavelId], references: [id], onDelete: SetNull)
-  aprovadoPorId      Int?
-  aprovadoPor        User?          @relation("AprovadorOS", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
-  aprovadoEm         DateTime?
-  rejeitadoEm        DateTime?
-  motivoRejeicao     String?        @db.VarChar(500)
-  observacoes        String?        @db.VarChar(2000)
-  confirmadoPorCliente Boolean      @default(false)
-  confirmadoEm       DateTime?
-  avaliacao          Int?
-  fases              FaseOS[]
-  compras            Compra[]
-  vendas             Venda[]
-  pagamentos         PagamentoOS[]
-  aditivos           AditivoOS[]
-  acessosCliente     AcessoCliente[]
-  historico          HistoricoPosicao[]
-  movimentos         MovimentoEstoque[]
-  notificacoes       Notificacao[]
-  assinatura         Assinatura?
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  tecnicoResponsavel   User?              @relation("TecnicoOS", fields: [tecnicoResponsavelId], references: [id], onDelete: SetNull)
+  aprovadoPorId        Int?
+  aprovadoPor          User?              @relation("AprovadorOS", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
+  aprovadoEm           DateTime?
+  rejeitadoEm          DateTime?
+  motivoRejeicao       String?            @db.VarChar(500)
+  observacoes          String?            @db.VarChar(2000)
+  confirmadoPorCliente Boolean            @default(false)
+  confirmadoEm         DateTime?
+  avaliacao            Int?
+  fases                FaseOS[]
+  compras              Compra[]
+  pagamentos           PagamentoOS[]
+  aditivos             AditivoOS[]
+  acessosCliente       AcessoCliente[]
+  historico            HistoricoPosicao[]
+  movimentos           MovimentoEstoque[]
+  notificacoes         Notificacao[]
+  assinatura           Assinatura?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
   @@index([status])
   @@index([urgencia])
 }
 
 model FaseOS {
-  id             Int          @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   ordemServicoId Int
-  ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  ordemServico   OrdemServico     @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
   faseId         Int
-  fase           Fase         @relation(fields: [faseId], references: [id], onDelete: Restrict)
-  nome           String       @db.VarChar(120)
-  ordem          Int          @default(0)
-  status         StatusFaseOS @default(PENDENTE)
+  fase           Fase             @relation(fields: [faseId], references: [id], onDelete: Restrict)
+  nome           String           @db.VarChar(120)
+  ordem          Int              @default(0)
+  status         StatusFaseOS     @default(PENDENTE)
   separacoes     Separacao[]
   materiais      FaseOSMaterial[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
   @@unique([ordemServicoId, faseId])
 }
 
 model FaseOSMaterial {
-  id            Int       @id @default(autoincrement())
-  faseOsId      Int
-  faseOs        FaseOS    @relation(fields: [faseOsId], references: [id], onDelete: Cascade)
-  materialId    Int
-  material      Material  @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  quantidadePlanejada Decimal @db.Decimal(12, 3)
+  id                  Int      @id @default(autoincrement())
+  faseOsId            Int
+  faseOs              FaseOS   @relation(fields: [faseOsId], references: [id], onDelete: Cascade)
+  materialId          Int
+  material            Material @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  quantidadePlanejada Decimal  @db.Decimal(12, 3)
 
   @@unique([faseOsId, materialId])
   @@index([materialId])
 }
 
 model AditivoOS {
-  id           Int           @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   ordemServicoId Int
-  ordemServico OrdemServico  @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
-  orcamentoId  Int?
-  orcamento    Orcamento?    @relation(fields: [orcamentoId], references: [id], onDelete: SetNull)
-  descricao    String        @db.VarChar(500)
-  valor        Decimal       @db.Decimal(12, 2)
-  itens        AditivoItem[]
-  createdAt    DateTime      @default(now())
+  ordemServico   OrdemServico  @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  orcamentoId    Int?
+  orcamento      Orcamento?    @relation(fields: [orcamentoId], references: [id], onDelete: SetNull)
+  descricao      String        @db.VarChar(500)
+  valor          Decimal       @db.Decimal(12, 2)
+  itens          AditivoItem[]
+  createdAt      DateTime      @default(now())
 }
 
 model AditivoItem {
-  id           Int          @id @default(autoincrement())
-  aditivoId    Int
-  aditivo      AditivoOS    @relation(fields: [aditivoId], references: [id], onDelete: Cascade)
+  id            Int             @id @default(autoincrement())
+  aditivoId     Int
+  aditivo       AditivoOS       @relation(fields: [aditivoId], references: [id], onDelete: Cascade)
   servicoItemId Int?
-  servicoItem  ServicoItem? @relation(fields: [servicoItemId], references: [id], onDelete: SetNull)
-  nome         String       @db.VarChar(150)
-  tipo         TipoItemServico
-  quantidade   Decimal      @db.Decimal(12, 3)
-  unidade      UnidadeMedida
-  valorUnitario Decimal     @db.Decimal(12, 2)
-  valorTotal   Decimal      @db.Decimal(12, 2)
+  servicoItem   ServicoItem?    @relation(fields: [servicoItemId], references: [id], onDelete: SetNull)
+  nome          String          @db.VarChar(150)
+  tipo          TipoItemServico
+  quantidade    Decimal         @db.Decimal(12, 3)
+  unidade       UnidadeMedida
+  valorUnitario Decimal         @db.Decimal(12, 2)
+  valorTotal    Decimal         @db.Decimal(12, 2)
 }
 
 model HistoricoPosicao {
@@ -595,52 +649,49 @@ model Assinatura {
 // ============================================================
 
 model Material {
-  id             Int             @id @default(autoincrement())
-  nome           String          @db.VarChar(150)
-  tipo           TipoMaterial    @default(MATERIAL)
-  unidade        UnidadeMedida
-  quantidadeMinima Decimal?      @db.Decimal(12, 3)
-  custoUnitario  Decimal?        @db.Decimal(12, 2)
-  status         StatusMaterial  @default(ATIVO)
-  movimentos     MovimentoEstoque[]
-  itensCompra    CompraItem[]
-  itensVenda     VendaItem[]
-  itensSeparacao SeparacaoItem[]
-  saldo          SaldoEstoque?
-  itensServico   ServicoItem[]
-  faseOsMateriais FaseOSMaterial[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id               Int                @id @default(autoincrement())
+  nome             String             @db.VarChar(150)
+  tipo             TipoMaterial       @default(MATERIAL)
+  unidade          UnidadeMedida
+  quantidadeMinima Decimal?           @db.Decimal(12, 3)
+  custoUnitario    Decimal?           @db.Decimal(12, 2)
+  status           StatusMaterial     @default(ATIVO)
+  movimentos       MovimentoEstoque[]
+  itensCompra      CompraItem[]
+  itensSeparacao   SeparacaoItem[]
+  saldo            SaldoEstoque?
+  itensServico     ServicoItem[]
+  faseOsMateriais  FaseOSMaterial[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@index([nome])
 }
 
 model SaldoEstoque {
-  materialId Int     @id
+  materialId Int      @id
   material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  saldo      Decimal @default(0) @db.Decimal(14, 3)
+  saldo      Decimal  @default(0) @db.Decimal(14, 3)
   updatedAt  DateTime @updatedAt
 }
 
 model MovimentoEstoque {
-  id             Int           @id @default(autoincrement())
-  materialId     Int
-  material       Material      @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  tipo           TipoMovimento
-  quantidade     Decimal       @db.Decimal(12, 3)
-  saldoApos      Decimal       @db.Decimal(14, 3)
-  ordemServicoId Int?
-  ordemServico   OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
-  compraItemId   Int?
-  compraItem     CompraItem?   @relation(fields: [compraItemId], references: [id], onDelete: SetNull)
-  vendaId        Int?
-  venda          Venda?        @relation(fields: [vendaId], references: [id], onDelete: SetNull)
+  id              Int            @id @default(autoincrement())
+  materialId      Int
+  material        Material       @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  tipo            TipoMovimento
+  quantidade      Decimal        @db.Decimal(12, 3)
+  saldoApos       Decimal        @db.Decimal(14, 3)
+  ordemServicoId  Int?
+  ordemServico    OrdemServico?  @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
+  compraItemId    Int?
+  compraItem      CompraItem?    @relation(fields: [compraItemId], references: [id], onDelete: SetNull)
   separacaoItemId Int?
-  separacaoItem  SeparacaoItem? @relation(fields: [separacaoItemId], references: [id], onDelete: SetNull)
+  separacaoItem   SeparacaoItem? @relation(fields: [separacaoItemId], references: [id], onDelete: SetNull)
   registradoPorId Int?
-  registradoPor  User?         @relation("MovimentoRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
-  observacao     String?       @db.VarChar(255)
-  createdAt      DateTime      @default(now())
+  registradoPor   User?          @relation("MovimentoRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
+  observacao      String?        @db.VarChar(255)
+  createdAt       DateTime       @default(now())
 
   @@index([materialId])
   @@index([ordemServicoId])
@@ -651,113 +702,77 @@ model MovimentoEstoque {
 // ============================================================
 
 model Compra {
-  id            Int            @id @default(autoincrement())
-  codigo        String         @unique @db.VarChar(20)
+  id             Int           @id @default(autoincrement())
+  codigo         String        @unique @db.VarChar(20)
   ordemServicoId Int?
-  ordemServico  OrdemServico?  @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
-  status        StatusCompra   @default(PENDENTE)
-  valorTotal    Decimal        @default(0) @db.Decimal(12, 2)
-  criadoPorId   Int
-  criadoPor     User           @relation("CompraCriador", fields: [criadoPorId], references: [id], onDelete: Restrict)
-  aprovadoPorId Int?
-  aprovadoPor   User?          @relation("CompraAprovador", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
-  aprovadoEm    DateTime?
-  recebidoEm    DateTime?
-  observacoes   String?        @db.VarChar(1000)
-  itens         CompraItem[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  ordemServico   OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
+  status         StatusCompra  @default(PENDENTE)
+  valorTotal     Decimal       @default(0) @db.Decimal(12, 2)
+  criadoPorId    Int
+  criadoPor      User          @relation("CompraCriador", fields: [criadoPorId], references: [id], onDelete: Restrict)
+  aprovadoPorId  Int?
+  aprovadoPor    User?         @relation("CompraAprovador", fields: [aprovadoPorId], references: [id], onDelete: SetNull)
+  aprovadoEm     DateTime?
+  recebidoEm     DateTime?
+  observacoes    String?       @db.VarChar(1000)
+  itens          CompraItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model CompraItem {
-  id              Int            @id @default(autoincrement())
-  compraId        Int
-  compra          Compra         @relation(fields: [compraId], references: [id], onDelete: Cascade)
-  materialId      Int
-  material        Material       @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  quantidade      Decimal        @db.Decimal(12, 3)
-  quantidadeRecebida Decimal     @default(0) @db.Decimal(12, 3)
-  valorUnitario   Decimal        @db.Decimal(12, 2)
-  valorTotal      Decimal        @db.Decimal(12, 2)
-  status          StatusCompraItem @default(PENDENTE)
-  movimentos      MovimentoEstoque[]
+  id                 Int                @id @default(autoincrement())
+  compraId           Int
+  compra             Compra             @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  materialId         Int
+  material           Material           @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  quantidade         Decimal            @db.Decimal(12, 3)
+  quantidadeRecebida Decimal            @default(0) @db.Decimal(12, 3)
+  valorUnitario      Decimal            @db.Decimal(12, 2)
+  valorTotal         Decimal            @db.Decimal(12, 2)
+  status             StatusCompraItem   @default(PENDENTE)
+  movimentos         MovimentoEstoque[]
 
   @@unique([compraId, materialId])
   @@index([materialId])
 }
 
 // ============================================================
-// VENDAS
-// ============================================================
-
-model Venda {
-  id              Int           @id @default(autoincrement())
-  codigo          String        @unique @db.VarChar(20)
-  atendimentoId   Int?
-  atendimento     Atendimento?  @relation(fields: [atendimentoId], references: [id], onDelete: SetNull)
-  clienteId       Int?
-  cliente         Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  ordemServicoId  Int?
-  ordemServico    OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
-  status          StatusVenda   @default(PENDENTE)
-  valorTotal      Decimal       @default(0) @db.Decimal(12, 2)
-  formaPagamento  FormaPagamento?
-  registradoPorId Int?
-  registradoPor   User?         @relation("VendaRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
-  itens           VendaItem[]
-  movimentos      MovimentoEstoque[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-}
-
-model VendaItem {
-  id           Int       @id @default(autoincrement())
-  vendaId      Int
-  venda        Venda     @relation(fields: [vendaId], references: [id], onDelete: Cascade)
-  materialId   Int
-  material     Material  @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  quantidade   Decimal   @db.Decimal(12, 3)
-  valorUnitario Decimal  @db.Decimal(12, 2)
-  valorTotal   Decimal   @db.Decimal(12, 2)
-
-  @@index([materialId])
-}
-
 // ============================================================
 // SEPARAÇÃO / CONFERÊNCIA (T-3 dias)
 // ============================================================
 
 model Separacao {
-  id            Int            @id @default(autoincrement())
-  codigo        String         @unique @db.VarChar(20)
-  faseOsId      Int
-  faseOs        FaseOS         @relation(fields: [faseOsId], references: [id], onDelete: Cascade)
+  id              Int             @id @default(autoincrement())
+  codigo          String          @unique @db.VarChar(20)
+  faseOsId        Int
+  faseOs          FaseOS          @relation(fields: [faseOsId], references: [id], onDelete: Cascade)
   dataNecessidade DateTime
-  status        StatusSeparacao @default(PENDENTE)
-  criadoPorId   Int?
-  criadoPor     User?          @relation("SeparacaoCriador", fields: [criadoPorId], references: [id], onDelete: SetNull)
-  itens         SeparacaoItem[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  status          StatusSeparacao @default(PENDENTE)
+  criadoPorId     Int?
+  criadoPor       User?           @relation("SeparacaoCriador", fields: [criadoPorId], references: [id], onDelete: SetNull)
+  itens           SeparacaoItem[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model SeparacaoItem {
-  id                Int             @id @default(autoincrement())
-  separacaoId       Int
-  separacao         Separacao       @relation(fields: [separacaoId], references: [id], onDelete: Cascade)
-  materialId        Int
-  material          Material        @relation(fields: [materialId], references: [id], onDelete: Restrict)
-  quantidadeNecessaria Decimal      @db.Decimal(12, 3)
-  quantidadeSeparada Decimal        @default(0) @db.Decimal(12, 3)
-  status            StatusItemSep   @default(PENDENTE)
-  retiradoPorId     Int?
-  retiradoPor       User?           @relation("ItemSepRetiradoPor", fields: [retiradoPorId], references: [id], onDelete: SetNull)
-  retiradoEm        DateTime?
-  conferidoPorId    Int?
-  conferidoPor      User?           @relation("ItemSepConferidoPor", fields: [conferidoPorId], references: [id], onDelete: SetNull)
-  conferidoEm       DateTime?
-  observacao        String?         @db.VarChar(500)
-  movimentos        MovimentoEstoque[]
+  id                   Int                @id @default(autoincrement())
+  separacaoId          Int
+  separacao            Separacao          @relation(fields: [separacaoId], references: [id], onDelete: Cascade)
+  materialId           Int
+  material             Material           @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  quantidadeNecessaria Decimal            @db.Decimal(12, 3)
+  quantidadeSeparada   Decimal            @default(0) @db.Decimal(12, 3)
+  status               StatusItemSep      @default(PENDENTE)
+  retiradoPorId        Int?
+  retiradoPor          User?              @relation("ItemSepRetiradoPor", fields: [retiradoPorId], references: [id], onDelete: SetNull)
+  retiradoEm           DateTime?
+  conferidoPorId       Int?
+  conferidoPor         User?              @relation("ItemSepConferidoPor", fields: [conferidoPorId], references: [id], onDelete: SetNull)
+  conferidoEm          DateTime?
+  observacao           String?            @db.VarChar(500)
+  movimentos           MovimentoEstoque[]
 
   @@unique([separacaoId, materialId])
   @@index([materialId])
@@ -768,36 +783,36 @@ model SeparacaoItem {
 // ============================================================
 
 model LancamentoFinanceiro {
-  id            Int            @id @default(autoincrement())
-  tipo          TipoLancamento
-  descricao     String         @db.VarChar(255)
-  valor         Decimal        @db.Decimal(12, 2)
-  data          DateTime       @default(now())
-  categoria     String?        @db.VarChar(100)
+  id             Int              @id @default(autoincrement())
+  tipo           TipoLancamento
+  descricao      String           @db.VarChar(255)
+  valor          Decimal          @db.Decimal(12, 2)
+  data           DateTime         @default(now())
+  categoria      String?          @db.VarChar(100)
   formaPagamento FormaPagamento?
-  origem        OrigemLancamento @default(AJUSTE)
-  origemId      Int?
-  criadoPorId   Int?
-  criadoPor     User?          @relation("LancamentoCriadoPor", fields: [criadoPorId], references: [id], onDelete: SetNull)
-  pagamentos    PagamentoOS[]
-  createdAt     DateTime       @default(now())
+  origem         OrigemLancamento @default(AJUSTE)
+  origemId       Int?
+  criadoPorId    Int?
+  criadoPor      User?            @relation("LancamentoCriadoPor", fields: [criadoPorId], references: [id], onDelete: SetNull)
+  pagamentos     PagamentoOS[]
+  createdAt      DateTime         @default(now())
 
   @@index([data])
 }
 
 model PagamentoOS {
-  id            Int               @id @default(autoincrement())
-  ordemServicoId Int
-  ordemServico  OrdemServico      @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
-  valor         Decimal           @db.Decimal(12, 2)
-  formaPagamento FormaPagamento
-  data          DateTime          @default(now())
-  observacoes   String?           @db.VarChar(500)
+  id              Int                   @id @default(autoincrement())
+  ordemServicoId  Int
+  ordemServico    OrdemServico          @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  valor           Decimal               @db.Decimal(12, 2)
+  formaPagamento  FormaPagamento
+  data            DateTime              @default(now())
+  observacoes     String?               @db.VarChar(500)
   registradoPorId Int?
-  registradoPor User?             @relation("PagamentoRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
-  lancamentoId  Int?
-  lancamento    LancamentoFinanceiro? @relation(fields: [lancamentoId], references: [id], onDelete: SetNull)
-  createdAt     DateTime          @default(now())
+  registradoPor   User?                 @relation("PagamentoRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
+  lancamentoId    Int?
+  lancamento      LancamentoFinanceiro? @relation(fields: [lancamentoId], references: [id], onDelete: SetNull)
+  createdAt       DateTime              @default(now())
 
   @@index([ordemServicoId])
 }
@@ -807,17 +822,17 @@ model PagamentoOS {
 // ============================================================
 
 model AcessoCliente {
-  id            Int           @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   ordemServicoId Int
-  ordemServico  OrdemServico  @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
-  clienteId     Int?
-  cliente       Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  nome          String        @db.VarChar(120)
-  token         String        @unique @db.VarChar(64)
-  expiraEm      DateTime
-  ativo         Boolean       @default(true)
-  ultimoAcesso  DateTime?
-  createdAt     DateTime      @default(now())
+  ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  clienteId      Int?
+  cliente        Cliente?     @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  nome           String       @db.VarChar(120)
+  token          String       @unique @db.VarChar(64)
+  expiraEm       DateTime
+  ativo          Boolean      @default(true)
+  ultimoAcesso   DateTime?
+  createdAt      DateTime     @default(now())
 
   @@index([ordemServicoId])
 }
@@ -827,38 +842,38 @@ model AcessoCliente {
 // ============================================================
 
 model Notificacao {
-  id            Int           @id @default(autoincrement())
-  userId        Int
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  titulo        String        @db.VarChar(150)
-  mensagem      String        @db.VarChar(500)
-  link          String?       @db.VarChar(255)
-  status        StatusNotificacao @default(NAO_LIDA)
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  titulo         String            @db.VarChar(150)
+  mensagem       String            @db.VarChar(500)
+  link           String?           @db.VarChar(255)
+  status         StatusNotificacao @default(NAO_LIDA)
   ordemServicoId Int?
-  ordemServico  OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
-  createdAt     DateTime      @default(now())
+  ordemServico   OrdemServico?     @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
+  createdAt      DateTime          @default(now())
 
   @@index([userId, status])
 }
 
 model PasswordResetToken {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token     String   @unique @db.VarChar(64)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique @db.VarChar(64)
   expiraEm  DateTime
   usadoEm   DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([userId])
 }
 
 model Upload {
-  id          Int      @id @default(autoincrement())
-  url         String   @db.VarChar(255)
-  tipo        String   @db.VarChar(50)
-  descricao   String?  @db.VarChar(255)
-  uploaderId  Int?
-  uploader    User?    @relation("UploadUploader", fields: [uploaderId], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  url        String   @db.VarChar(255)
+  tipo       String   @db.VarChar(50)
+  descricao  String?  @db.VarChar(255)
+  uploaderId Int?
+  uploader   User?    @relation("UploadUploader", fields: [uploaderId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
 }

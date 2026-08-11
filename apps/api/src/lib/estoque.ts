@@ -10,7 +10,6 @@ interface MovimentoInput {
   registradoPorId?: number | null;
   ordemServicoId?: number | null;
   compraItemId?: number | null;
-  vendaId?: number | null;
   separacaoItemId?: number | null;
   observacao?: string;
 }
@@ -47,7 +46,6 @@ export async function aplicarMovimento(
       registradoPorId: params.registradoPorId ?? null,
       ordemServicoId: params.ordemServicoId ?? null,
       compraItemId: params.compraItemId ?? null,
-      vendaId: params.vendaId ?? null,
       separacaoItemId: params.separacaoItemId ?? null,
       observacao: params.observacao ?? null,
     },

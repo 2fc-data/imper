@@ -20,16 +20,15 @@ import {
 import { cn } from "../lib/utils";
 
 const textareaClasses =
-  "flex min-h-[110px] w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+  "flex min-h-[110px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 const selectClasses =
-  "flex h-11 w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+  "flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 const ICONES = [
   { rotulo: "Piscina / Infiltração", d: "M19 9l-7 12-7-12a7 7 0 1114 0z" },
   { rotulo: "Manta asfáltica", d: "M4 18l2-8h12l2 8M7 10l1-5h8l1 5M8 10a2 2 0 100 4M16 10a2 2 0 100 4" },
   { rotulo: "Lajes e paredes", d: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" },
-  { rotulo: "Venda de produtos", d: "M12 2l9 5-9 5-9-5 9-5zM12 12l9-5v9l-9 5-9-5V7l9 5z" },
   { rotulo: "Gota d'água", d: "M12 2.5c3.5 4 6.5 7.4 6.5 11a6.5 6.5 0 11-13 0c0-3.6 3-7 6.5-11z" },
   { rotulo: "Escudo de proteção", d: "M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z" },
   { rotulo: "Martelo", d: "M15 12l6-6a2.8 2.8 0 00-4-4l-6 6M5 21l4-4 4 4m-6-1L3 14a2 2 0 014 0" },

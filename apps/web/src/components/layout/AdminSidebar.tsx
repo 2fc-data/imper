@@ -59,7 +59,7 @@ export function AdminSidebar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={onClose}
-              className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+              className="fixed inset-0 z-40 bg-overlay/40 lg:hidden"
             />
             <motion.aside
               initial={{ x: "-100%" }}

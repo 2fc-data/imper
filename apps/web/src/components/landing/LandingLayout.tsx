@@ -41,7 +41,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="sticky top-0 z-10 border-b bg-white dark:bg-background"
+        className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-md"
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-x-4 px-4 py-3">
           <Link to="/" className="text-lg font-bold tracking-tight">
@@ -56,7 +56,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                     end={link.to === "/"}
                     className={({ isActive }) =>
                       cn(
-                        "rounded-lg px-3 py-2 text-sm font-medium 35% 0.010 240transition-colors hover:text-primary",
+                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-primary",
                         isActive && "text-primary",
                       )
                     }
@@ -71,7 +71,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
             <Link
               to="/login"
-              className="hidden rounded-lg px-3 py-2 text-sm font-medium 35% 0.010 240transition-colors hover:text-primary lg:block"
+              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-primary lg:block"
             >
               Office
             </Link>
@@ -80,7 +80,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               aria-label="Abrir menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg 35% 0.010 240 transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-accent hover:text-foreground lg:hidden"
             >
               {menuOpen ? (
                 <svg
@@ -120,7 +120,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setMenuOpen(false)}
-                className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden"
+                className="fixed inset-0 z-40 bg-overlay/60 backdrop-blur-xs lg:hidden"
               />
               
               {/* Menu com efeito drawer deslizando de cima para baixo */}
@@ -172,9 +172,9 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         </AnimatePresence>
       </m.header>
 
-      <main className="flex-1 bg-white dark:bg-background h-full">{children}</main>
+      <main className="flex-1 bg-background h-full">{children}</main>
 
-      <footer className="border-t bg-primary text-primary-foreground/80 py-8 dark:bg-background">
+      <footer className="border-t bg-foreground text-primary-foreground/80 py-8">
         <div className="mx-auto grid max-w-5xl gap-8 px-4 sm:grid-cols-3">
           <div className="flex flex-col items-center gap-4 text-center sm:items-start sm:text-left">
             <span className="text-lg font-bold tracking-tight">Imperpoços</span>
@@ -217,7 +217,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 href="https://www.instagram.com/imperpocos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium 35% 0.010 240transition-colors hover:text-secondary"
+                className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-secondary"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -244,7 +244,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm 35% 0.010 240transition-colors hover:text-secondary"
+                    className="text-sm transition-colors hover:text-secondary"
                   >
                     {link.label}
                   </Link>
@@ -253,7 +253,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               <li>
                 <Link
                   to="/login"
-                  className="text-sm 35% 0.010 240transition-colors hover:text-secondary"
+                  className="text-sm transition-colors hover:text-secondary"
                 >
                   Office
                 </Link>

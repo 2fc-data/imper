@@ -11,7 +11,7 @@ const COR_MARCADOR = "oklch(70% 0.14 227)";
 function createMarcador() {
   return L.divIcon({
     className: "",
-    html: `<div style="width:18px;height:18px;border-radius:9999px;background:${COR_MARCADOR};border:3px solid #fff;box-shadow:0 2px 6px rgb(0 0 0 / 0.35)"></div>`,
+    html: `<div style="width:18px;height:18px;border-radius:9999px;background:${COR_MARCADOR};border:3px solid var(--marker-ring);box-shadow:0 2px 6px rgb(0 0 0 / 0.35)"></div>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
     popupAnchor: [0, -10],
@@ -57,7 +57,7 @@ export default function AreaAtuacaoPage() {
   }, [pontos]);
 
   return (
-    <section id="area-de-atuacao" className="bg-white py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
+    <section id="area-de-atuacao" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Área de atuação

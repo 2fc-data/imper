@@ -11,7 +11,7 @@ export default function ContatoPage() {
   const inView = useInView(cardRef, VIEWPORT);
 
   return (
-    <section id="contato" className="bg-white py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
+    <section id="contato" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
       <div className="mx-auto max-w-5xl px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Canais de atendimento
@@ -24,7 +24,7 @@ export default function ContatoPage() {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={fadeUp}
-          className="mt-8 overflow-hidden rounded-2xl bg-primary text-primary-foreground"
+          className="mt-8 overflow-hidden rounded-2xl bg-foreground text-primary-foreground"
         >
           <div className="p-6 sm:p-10">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">

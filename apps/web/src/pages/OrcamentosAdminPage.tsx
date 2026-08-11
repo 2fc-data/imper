@@ -467,7 +467,7 @@ export function OrcamentosAdminPage({ initialView = "lista", onNavegar }: Orcame
 
       {/* Modal de Visualização */}
       {orcamentoSelecionado && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/50 p-4">
           <div className="w-full max-w-lg rounded-xl bg-card p-5 shadow-lg space-y-4 border">
             <h3 className="text-lg font-bold">Orçamento #{orcamentoSelecionado.codigo}</h3>
             <div className="text-sm space-y-2 text-muted-foreground">

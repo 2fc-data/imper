@@ -58,7 +58,7 @@ export default function Turnstile({ onChange }: { onChange: (token: string) => v
   return (
     <>
       {devMode && (
-        <p className="rounded-md bg-yellow-500/10 px-3 py-2 text-xs text-yellow-600">
+        <p className="rounded-md bg-warning/10 px-3 py-2 text-xs text-warning">
           Turnstile em modo de desenvolvimento (verificação de humano
           desativada). Configure <code>VITE_TURNSTILE_SITE_KEY</code> para
           ativar a verificação real.

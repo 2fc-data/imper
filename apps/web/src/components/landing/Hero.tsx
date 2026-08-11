@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative mx-auto w-full max-w-[1400px] overflow-hidden border-x border-b bg-white dark:bg-background"
+      className="relative mx-auto w-full max-w-[1400px] overflow-hidden border-x border-b bg-background"
     >
       <m.img
         src={heroBg}
@@ -34,7 +34,7 @@ export function Hero() {
           <Link
             to="/orcamento"
             className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
+            text-foreground bg-background/90 hover:bg-accent/90 hover:text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
             Formulário Atendimento
@@ -44,7 +44,7 @@ export function Hero() {
           <Link
             to="/servicos"
             className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            text-black bg-white/90 hover:bg-accent/90 hover:text-accent-foreground
+            text-foreground bg-background/90 hover:bg-accent/90 hover:text-accent-foreground
             dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
           >
             Nossos Serviços

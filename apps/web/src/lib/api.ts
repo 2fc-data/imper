@@ -470,7 +470,7 @@ export interface OrdemServicoAdminItem {
   cliente?: { id: number; nome: string } | null;
   atendimento?: { id: number } | null;
   tecnicoResponsavel?: { id: number; nome: string } | null;
-  _count?: { fases: number; compras: number; vendas: number };
+  _count?: { fases: number; compras: number };
 }
 
 export async function listarOSAdmin(params?: { status?: string; q?: string }): Promise<OrdemServicoAdminItem[]> {
@@ -495,6 +495,194 @@ export async function concluirOSAdmin(id: number): Promise<OrdemServicoAdminItem
 
 export async function cancelarOSAdmin(id: number, motivo?: string): Promise<OrdemServicoAdminItem> {
   return api.post<OrdemServicoAdminItem>(`/os/${id}/cancelar`, { motivo });
+}
+
+// ---------------------------------------------------------------------------
+// Agendamentos
+// ---------------------------------------------------------------------------
+
+export type TipoAgendamento = "VISITA" | "ORCAMENTO" | "RETORNO" | "REUNIAO";
+export type StatusAgendamento =
+  | "PENDENTE"
+  | "CONFIRMADO"
+  | "REALIZADO"
+  | "CANCELADO"
+  | "NAO_COMPARECEU";
+export type ResultadoVisita =
+  | "SEM_ACAO"
+  | "ORCAMENTO_NECESSARIO"
+  | "OBRA_NECESSARIA"
+  | "CLIENTE_AUSENTE";
+export type StatusVisita = "AGENDADA" | "REALIZADA" | "CANCELADA";
+
+export interface EnderecoItem {
+  id: number;
+  rotulo?: string;
+  logradouro: string;
+  numero?: string | null;
+  complemento?: string | null;
+  bairro?: string | null;
+  cidade?: string | null;
+  estado?: string | null;
+  cep?: string | null;
+  principal?: boolean;
+}
+
+export interface AgendamentoItem {
+  id: number;
+  clienteId: number;
+  atendimentoId: number | null;
+  enderecoId: number | null;
+  userId: number | null;
+  tipo: TipoAgendamento;
+  status: StatusAgendamento;
+  dataPrevista: string;
+  dataRealizada: string | null;
+  observacoes: string | null;
+  criadoPorId: number | null;
+  createdAt: string;
+  updatedAt: string;
+  cliente?: { id: number; nome: string; telefone: string | null } | null;
+  user?: { id: number; nome: string } | null;
+  criadoPor?: { id: number; nome: string } | null;
+  endereco?: EnderecoItem | null;
+  atendimento?: { id: number; descricao: string; urgencia?: Urgencia | null } | null;
+}
+
+export interface CriarAgendamentoInput {
+  clienteId: number;
+  atendimentoId?: number | null;
+  enderecoId?: number | null;
+  userId?: number | null;
+  tipo?: TipoAgendamento;
+  status?: StatusAgendamento;
+  dataPrevista: string;
+  dataRealizada?: string | null;
+  observacoes?: string;
+}
+
+export interface ListarAgendamentosParams {
+  status?: StatusAgendamento;
+  tipo?: TipoAgendamento;
+  clienteId?: number;
+  userId?: number;
+  dataDe?: string;
+  dataAte?: string;
+}
+
+export async function listarAgendamentos(
+  params?: ListarAgendamentosParams,
+): Promise<AgendamentoItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.tipo) searchParams.set("tipo", params.tipo);
+  if (params?.clienteId) searchParams.set("clienteId", String(params.clienteId));
+  if (params?.userId) searchParams.set("userId", String(params.userId));
+  if (params?.dataDe) searchParams.set("dataDe", params.dataDe);
+  if (params?.dataAte) searchParams.set("dataAte", params.dataAte);
+  const queryStr = searchParams.toString();
+  return api.get<AgendamentoItem[]>(`/agendamentos${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function criarAgendamento(input: CriarAgendamentoInput): Promise<AgendamentoItem> {
+  return api.post<AgendamentoItem>("/agendamentos", input);
+}
+
+export async function detalharAgendamento(id: number): Promise<AgendamentoItem> {
+  return api.get<AgendamentoItem>(`/agendamentos/${id}`);
+}
+
+export async function atualizarAgendamento(
+  id: number,
+  input: Partial<CriarAgendamentoInput>,
+): Promise<AgendamentoItem> {
+  return api.patch<AgendamentoItem>(`/agendamentos/${id}`, input);
+}
+
+export async function atualizarStatusAgendamento(
+  id: number,
+  status: StatusAgendamento,
+  dataRealizada?: string | null,
+): Promise<AgendamentoItem> {
+  return api.patch<AgendamentoItem>(`/agendamentos/${id}/status`, {
+    status,
+    dataRealizada,
+  });
+}
+
+export async function removerAgendamento(id: number): Promise<void> {
+  return api.del(`/agendamentos/${id}`);
+}
+
+// ---------------------------------------------------------------------------
+// Visitas (v2)
+// ---------------------------------------------------------------------------
+
+export interface VisitaItem {
+  id: number;
+  atendimentoId: number;
+  tecnicoId: number | null;
+  dataPrevista: string;
+  dataRealizada: string | null;
+  status: StatusVisita;
+  urgencia: Urgencia | null;
+  enderecoId: number | null;
+  relatorio: string | null;
+  resultado: ResultadoVisita | null;
+  constatacao: string | null;
+  necessitaOrcamento: boolean;
+  necessitaObra: boolean;
+  createdAt: string;
+  updatedAt: string;
+  atendimento?: {
+    id: number;
+    descricao: string;
+    urgencia?: Urgencia | null;
+    status?: string | null;
+    cliente?: { id: number; nome: string } | null;
+  } | null;
+  endereco?: EnderecoItem | null;
+  tecnico?: { id: number; nome: string } | null;
+  _count?: { orcamentos: number };
+}
+
+export interface AgendarVisitaInput {
+  atendimentoId: number;
+  tecnicoId?: number | null;
+  dataPrevista?: string;
+  urgencia?: Urgencia;
+  enderecoId?: number | null;
+}
+
+export interface RealizarVisitaV2Input {
+  relatorio?: string;
+  urgencia?: Urgencia;
+  resultado?: ResultadoVisita;
+  constatacao?: string;
+  necessitaOrcamento?: boolean;
+  necessitaObra?: boolean;
+}
+
+export async function listarVisitas(params?: { status?: StatusVisita }): Promise<VisitaItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  const queryStr = searchParams.toString();
+  return api.get<VisitaItem[]>(`/visitas${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function agendarVisita(input: AgendarVisitaInput): Promise<VisitaItem> {
+  return api.post<VisitaItem>("/visitas", input);
+}
+
+export async function realizarVisitaV2(
+  id: number,
+  input: RealizarVisitaV2Input,
+): Promise<VisitaItem> {
+  return api.post<VisitaItem>(`/visitas/${id}/realizar`, input);
+}
+
+export async function cancelarVisita(id: number): Promise<VisitaItem> {
+  return api.post<VisitaItem>(`/visitas/${id}/cancelar`);
 }
 
 

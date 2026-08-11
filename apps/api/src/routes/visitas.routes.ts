@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { StatusVisita, Urgencia } from "@prisma/client";
+import { ResultadoVisita, StatusVisita, Urgencia } from "@prisma/client";
 import { parseBody, parseParams, parseQuery } from "../lib/validators";
 import { wrap } from "../lib/errors";
 import { authMiddleware } from "../lib/auth";
@@ -37,6 +37,10 @@ router.post("/:id/realizar", authMiddleware("ADMIN", "SUPERVISOR", "TECNICO"), w
     z.object({
       relatorio: z.string().optional(),
       urgencia: z.nativeEnum(Urgencia).optional(),
+      resultado: z.nativeEnum(ResultadoVisita).optional(),
+      constatacao: z.string().optional(),
+      necessitaOrcamento: z.boolean().optional(),
+      necessitaObra: z.boolean().optional(),
     }),
     req.body,
   );
