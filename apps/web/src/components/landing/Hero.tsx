@@ -14,11 +14,12 @@ export function Hero() {
         src={heroBg}
         alt="Imperpoços engenharia em impermeabilização"
         loading="eager"
-        className="block w-full object-cover rounded-sm"
+        className="block w-full object-cover rounded-sm opacity-75 dark:opacity-75"
         variants={stagger(0.12)}
         initial="hidden"
         animate="visible"
       />
+      <div aria-hidden="true" className="absolute inset-0" />
       <m.div
         className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 sm:flex-row sm:items-center sm:justify-center"
         variants={stagger(0.12)}

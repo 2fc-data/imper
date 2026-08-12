@@ -12,7 +12,7 @@ export default function ContatoPage() {
 
   return (
     <section id="contato" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Canais de atendimento
         </h2>
@@ -33,7 +33,7 @@ export default function ContatoPage() {
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/80 sm:text-base">
               Peça orçamentos ou tire dúvidas sobre nossos serviços.
             </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="mt-6 grid gap-4 sm:grid-cols-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60">
                   WhatsApp
@@ -69,19 +69,19 @@ export default function ContatoPage() {
                   impershop@imperpocos.com.br
                 </a>
               </div>
-            </div>
-            <div className="mt-6">
-              <Link
-                to="/orcamento"
-                className={cn(
-                  buttonVariants({
-                    size: "lg",
-                    className: "bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
-                  }),
-                )}
-              >
-                Orçamento online
-              </Link>
+              <div className="flex items-center">
+                <Link
+                  to="/orcamento"
+                  className={cn(
+                    buttonVariants({
+                      size: "lg",
+                      className: "w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
+                    }),
+                  )}
+                >
+                  Orçamento online
+                </Link>
+              </div>
             </div>
           </div>
         </m.div>

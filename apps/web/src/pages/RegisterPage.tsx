@@ -2,10 +2,9 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Papel } from "@imper/shared";
-import { Button, buttonVariants } from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { cn } from "../lib/utils";
 import Turnstile from "../components/Turnstile";
 import {
   Card,
@@ -14,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { AuthShell } from "../components/auth/AuthShell";
 
 export default function RegisterPage() {
   const { cadastrar } = useAuth();
@@ -49,10 +49,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">Criar conta</CardTitle>
+    <AuthShell>
+      <Card className="border-border/60 bg-card/80 shadow-xl backdrop-blur">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl tracking-tight">Criar conta</CardTitle>
           <CardDescription>
             Cadastre-se para acompanhar seus pedidos de impermeabilização
           </CardDescription>
@@ -114,47 +114,23 @@ export default function RegisterPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
+              className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
               disabled={loading}
             >
               {loading ? "Cadastrando..." : "Criar conta"}
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Já tem conta?{" "}
             <Link
               to="/login"
-              className="font-medium text-accent transition-colors hover:underline underline-offset-4"
+              className="font-semibold text-accent transition-colors hover:underline underline-offset-4"
             >
               Entrar
             </Link>
           </p>
-          <Link
-            to="/"
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                size: "lg",
-                className: "mt-4 w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
-              }),
-            )}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 shrink-0"
-              aria-hidden="true"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Voltar para Home
-          </Link>
         </CardContent>
       </Card>
-    </div>
+    </AuthShell>
   );
 }

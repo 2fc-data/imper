@@ -2,10 +2,9 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Papel } from "@imper/shared";
-import { Button, buttonVariants } from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -13,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { AuthShell } from "../components/auth/AuthShell";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -40,12 +40,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">ImperMeab</CardTitle>
+    <AuthShell>
+      <Card className="border-border/60 bg-card/80 shadow-xl backdrop-blur">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl tracking-tight">Acessar sistema</CardTitle>
           <CardDescription>
-            Acesse o sistema de gestão de impermeabilização
+            Gestão de impermeabilização da Imperpoços
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -63,7 +63,15 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="senha">Senha</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="senha">Senha</Label>
+                <Link
+                  to="/recuperar-senha"
+                  className="text-xs font-medium text-muted-foreground transition-colors hover:text-accent"
+                >
+                  Esqueci a senha
+                </Link>
+              </div>
               <Input
                 id="senha"
                 type="password"
@@ -82,52 +90,23 @@ export default function LoginPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
+              className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
-          <div className="mt-4 flex items-center justify-between text-sm">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Não tem conta?{" "}
             <Link
               to="/cadastro"
-              className="font-medium text-muted-foreground transition-colors hover:text-accent underline-offset-4 hover:underline"
+              className="font-semibold text-accent transition-colors hover:underline underline-offset-4"
             >
               Criar conta
             </Link>
-            <Link
-              to="/recuperar-senha"
-              className="font-medium text-muted-foreground transition-colors hover:text-accent underline-offset-4 hover:underline"
-            >
-              Esqueci a senha
-            </Link>
-          </div>
-          <Link
-            to="/"
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                size: "lg",
-                className: "mt-4 w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
-              }),
-            )}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 shrink-0"
-              aria-hidden="true"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Voltar para Home
-          </Link>
+          </p>
         </CardContent>
       </Card>
-    </div>
+    </AuthShell>
   );
 }

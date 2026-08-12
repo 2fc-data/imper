@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { recuperarSenha } from "../lib/api";
-import { Button, buttonVariants } from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { AuthShell } from "../components/auth/AuthShell";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -36,10 +36,10 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">Recuperar senha</CardTitle>
+    <AuthShell>
+      <Card className="border-border/60 bg-card/80 shadow-xl backdrop-blur">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl tracking-tight">Recuperar senha</CardTitle>
           <CardDescription>
             Informe seu e-mail para receber um link de redefinição
           </CardDescription>
@@ -66,13 +66,7 @@ export default function ForgotPasswordPage() {
               )}
               <Link
                 to="/login"
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                    className: "w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
-                  }),
-                )}
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover-lift"
               >
                 Voltar para o login
               </Link>
@@ -100,7 +94,7 @@ export default function ForgotPasswordPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
+                  className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                   disabled={loading}
                 >
                   {loading ? "Enviando..." : "Enviar link"}
@@ -108,13 +102,7 @@ export default function ForgotPasswordPage() {
               </form>
               <Link
                 to="/login"
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                    className: "mt-4 w-full border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold transition-all",
-                  }),
-                )}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover-lift"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -134,6 +122,6 @@ export default function ForgotPasswordPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </AuthShell>
   );
 }

@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { redefinirSenha } from "../lib/api";
-import { Button, buttonVariants } from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { AuthShell } from "../components/auth/AuthShell";
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -45,10 +45,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">Redefinir senha</CardTitle>
+    <AuthShell>
+      <Card className="border-border/60 bg-card/80 shadow-xl backdrop-blur">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl tracking-tight">Redefinir senha</CardTitle>
           <CardDescription>Digite sua nova senha</CardDescription>
         </CardHeader>
         <CardContent>
@@ -59,12 +59,7 @@ export default function ResetPasswordPage() {
               </p>
               <Link
                 to="/login"
-                className={cn(
-                  buttonVariants({
-                    size: "lg",
-                    className: "w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
-                  }),
-                )}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-md transition-all hover:bg-accent hover:text-accent-foreground hover:shadow-none hover-lift"
               >
                 Ir para o login
               </Link>
@@ -103,7 +98,7 @@ export default function ResetPasswordPage() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
+                className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                 disabled={loading}
               >
                 {loading ? "Salvando..." : "Redefinir senha"}
@@ -112,6 +107,6 @@ export default function ResetPasswordPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </AuthShell>
   );
 }

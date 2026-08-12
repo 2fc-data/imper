@@ -58,7 +58,7 @@ export default function AreaAtuacaoPage() {
 
   return (
     <section id="area-de-atuacao" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Área de atuação
         </h2>

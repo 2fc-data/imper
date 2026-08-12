@@ -17,7 +17,7 @@ export default function ServicosPage() {
 
   return (
     <section id="servicos" className="bg-background py-12 my-16 sm:py-16 sm:my-24 dark:bg-card/60">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Nossas especialidades
         </h2>
@@ -27,7 +27,7 @@ export default function ServicosPage() {
 
         <m.div
           ref={gridRef}
-          className="mt-8 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           variants={stagger()}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}

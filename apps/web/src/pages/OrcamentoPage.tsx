@@ -117,7 +117,7 @@ export default function OrcamentoPage() {
   if (enviado) {
     return (
       <section className="border-y bg-card/60 py-12 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4">
+        <div className="mx-auto w-full max-w-[1400px] px-4">
           <m.div
             initial="hidden"
             animate="visible"
@@ -153,7 +153,7 @@ export default function OrcamentoPage() {
 
   return (
     <section className="border-y bg-card/60 py-12 sm:py-16">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Entre em Contato
         </h2>
@@ -347,7 +347,7 @@ export default function OrcamentoPage() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all"
+                    className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                     disabled={loading}
                   >
                     {loading ? "Enviando..." : "Enviar mensagem"}

@@ -44,7 +44,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-md"
       >
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-x-4 px-4 py-3">
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-x-4 px-4 py-3">
           <Link
             to="/"
             className="rounded px-1.5 py-0.5 text-lg font-bold tracking-tight transition-colors hover:text-accent"
@@ -75,9 +75,23 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
             <Link
               to="/login"
-              className="hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-accent lg:block"
+              aria-label="Fazer login"
+              className="hidden items-center justify-center rounded-lg p-2 transition-colors hover:bg-accent hover:text-foreground lg:inline-flex"
             >
-              Office
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                <path d="M10 17l5-5-5-5" />
+                <path d="M15 12H3" />
+              </svg>
             </Link>
             <button
               type="button"
@@ -135,7 +149,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 transition={{ type: "spring", damping: 26, stiffness: 280 }}
                 className="absolute top-full left-0 right-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md shadow-2xl lg:hidden"
               >
-                <ul className="mx-auto flex max-w-6xl flex-col gap-y-1 px-4 py-5 sm:px-6">
+                <ul className="mx-auto flex w-full max-w-[1400px] flex-col gap-y-1 px-4 py-5 sm:px-6">
                   {NAV_LINKS.map((link) => (
                     <li key={link.to}>
                       <NavLink
@@ -179,8 +193,8 @@ export function LandingLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 bg-background h-full">{children}</main>
 
       <footer className="border-t bg-foreground text-primary-foreground/80 py-8">
-        <div className="mx-auto grid max-w-5xl gap-8 px-4 sm:grid-cols-3">
-          <div className="flex flex-col items-center gap-4 text-center sm:items-start sm:text-left">
+        <div className="mx-auto grid w-full max-w-[1400px] gap-8 px-4 sm:grid-cols-4">
+          <div className="flex flex-col items-center gap-4 text-center">
             <span className="text-lg font-bold tracking-tight">Imperpoços</span>
             <p className="max-w-xl text-md">
               Engenharia em Impermeabilização.
@@ -198,11 +212,6 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <p className="max-w-xl px-1.5 text-sm">
               Poços de Caldas/MG
             </p>
-            <img
-              src={logoImper}
-              alt="Imperpoços"
-              className="h-45 w-auto rounded-md border-6 border-white object-contain opacity-90"
-            />
           </div>
           <div className="flex flex-col items-center gap-3 text-center sm:items-center">
             <p className="text-sm font-semibold tracking-tight">
@@ -249,9 +258,9 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               </a>
             </div>
           </div>
-          <div className="flex flex-col items-center gap-3 sm:items-end sm:text-right">
+          <div className="flex flex-col items-center gap-3 text-center">
             <p className="text-sm font-semibold tracking-tight">Mapa do site</p>
-            <ul className="flex flex-col items-center gap-2 sm:items-end">
+            <ul className="flex flex-col items-center gap-2">
               {NAV_LINKS.map((link) => (
                 <li key={link.to}>
                   <Link
@@ -272,8 +281,15 @@ export function LandingLayout({ children }: { children: ReactNode }) {
               </li>
             </ul>
           </div>
+          <div className="flex flex-col items-center justify-center gap-3 text-center sm:items-center">
+            <img
+              src={logoImper}
+              alt="Imperpoços"
+              className="h-45 w-auto rounded-md border-6 border-white object-contain opacity-90"
+            />
+          </div>
         </div>
-        <div className="mx-auto max-w-5xl px-4 pt-8 text-center">
+        <div className="mx-auto w-full max-w-[1400px] px-4 pt-8 text-center">
           <p className="text-xs">
             © 2026 Imperpoços. Todos os direitos reservados.
           </p>

@@ -35,7 +35,7 @@ export function AdminLayout({ children, sidebar }: AdminLayoutProps) {
           onClose={() => setSidebarOpen(false)}
           sidebar={sidebar}
         />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 md:px-6 lg:pr-8">
+        <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 md:px-6 lg:pr-8">
           {children}
         </main>
       </div>
