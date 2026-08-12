@@ -41,7 +41,7 @@ export function SidebarLink({ to, icon, children }: SidebarLinkProps) {
   return (
     <Link
       to={to}
-      className="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-accent-foreground"
+      className="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-accent"
     >
       {icon}
       <span className="truncate">{children}</span>

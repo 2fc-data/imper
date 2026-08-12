@@ -42,7 +42,7 @@ function KpiCard({
     <m.div variants={fadeUp}>
       <Link
         to={to}
-        className="group flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm transition-colors hover:border-gold/40 hover:bg-accent/40"
+        className="group flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm transition-colors hover:border-gold/40 hover:text-accent"
       >
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-medium text-muted-foreground">

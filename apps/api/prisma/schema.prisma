@@ -105,12 +105,10 @@ enum UnidadeMedida {
   UN
   KG
   L
-  M2
   ML
   CX
   GL
   PC
-  MT
 }
 
 enum TipoMovimento {

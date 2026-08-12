@@ -114,7 +114,7 @@ export default function ContatoPage() {
                 href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded transition-colors hover:bg-accent hover:text-accent-foreground px-0 py-0.5 text-sm font-medium"
+                className="rounded transition-colors hover:text-accent px-0 py-0.5 text-sm font-medium"
               >
                 Rua São Paulo, 511 — Centro
               </a>

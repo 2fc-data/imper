@@ -9,9 +9,9 @@ export default function ServicosPage() {
   const { servicos, loading, error } = useServicos();
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, VIEWPORT);
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<number | null>(null);
 
-  function toggleAccordion(id: string) {
+  function toggleAccordion(id: number) {
     setOpenId((prev) => (prev === id ? null : id));
   }
 
