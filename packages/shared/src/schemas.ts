@@ -30,7 +30,7 @@ export const enderecoSchema = z.object({
 export const atendimentoSchema = z.object({
   clienteId: optionalId,
   canal: z.enum(["WHATSAPP", "FORMULARIO", "LOJA", "TELEFONE"]),
-  motivo: z.enum(["DUVIDA", "AGENDAR_VISITA", "COMPRAR_MATERIAL", "COMPRAR_EQUIPAMENTO"]),
+  motivo: z.enum(["ORCAMENTOS", "MATERIAIS", "EQUIPAMENTOS", "OUTROS"]),
   urgencia: z.enum(["NORMAL", "URGENTE", "URGENTISSIMO"]).optional().nullable(),
   descricao: z.string().max(1000).optional().nullable(),
 });
@@ -39,7 +39,7 @@ export const atendimentoPublicoSchema = z.object({
   nome: z.string().min(1).max(120),
   telefone: z.string().min(8).max(20),
   email: z.string().email().optional().nullable(),
-  motivo: z.enum(["DUVIDA", "AGENDAR_VISITA", "COMPRAR_MATERIAL", "COMPRAR_EQUIPAMENTO"]),
+  motivo: z.enum(["ORCAMENTOS", "MATERIAIS", "EQUIPAMENTOS", "OUTROS"]),
   mensagem: z.string().max(1000).optional().nullable(),
   logradouro: z.string().min(1).max(255),
   numero: z.string().max(20).optional().nullable(),

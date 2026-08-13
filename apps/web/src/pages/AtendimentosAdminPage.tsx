@@ -292,6 +292,7 @@ export function AtendimentoList({
               <th className="px-4 py-3">Cliente</th>
               <th className="px-4 py-3">Telefone</th>
               <th className="px-4 py-3">Canal / Motivo</th>
+              <th className="px-4 py-3">Serviço</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Data</th>
               <th className="px-4 py-3 text-right">Ações</th>
@@ -300,13 +301,13 @@ export function AtendimentoList({
           <tbody className="divide-y divide-border">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                   Carregando atendimentos...
                 </td>
               </tr>
             ) : atendimentos.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                   Nenhum atendimento encontrado.
                 </td>
               </tr>
@@ -330,6 +331,9 @@ export function AtendimentoList({
                     <td className="px-4 py-3">
                       <div className="text-xs font-semibold">{item.canal}</div>
                       <div className="text-xs text-muted-foreground">{item.motivo}</div>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">
+                      {item.servico ?? "—"}
                     </td>
                     <td className="px-4 py-3">
                       <select
@@ -370,7 +374,7 @@ export function AtendimentoList({
                   </tr>
                   {expandidoId === item.id && (
                     <tr className="bg-accent/20">
-                      <td colSpan={6} className="px-4 py-3">
+                      <td colSpan={7} className="px-4 py-3">
                         <div className="space-y-3">
                           <div className="text-sm font-semibold text-foreground">
                             Histórico de Atendimento
@@ -476,7 +480,7 @@ export function NovoAtendimentoForm({ onSuccess, onCancel }: NovoAtendimentoForm
   const [email, setEmail] = useState("");
   const [descricao, setDescricao] = useState("");
   const [canal, setCanal] = useState<CanalAtendimento>("WHATSAPP");
-  const [motivo, setMotivo] = useState<MotivoAtendimento>("DUVIDA");
+  const [motivo, setMotivo] = useState<MotivoAtendimento>("ORCAMENTOS");
   const [urgencia, setUrgencia] = useState<Urgencia>("NORMAL");
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -716,10 +720,10 @@ export function NovoAtendimentoForm({ onSuccess, onCancel }: NovoAtendimentoForm
               onChange={(e) => setMotivo(e.target.value as MotivoAtendimento)}
               className={campoInput}
             >
-              <option value="DUVIDA">DÚVIDA</option>
-              <option value="AGENDAR_VISITA">AGENDAR VISITA</option>
-              <option value="COMPRAR_MATERIAL">COMPRAR MATERIAL</option>
-              <option value="COMPRAR_EQUIPAMENTO">COMPRAR EQUIPAMENTO</option>
+              <option value="ORCAMENTOS">ORÇAMENTO</option>
+              <option value="MATERIAIS">MATERIAIS</option>
+              <option value="EQUIPAMENTOS">EQUIPAMENTOS</option>
+              <option value="OUTROS">OUTROS</option>
             </select>
           </div>
 

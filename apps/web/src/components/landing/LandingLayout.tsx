@@ -28,12 +28,22 @@ export function LandingLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     const id = SECTION_BY_ROUTE[pathname];
     if (!id) return;
-    const el = document.getElementById(id);
-    if (!el) return;
-    const header = document.querySelector("header");
-    const offset = header ? header.offsetHeight : 0;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: "smooth" });
+
+    const scrollToSection = () => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const header = document.querySelector("header");
+      const offset = header ? header.offsetHeight : 0;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    };
+
+    const timer = window.setTimeout(scrollToSection, 60);
+    window.addEventListener("load", scrollToSection);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("load", scrollToSection);
+    };
   }, [pathname]);
 
   return (

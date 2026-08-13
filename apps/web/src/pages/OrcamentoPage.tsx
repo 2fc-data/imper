@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { cn } from "../lib/utils";
-import { solicitarOrcamento, type MotivoAtendimento } from "../lib/api";
+import { solicitarOrcamento, listarServicos, type MotivoAtendimento, type ServicoMarketing } from "../lib/api";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 
 const selectClasses =
@@ -23,21 +23,24 @@ const textareaClasses =
   "flex min-h-[110px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 const MOTIVOS: { valor: MotivoAtendimento; rotulo: string }[] = [
-  { valor: "DUVIDA", rotulo: "Dúvida" },
-  { valor: "AGENDAR_VISITA", rotulo: "Agendar visita" },
-  { valor: "COMPRAR_MATERIAL", rotulo: "Comprar material" },
-  { valor: "COMPRAR_EQUIPAMENTO", rotulo: "Comprar equipamento" },
+  { valor: "ORCAMENTOS", rotulo: "Orçamento" },
+  { valor: "MATERIAIS", rotulo: "Materiais" },
+  { valor: "EQUIPAMENTOS", rotulo: "Equipamentos" },
+  { valor: "OUTROS", rotulo: "Outros" },
 ];
 
 export default function OrcamentoPage() {
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement>(null);
+  const numeroRef = useRef<HTMLInputElement>(null);
   const inView = useInView(gridRef, VIEWPORT);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [motivo, setMotivo] = useState<MotivoAtendimento | "">("");
   const [mensagem, setMensagem] = useState("");
+  const [servicos, setServicos] = useState<ServicoMarketing[]>([]);
+  const [servico, setServico] = useState("");
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
   const [bairro, setBairro] = useState("");
@@ -56,6 +59,25 @@ export default function OrcamentoPage() {
     const timer = setTimeout(() => navigate("/"), 5000);
     return () => clearTimeout(timer);
   }, [enviado, navigate]);
+
+  useEffect(() => {
+    if (!cepValido) return;
+    numeroRef.current?.focus();
+  }, [cepValido]);
+
+  useEffect(() => {
+    let ativo = true;
+    listarServicos()
+      .then((data) => {
+        if (ativo) setServicos(data);
+      })
+      .catch(() => {
+        if (ativo) setServicos([]);
+      });
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   async function buscarCep(digitos: string) {
     if (!/^\d{8}$/.test(digitos)) return;
@@ -97,6 +119,7 @@ export default function OrcamentoPage() {
         email: email || undefined,
         motivo: motivo || undefined,
         mensagem: mensagem || undefined,
+        servico: servico || undefined,
         cep: cep || undefined,
         endereco: endereco || undefined,
         bairro: bairro || undefined,
@@ -226,7 +249,9 @@ export default function OrcamentoPage() {
                       value={motivo}
                       onChange={(e) => setMotivo(e.target.value as MotivoAtendimento)}
                     >
-                      <option value="">Selecione o motivo...</option>
+                      <option value="" disabled>
+                        - Vamos agilizar seu atendimento
+                      </option>
                       {MOTIVOS.map((m) => (
                         <option key={m.valor} value={m.valor}>
                           {m.rotulo}
@@ -234,67 +259,102 @@ export default function OrcamentoPage() {
                       ))}
                     </select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cep">CEP (Local da visita técnica)</Label>
-                    <Input
-                      id="cep"
-                      inputMode="numeric"
-                      autoComplete="postal-code"
-                      placeholder="00000-000"
-                      value={cep}
-                      onChange={(e) => {
-                        const valor = formatarCep(e.target.value);
-                        setCep(valor);
-                        if (valor.replace(/\D/g, "").length === 8) {
-                          buscarCep(valor.replace(/\D/g, ""));
-                        }
-                      }}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Ao informar o CEP, preenchemos endereço, bairro, cidade e
-                      UF automaticamente.
-                    </p>
-                  </div>
+                  {motivo === "ORCAMENTOS" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="servico">Serviço desejado</Label>
+                        <select
+                          id="servico"
+                          className={cn(selectClasses)}
+                          value={servico}
+                          required
+                          onChange={(e) => setServico(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            - Vamos agilizar seu atendimento
+                          </option>
+                          {servicos.map((s) => (
+                            <option key={s.id} value={s.titulo}>
+                              {s.titulo}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="cep">CEP (Local da visita técnica)</Label>
+                        <Input
+                          id="cep"
+                          inputMode="numeric"
+                          autoComplete="postal-code"
+                          placeholder="00000-000"
+                          value={cep}
+                          onChange={(e) => {
+                            const valor = formatarCep(e.target.value);
+                            setCep(valor);
+                            if (valor.replace(/\D/g, "").length === 8) {
+                              buscarCep(valor.replace(/\D/g, ""));
+                            }
+                          }}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Ao informar o CEP, preenchemos endereço, bairro, cidade
+                          e UF automaticamente.
+                        </p>
+                      </div>
+                    </>
+                  )}
                   {cepValido && (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="endereco">Endereço</Label>
+                        <Label htmlFor="endereco">
+                          Endereço <span className="text-destructive">*</span>
+                        </Label>
                         <Input
                           id="endereco"
                           autoComplete="street-address"
                           placeholder="Rua, avenida..."
+                          required
                           value={endereco}
                           onChange={(e) => setEndereco(e.target.value)}
                         />
                       </div>
                       <div className="grid gap-4 sm:grid-cols-[1fr_1fr_120px]">
                         <div className="space-y-2">
-                          <Label htmlFor="bairro">Bairro</Label>
+                          <Label htmlFor="bairro">
+                            Bairro <span className="text-destructive">*</span>
+                          </Label>
                           <Input
                             id="bairro"
                             autoComplete="address-level2"
                             placeholder="Bairro"
+                            required
                             value={bairro}
                             onChange={(e) => setBairro(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="cidade">Cidade</Label>
+                          <Label htmlFor="cidade">
+                            Cidade <span className="text-destructive">*</span>
+                          </Label>
                           <Input
                             id="cidade"
                             autoComplete="address-level1"
                             placeholder="Cidade"
+                            required
                             value={cidade}
                             onChange={(e) => setCidade(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="estado">UF</Label>
+                          <Label htmlFor="estado">
+                            UF <span className="text-destructive">*</span>
+                          </Label>
                           <Input
                             id="estado"
                             autoComplete="address-level1"
                             maxLength={2}
                             placeholder="UF"
+                            required
                             value={estado}
                             onChange={(e) => setEstado(e.target.value.toUpperCase())}
                           />
@@ -302,42 +362,49 @@ export default function OrcamentoPage() {
                       </div>
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
-                          <Label htmlFor="numero">Número</Label>
-                          <Input
-                            id="numero"
-                            inputMode="numeric"
-                            autoComplete="address-line1"
-                            placeholder="Número"
-                            value={numero}
-                            onChange={(e) => setNumero(e.target.value)}
-                          />
+                          <Label htmlFor="numero">
+                            Número <span className="text-destructive">*</span>
+                          </Label>
+<Input
+                          ref={numeroRef}
+                          id="numero"
+                          inputMode="numeric"
+                          autoComplete="address-line1"
+                          placeholder="Número"
+                          required
+                          value={numero}
+                          onChange={(e) => setNumero(e.target.value)}
+                        />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="complemento">Complemento</Label>
+                          <Label htmlFor="complemento">
+                            Complemento <span className="text-destructive">*</span>
+                          </Label>
                           <Input
                             id="complemento"
                             placeholder="Apto, bloco..."
+                            required
                             value={complemento}
                             onChange={(e) => setComplemento(e.target.value)}
                           />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="mensagem">Mensagem</Label>
-                        <textarea
-                          id="mensagem"
-                          className={cn(textareaClasses)}
-                          placeholder="Descreva o problema e/ou a referência do local (opcional)"
-                          maxLength={700}
-                          value={mensagem}
-                          onChange={(e) => setMensagem(e.target.value)}
-                        />
-                        <p className="text-right text-xs text-muted-foreground">
-                          {mensagem.length}/700
-                        </p>
-                      </div>
                     </>
                   )}
+                  <div className="space-y-2">
+                    <Label htmlFor="mensagem">Mensagem</Label>
+                    <textarea
+                      id="mensagem"
+                      className={cn(textareaClasses)}
+                      placeholder="Descreva o problema e/ou a referência do local (opcional)"
+                      maxLength={700}
+                      value={mensagem}
+                      onChange={(e) => setMensagem(e.target.value)}
+                    />
+                    <p className="text-right text-xs text-muted-foreground">
+                      {mensagem.length}/700
+                    </p>
+                  </div>
                   <Turnstile onChange={setTurnstileToken} />
                   {error && (
                     <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -368,7 +435,7 @@ export default function OrcamentoPage() {
                 className={cn(
                   buttonVariants({
                     size: "lg",
-                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
+                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none",
                   }),
                 )}
               >

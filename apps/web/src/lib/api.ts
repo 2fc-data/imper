@@ -268,6 +268,7 @@ export interface OrcamentoInput {
   email?: string;
   motivo?: MotivoAtendimento;
   mensagem?: string;
+  servico?: string;
   cep?: string;
   endereco?: string;
   bairro?: string;
@@ -295,7 +296,7 @@ export async function solicitarOrcamento(
 
 export type StatusAtendimento = "NOVO" | "EM_ANDAMENTO" | "CONCLUIDO" | "INATIVO";
 export type CanalAtendimento = "WHATSAPP" | "FORMULARIO" | "LOJA" | "TELEFONE";
-export type MotivoAtendimento = "DUVIDA" | "AGENDAR_VISITA" | "COMPRAR_MATERIAL" | "COMPRAR_EQUIPAMENTO";
+export type MotivoAtendimento = "ORCAMENTOS" | "MATERIAIS" | "EQUIPAMENTOS" | "OUTROS";
 export type Urgencia = "NORMAL" | "URGENTE" | "URGENTISSIMO";
 
 export interface DadosEndereco {
@@ -315,6 +316,7 @@ export interface AtendimentoItem {
   urgencia: Urgencia | null;
   status: StatusAtendimento;
   descricao: string | null;
+  servico: string | null;
   clienteId: number | null;
   cliente?: { id: number; nome: string; telefone: string | null } | null;
   atendenteId: number | null;

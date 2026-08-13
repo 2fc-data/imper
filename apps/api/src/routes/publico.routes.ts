@@ -14,8 +14,9 @@ const OrcamentoSchema = z.object({
   nome: z.string().trim().min(2).max(120),
   telefone: z.string().trim().min(8).max(20),
   email: z.string().trim().email().max(120).optional(),
-  motivo: z.nativeEnum(MotivoAtendimento).default(MotivoAtendimento.DUVIDA),
+  motivo: z.nativeEnum(MotivoAtendimento).default(MotivoAtendimento.ORCAMENTOS),
   mensagem: z.string().trim().max(700).optional().default(""),
+  servico: z.string().trim().max(200).optional(),
   cep: z.string().trim().regex(/^\d{5}-\d{3}$/).max(9).optional(),
   endereco: z.string().trim().max(255).optional(),
   bairro: z.string().trim().max(120).optional(),
@@ -44,6 +45,7 @@ router.post("/orcamento", wrap(async (req, res) => {
     email: body.email,
     motivo: body.motivo,
     descricao: body.mensagem,
+    servico: body.servico,
     endereco: {
       logradouro: body.endereco,
       numero: body.numero,

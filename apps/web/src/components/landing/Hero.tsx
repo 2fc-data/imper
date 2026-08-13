@@ -27,10 +27,22 @@ export function Hero() {
         animate="visible"
       >
         <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
+          <Link
+            to="/servicos"
+            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
+            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
+            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
+          >
+            Nossos Serviços
+          </Link>
+        </m.div>
+        
+        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
           <WhatsAppButton className="w-full justify-center px-6 py-3.5 text-base sm:text-lg sm:w-auto">
             WhatsApp
           </WhatsAppButton>
         </m.div>
+
         <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
           <Link
             to="/orcamento"
@@ -41,16 +53,7 @@ export function Hero() {
             Formulário Atendimento
           </Link>
         </m.div>
-        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
-          <Link
-            to="/servicos"
-            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
-            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
-          >
-            Nossos Serviços
-          </Link>
-        </m.div>
+
       </m.div>
     </section>
   );

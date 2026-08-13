@@ -19,6 +19,7 @@ export const atendimentoService = {
     email?: string;
     motivo: MotivoAtendimento;
     descricao?: string;
+    servico?: string;
     endereco: DadosEndereco;
   }) {
     const buscaCliente: Array<Record<string, string>> = [];
@@ -63,6 +64,7 @@ export const atendimentoService = {
         motivo: data.motivo,
         status: StatusAtendimento.NOVO,
         descricao: data.descricao,
+        servico: data.servico,
       },
       include: {
         cliente: { include: { enderecos: true } },

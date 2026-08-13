@@ -18,10 +18,10 @@ export const CanalAtendimento = {
 export type CanalAtendimento = (typeof CanalAtendimento)[keyof typeof CanalAtendimento];
 
 export const MotivoAtendimento = {
-  DUVIDA: "DUVIDA",
-  AGENDAR_VISITA: "AGENDAR_VISITA",
-  COMPRAR_MATERIAL: "COMPRAR_MATERIAL",
-  COMPRAR_EQUIPAMENTO: "COMPRAR_EQUIPAMENTO",
+  ORCAMENTOS: "ORCAMENTOS",
+  MATERIAIS: "MATERIAIS",
+  EQUIPAMENTOS: "EQUIPAMENTOS",
+  OUTROS: "OUTROS",
 } as const;
 export type MotivoAtendimento = (typeof MotivoAtendimento)[keyof typeof MotivoAtendimento];
 
