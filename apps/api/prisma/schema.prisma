@@ -380,6 +380,9 @@ model CidadeAtendida {
   @@map("cidades_atendidas")
 }
 
+  @@map("cidades_atendidas")
+}
+
 model VisitaTecnica {
   id                 Int              @id @default(autoincrement())
   atendimentoId      Int
@@ -538,6 +541,9 @@ model OrcamentoItem {
   valorTotal    Decimal         @db.Decimal(12, 2)
 
   @@index([orcamentoId])
+
+  @@map("orcamento_itens")
+}
 
   @@map("orcamento_itens")
 }
