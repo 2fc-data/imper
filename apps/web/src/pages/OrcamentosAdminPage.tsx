@@ -153,7 +153,7 @@ export function OrcamentoList({
               </tr>
             ) : (
               orcamentos.map((item) => (
-                <tr key={item.id} className="hover:bg-accent/30 transition-colors">
+                <tr key={item.id} className="hover:bg-primary/10 transition-colors">
                   <td className="px-4 py-3 font-semibold text-foreground">{item.codigo}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-foreground">
@@ -188,7 +188,7 @@ export function OrcamentoList({
                       <button
                         type="button"
                         onClick={() => onVisualizar(item)}
-                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         Visualizar
                       </button>
@@ -380,7 +380,7 @@ export function NovoOrcamentoForm({ onSuccess, onCancel }: NovoOrcamentoFormProp
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
           >
             Cancelar
           </button>
@@ -482,7 +482,7 @@ export function OrcamentosAdminPage({ initialView = "lista", onNavegar }: Orcame
               <button
                 type="button"
                 onClick={() => setOrcamentoSelecionado(null)}
-                className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent"
+                className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary"
               >
                 Fechar
               </button>

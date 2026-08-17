@@ -80,7 +80,7 @@ export function AdminHeader({
               end={item.to === "/painel"}
               className={({ isActive }) =>
                 cn(
-                  "-ml-2 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-accent",
+                  "-ml-2 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
                   isActive && "text-foreground",
                   i === 0 && "-ml-3",
                 )

@@ -67,7 +67,7 @@ export default function LoginPage() {
                 <Label htmlFor="senha">Senha</Label>
                 <Link
                   to="/recuperar-senha"
-                  className="text-xs font-medium text-muted-foreground transition-colors hover:text-accent"
+                  className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   Esqueci a senha
                 </Link>
@@ -90,7 +90,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
@@ -100,7 +100,7 @@ export default function LoginPage() {
             Não tem conta?{" "}
             <Link
               to="/cadastro"
-              className="font-semibold text-accent transition-colors hover:underline underline-offset-4"
+              className="font-semibold text-primary transition-colors hover:underline underline-offset-4"
             >
               Criar conta
             </Link>

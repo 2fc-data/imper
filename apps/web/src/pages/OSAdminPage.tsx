@@ -51,7 +51,7 @@ export function OSAnalises({ osList }: OSAnalisesProps) {
         </div>
 
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-accent">Em Andamento</p>
+          <p className="text-xs font-medium text-primary">Em Andamento</p>
           <p className="mt-2 text-2xl font-bold">{emAndamento}</p>
         </div>
 
@@ -155,7 +155,7 @@ export function OSList({
               </tr>
             ) : (
               osList.map((item) => (
-                <tr key={item.id} className="hover:bg-accent/30 transition-colors">
+                <tr key={item.id} className="hover:bg-primary/10 transition-colors">
                   <td className="px-4 py-3 font-semibold text-foreground">{item.codigo}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-foreground">
@@ -171,7 +171,7 @@ export function OSList({
                         item.status === "AGUARDANDO_APROVACAO"
                           ? "bg-warning/15 text-warning dark:bg-warning/20 dark:text-warning"
                           : item.status === "EM_ANDAMENTO"
-                          ? "bg-accent/15 text-accent dark:bg-accent/20 dark:text-accent"
+                          ? "bg-primary/15 text-primary dark:bg-primary/20 dark:text-primary"
                           : item.status === "CONCLUIDO" || item.status === "ENTREGUE" || item.status === "CONFIRMADO"
                           ? "bg-success/15 text-success dark:bg-success/20 dark:text-success"
                           : item.status === "CANCELADO"
@@ -192,7 +192,7 @@ export function OSList({
                       <button
                         type="button"
                         onClick={() => onVisualizar(item)}
-                        className="rounded-md border px-2 py-1 text-xs font-medium hover:bg-accent transition-colors"
+                        className="rounded-md border px-2 py-1 text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         Ver
                       </button>
@@ -209,7 +209,7 @@ export function OSList({
                         <button
                           type="button"
                           onClick={() => onIniciar(item.id)}
-                          className="rounded-md bg-accent px-2 py-1 text-xs font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
+                          className="rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
                         >
                           Iniciar
                         </button>
@@ -377,7 +377,7 @@ export function OSAdminPage({ viewAtiva = "lista", onGoToOrcamentos }: OSAdminPa
               <button
                 type="button"
                 onClick={() => setOsSelecionada(null)}
-                className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent"
+                className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary"
               >
                 Fechar
               </button>

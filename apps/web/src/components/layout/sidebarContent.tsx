@@ -21,7 +21,7 @@ export function SidebarButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-accent-foreground",
+        "flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary-foreground",
         active && "border-border bg-card text-foreground shadow-sm",
       )}
     >
@@ -41,7 +41,7 @@ export function SidebarLink({ to, icon, children }: SidebarLinkProps) {
   return (
     <Link
       to={to}
-      className="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-accent"
+      className="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
     >
       {icon}
       <span className="truncate">{children}</span>

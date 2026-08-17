@@ -55,7 +55,7 @@ export function AtendimentosAnalises({ atendimentos }: AtendimentosAnalisesProps
           <p className="mt-2 text-2xl font-bold">{novos}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-warning">Em Andamento</p>
+          <p className="text-xs font-medium text-primary">Em Andamento</p>
           <p className="mt-2 text-2xl font-bold">{emAndamento}</p>
         </div>
         <div className="rounded-xl border bg-card p-4 shadow-sm">
@@ -83,7 +83,7 @@ export function AtendimentosAnalises({ atendimentos }: AtendimentosAnalisesProps
                       <span>{canal}</span>
                       <span>{qtd} ({perc}%)</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-accent/40 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-primary/40 overflow-hidden">
                       <div
                         className="h-full bg-primary transition-all"
                         style={{ width: `${perc}%` }}
@@ -110,7 +110,7 @@ export function AtendimentosAnalises({ atendimentos }: AtendimentosAnalisesProps
                       <span>{motivo}</span>
                       <span>{qtd} ({perc}%)</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-accent/40 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-primary/40 overflow-hidden">
                       <div
                         className="h-full bg-warning transition-all"
                         style={{ width: `${perc}%` }}
@@ -313,7 +313,7 @@ export function AtendimentoList({
             ) : (
               atendimentos.map((item) => (
                 <Fragment key={item.id}>
-                  <tr className="hover:bg-accent/30 transition-colors">
+                  <tr className="hover:bg-primary/10 transition-colors">
                     <td className="px-4 py-3">
                       <div className="font-medium text-foreground">
                         {item.cliente?.nome ?? `Atendimento #${item.id}`}
@@ -341,7 +341,7 @@ export function AtendimentoList({
                           item.status === "NOVO"
                             ? "border-info/40 text-info"
                             : item.status === "EM_ANDAMENTO"
-                            ? "border-warning/40 text-warning"
+                            ? "border-primary/40 text-primary"
                             : item.status === "CONCLUIDO"
                             ? "border-success/40 text-success"
                             : item.status === "INATIVO"
@@ -362,14 +362,14 @@ export function AtendimentoList({
                       <button
                         type="button"
                         onClick={() => alternarExpandido(item.id)}
-                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         {expandidoId === item.id ? "▾ Fechar" : "▸ Atendimento"}
                       </button>
                     </td>
                   </tr>
                   {expandidoId === item.id && (
-                    <tr className="bg-accent/20">
+                    <tr className="bg-primary/10">
                       <td colSpan={6} className="px-4 py-3">
                         <div className="space-y-3">
                           <div className="text-sm font-semibold text-foreground">
@@ -433,7 +433,7 @@ export function AtendimentoList({
                               <button
                                 type="button"
                                 onClick={fecharExpandido}
-                                className="rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
+                                className="rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors"
                               >
                                 Cancelar
                               </button>
@@ -649,7 +649,7 @@ export function NovoAtendimentoForm({ onSuccess, onCancel }: NovoAtendimentoForm
                           <button
                             type="button"
                             onClick={() => selecionarCliente(cliente)}
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors"
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-primary/10 hover:text-primary transition-colors"
                           >
                             <div className="font-medium">{cliente.nome}</div>
                             <div className="text-xs text-muted-foreground">
@@ -844,7 +844,7 @@ export function NovoAtendimentoForm({ onSuccess, onCancel }: NovoAtendimentoForm
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
           >
             Cancelar
           </button>

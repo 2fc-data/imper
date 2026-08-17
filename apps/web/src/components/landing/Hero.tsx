@@ -1,57 +1,155 @@
 import { Link } from "react-router-dom";
 import { m } from "framer-motion";
-import { WhatsAppButton } from "./WhatsAppButton";
-import { fadeUp, stagger } from "../../lib/motion";
-import heroBg from "../../assets/Hero_Imper_optimized.webp";
 
 export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative mx-auto w-full max-w-[1400px] overflow-hidden border-x border-b bg-background"
+      className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-gradient-to-br from-background via-secondary/30 to-background pt-12"
     >
-      <m.img
-        src={heroBg}
-        alt="Imperpoços engenharia em impermeabilização"
-        loading="eager"
-        className="block w-full object-cover rounded-sm opacity-75 dark:opacity-75"
-        variants={stagger(0.12)}
-        initial="hidden"
-        animate="visible"
+      <div
+        aria-hidden="true"
+        className="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-primary/5 blur-3xl"
       />
-      <div aria-hidden="true" className="absolute inset-0" />
-      <m.div
-        className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 sm:flex-row sm:items-center sm:justify-center"
-        variants={stagger(0.12)}
-        initial="hidden"
-        animate="visible"
-      >
-        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
-          <WhatsAppButton className="w-full justify-center px-6 py-3.5 text-base sm:text-lg sm:w-auto">
-            WhatsApp
-          </WhatsAppButton>
+      <div
+        aria-hidden="true"
+        className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-primary/5 blur-3xl"
+      />
+
+      <div className="mx-auto max-w-[1400px] px-4 py-24 text-center sm:px-6 lg:px-8">
+        <m.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Engenharia de Impermeabilização
+          </h2>
         </m.div>
-        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
+
+        <m.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mt-6 text-2xl font-bold sm:text-3xl lg:text-4xl"
+        >
+          <span className="text-gradient-primary">Qualidade e Confiança</span>{" "}
+          há mais de 30 anos
+        </m.h1>
+
+        <m.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl"
+        >
+          Soluções profissionais para proteger seu patrimônio em Poços de
+          Caldas e região. Telhados, piscinas, fachadas, fundações e muito
+          mais.
+        </m.p>
+
+        <m.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+        >
           <Link
             to="/orcamento"
-            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
-            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
+            className="rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:text-primary-foreground hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
           >
-            Formulário Atendimento
+            Solicitar Orçamento
           </Link>
-        </m.div>
-        <m.div variants={fadeUp} className="w-full max-w-xs sm:w-auto sm:max-w-none">
           <Link
             to="/servicos"
-            className="flex w-full items-center justify-center rounded-lg px-6 py-3.5 text-base sm:text-lg font-semibold transition-colors
-            hover:text-foreground hover:bg-background/90 bg-accent text-accent-foreground
-            dark:text-white dark:bg-background/80 dark:hover:bg-accent/20 dark:hover:text-foreground sm:w-auto"
+            className="rounded-xl border border-border px-8 py-3.5 text-base font-semibold text-foreground transition-colors hover:bg-muted"
           >
             Nossos Serviços
           </Link>
         </m.div>
-      </m.div>
+
+        <m.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+          className="mt-16 flex flex-wrap items-center justify-center gap-6 sm:gap-10"
+        >
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <svg
+              aria-hidden="true"
+              className="h-5 w-5 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            30+ Anos de Experiência
+          </span>
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <svg
+              aria-hidden="true"
+              className="h-5 w-5 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+            </svg>
+            CNPJ 71.189.955/0001-87
+          </span>
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <svg
+              aria-hidden="true"
+              className="h-5 w-5 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Poços de Caldas - MG
+          </span>
+        </m.div>
+
+        <m.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1 }}
+          className="mt-16"
+        >
+          <Link
+            to="/servicos"
+            className="flex flex-col items-center gap-1 font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Saiba mais
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4 animate-bounce"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14" />
+              <path d="m19 12-7 7-7-7" />
+            </svg>
+          </Link>
+        </m.div>
+      </div>
     </section>
   );
 }

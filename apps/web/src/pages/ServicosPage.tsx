@@ -39,8 +39,8 @@ export default function ServicosPage() {
                 className="flex flex-col h-full rounded-xl border bg-card p-5 shadow-sm min-h-[88px]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 animate-pulse rounded-lg bg-accent/20" />
-                  <div className="h-5 w-1/3 animate-pulse rounded bg-accent/20" />
+                  <div className="h-10 w-10 animate-pulse rounded-lg bg-primary/20" />
+                  <div className="h-5 w-1/3 animate-pulse rounded bg-primary/20" />
                 </div>
               </div>
             ))}
@@ -60,8 +60,8 @@ export default function ServicosPage() {
                   key={servico.id}
                   variants={fadeUp}
                   className={cn(
-                    "relative flex flex-col h-full rounded-xl border bg-card shadow-sm transition-all hover:border-accent/40",
-                    isOpen && "z-30 rounded-b-none border-accent/40 shadow-xl",
+                    "relative flex flex-col h-full rounded-xl border bg-card shadow-sm transition-all hover:border-primary/40",
+                    isOpen && "z-30 rounded-b-none border-primary/40 shadow-xl",
                   )}
                 >
                   <button
@@ -71,7 +71,7 @@ export default function ServicosPage() {
                     className="flex w-full h-full items-center justify-between gap-4 p-5 text-left transition-colors group focus-gold min-h-[88px]"
                   >
                     <div className="flex items-center gap-3.5">
-                      <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
+                      <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                         <svg
                           viewBox="0 0 24 24"
                           fill="none"
@@ -85,7 +85,7 @@ export default function ServicosPage() {
                           <path d={servico.icone} />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-accent">
+                      <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
                         {servico.titulo}
                       </h3>
                     </div>
@@ -98,7 +98,7 @@ export default function ServicosPage() {
                       strokeWidth={2}
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-accent shrink-0"
+                      className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary shrink-0"
                       aria-hidden="true"
                     >
                       <path d="M6 9l6 6 6-6" />
@@ -111,7 +111,7 @@ export default function ServicosPage() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -6, scale: 0.98 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute left-[-1px] right-[-1px] top-[calc(100%-1px)] z-30 rounded-b-xl border border-t-0 border-accent/40 bg-card p-5 shadow-2xl"
+                        className="absolute left-[-1px] right-[-1px] top-[calc(100%-1px)] z-30 rounded-b-xl border border-t-0 border-primary/40 bg-card p-5 shadow-2xl"
                       >
                         <p className="text-sm leading-relaxed text-muted-foreground">
                           {servico.descricao}
@@ -119,7 +119,7 @@ export default function ServicosPage() {
                         <div className="mt-3 flex justify-end">
                           <Link
                             to={`/orcamento?servico=${encodeURIComponent(servico.titulo)}`}
-                            className="text-sm text-accent transition-colors hover:text-foreground"
+                            className="text-sm text-primary transition-colors hover:text-foreground"
                           >
                             Orçamento →
                           </Link>
@@ -131,6 +131,7 @@ export default function ServicosPage() {
               );
             })}
         </m.div>
+
       </div>
     </section>
   );

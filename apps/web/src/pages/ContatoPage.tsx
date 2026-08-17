@@ -1,10 +1,14 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { WHATSAPP_TEXT, WHATSAPP_URL } from "../lib/landing";
 import { m, useInView } from "framer-motion";
 import { buttonVariants } from "../components/ui/button";
 import { cn } from "../lib/utils";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
+import { WHATSAPP_TEXT, WHATSAPP_URL } from "../lib/landing";
+import {
+  InstagramIconButton,
+  WhatsAppIconButton,
+} from "../components/landing/SocialIconButtons";
 
 export default function ContatoPage() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -42,7 +46,7 @@ export default function ContatoPage() {
                   href={`${WHATSAPP_URL}?text=${encodeURIComponent(WHATSAPP_TEXT)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-accent"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-primary"
                 >
                   (35) 99999-4663
                 </a>
@@ -53,7 +57,7 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="tel:+553537211674"
-                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-accent"
+                  className="mt-1 block rounded px-1 font-semibold text-secondary transition-colors hover:text-primary"
                 >
                   (35) 3721-1674
                 </a>
@@ -64,23 +68,27 @@ export default function ContatoPage() {
                 </p>
                 <a
                   href="mailto:impershop@imperpocos.com.br"
-                  className="mt-1 block break-all rounded px-1 font-semibold text-secondary transition-colors hover:text-accent"
+                  className="mt-1 block break-all rounded px-1 font-semibold text-secondary transition-colors hover:text-primary"
                 >
                   impershop@imperpocos.com.br
                 </a>
               </div>
-              <div className="flex items-center">
+              <div className="flex flex-col items-stretch gap-3">
                 <Link
                   to="/orcamento"
                   className={cn(
                     buttonVariants({
                       size: "lg",
-                      className: "w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
+                      className: "w-full bg-primary text-primary-foreground hover:bg-primary/90 hover-lift font-semibold shadow-md transition-all",
                     }),
                   )}
                 >
-                  Orçamento online
+                  Solicitar Orçamento
                 </Link>
+                <div className="grid grid-cols-2 justify-items-center gap-3">
+                  <WhatsAppIconButton className="h-10 w-10 rounded-xl" />
+                  <InstagramIconButton className="h-10 w-10 rounded-xl" />
+                </div>
               </div>
             </div>
           </div>
@@ -101,7 +109,7 @@ export default function ContatoPage() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-5 w-5 text-accent"
+                className="h-5 w-5 text-primary"
                 aria-hidden="true"
               >
                 <path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z" />
@@ -114,7 +122,7 @@ export default function ContatoPage() {
                 href="https://www.google.com/maps/search/?api=1&query=Rua+S%C3%A3o+Paulo,+511+-+Centro,+Po%C3%A7os+de+Caldas/MG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded transition-colors hover:text-accent px-0 py-0.5 text-sm font-medium"
+                className="rounded transition-colors hover:text-primary px-0 py-0.5 text-sm font-medium"
               >
                 Rua São Paulo, 511 — Centro
               </a>
@@ -131,7 +139,7 @@ export default function ContatoPage() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-5 w-5 text-accent"
+                className="h-5 w-5 text-primary"
                 aria-hidden="true"
               >
                 <circle cx="12" cy="12" r="9" />

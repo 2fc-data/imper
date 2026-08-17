@@ -42,7 +42,7 @@ function KpiCard({
     <m.div variants={fadeUp}>
       <Link
         to={to}
-        className="group flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm transition-colors hover:border-gold/40 hover:text-accent"
+        className="group flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-sm transition-colors hover:border-primary/40 hover:text-primary"
       >
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-medium text-muted-foreground">
@@ -162,7 +162,7 @@ export default function DashboardPage() {
         <button
           onClick={() => carregar(true)}
           disabled={recarregando}
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent disabled:opacity-60"
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-primary/10 hover:text-primary disabled:opacity-60"
         >
           <span className={cn(recarregando && "animate-spin")}>
             {icone("M21 12a9 9 0 11-3-6.7M21 3v4h-4")}

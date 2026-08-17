@@ -178,7 +178,7 @@ export function VisitasList({
             ) : (
               visitas.map((item) => (
                 <Fragment key={item.id}>
-                  <tr className="hover:bg-accent/30 transition-colors">
+                  <tr className="hover:bg-primary/10 transition-colors">
                     <td className="px-4 py-3">
                       <div className="font-medium text-foreground">
                         {item.atendimento?.cliente?.nome ?? `Visita #${item.id}`}
@@ -210,7 +210,7 @@ export function VisitasList({
                         <button
                           type="button"
                           onClick={() => alternarExpandido(item.id)}
-                          className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+                          className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                         >
                           {expandidoId === item.id ? "▾ Fechar" : "▸ Detalhes"}
                         </button>
@@ -236,7 +236,7 @@ export function VisitasList({
                     </td>
                   </tr>
                   {expandidoId === item.id && (
-                    <tr className="bg-accent/20">
+                    <tr className="bg-primary/10">
                       <td colSpan={6} className="px-4 py-3">
                         <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2 text-xs">
@@ -462,7 +462,7 @@ export function AgendarVisitaForm({ onSuccess, onCancel }: AgendarVisitaFormProp
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
           >
             Cancelar
           </button>
@@ -610,7 +610,7 @@ export function RealizarVisitaForm({ visita, onSuccess, onCancel }: RealizarVisi
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
           >
             Voltar
           </button>

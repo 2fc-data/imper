@@ -21,7 +21,7 @@ function BackHomeLink() {
   return (
     <Link
       to="/"
-      className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent/10"
+      className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary/10"
     >
       <svg
         viewBox="0 0 24 24"
@@ -69,11 +69,11 @@ export function AuthShell({ children }: { children: ReactNode }) {
         />
         <span
           aria-hidden="true"
-          className="absolute left-0 top-0 h-full w-1 bg-accent"
+          className="absolute left-0 top-0 h-full w-1 bg-primary"
         />
 
         <div className="relative z-10 flex flex-col p-10">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-accent">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-primary">
             Imperpoços
           </p>
 
@@ -87,7 +87,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
                 <li key={item} className="flex items-center gap-3 text-sm">
                   <span
                     aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 rotate-45 bg-accent"
+                    className="h-1.5 w-1.5 shrink-0 rotate-45 bg-primary"
                   />
                   {item}
                 </li>

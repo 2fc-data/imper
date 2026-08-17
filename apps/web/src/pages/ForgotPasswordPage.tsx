@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
               )}
               <Link
                 to="/login"
-                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover-lift"
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-primary/10 hover:text-primary hover:text-primary-foreground hover-lift"
               >
                 Voltar para o login
               </Link>
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                   disabled={loading}
                 >
                   {loading ? "Enviando..." : "Enviar link"}
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
               </form>
               <Link
                 to="/login"
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover-lift"
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-all hover:bg-primary/10 hover-lift"
               >
                 <svg
                   viewBox="0 0 24 24"

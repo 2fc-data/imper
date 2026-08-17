@@ -77,7 +77,7 @@ export function AdminSidebar({
                   type="button"
                   aria-label="Fechar"
                   onClick={onClose}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground"
                 >
                   <svg
                     viewBox="0 0 24 24"

@@ -136,7 +136,7 @@ export default function OrcamentoPage() {
                 buttonVariants({
                   variant: "secondary",
                   size: "lg",
-                  className: "mt-6 bg-accent text-accent-foreground hover:bg-background/90 hover:text-foreground",
+                  className: "mt-6 bg-primary text-primary-foreground hover:bg-background/90 hover:text-foreground",
                 }),
               )}
             >
@@ -347,7 +347,7 @@ export default function OrcamentoPage() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                     disabled={loading}
                   >
                     {loading ? "Enviando..." : "Enviar mensagem"}
@@ -368,7 +368,7 @@ export default function OrcamentoPage() {
                 className={cn(
                   buttonVariants({
                     size: "lg",
-                    className: "mt-4 w-full bg-accent text-accent-foreground hover:bg-gold-hover hover-lift font-semibold shadow-md transition-all",
+                    className: "mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90 hover-lift font-semibold shadow-md transition-all",
                   }),
                 )}
               >

@@ -110,7 +110,7 @@ export function AgendamentosAnalises({ agendamentos }: AgendamentosAnalisesProps
                       <span>{rotulosTipo[tipo as TipoAgendamento] ?? tipo}</span>
                       <span>{qtd} ({perc}%)</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-accent/40 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-primary/40 overflow-hidden">
                       <div
                         className="h-full bg-primary transition-all"
                         style={{ width: `${perc}%` }}
@@ -137,7 +137,7 @@ export function AgendamentosAnalises({ agendamentos }: AgendamentosAnalisesProps
                       <span>{rotulosStatus[status as StatusAgendamento] ?? status}</span>
                       <span>{qtd} ({perc}%)</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-accent/40 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-primary/40 overflow-hidden">
                       <div
                         className="h-full bg-warning transition-all"
                         style={{ width: `${perc}%` }}
@@ -246,7 +246,7 @@ export function AgendamentoList({
             ) : (
               agendamentos.map((item) => (
                 <Fragment key={item.id}>
-                  <tr className="hover:bg-accent/30 transition-colors">
+                  <tr className="hover:bg-primary/10 transition-colors">
                     <td className="px-4 py-3">
                       <div className="font-medium text-foreground">
                         {item.cliente?.nome ?? `Agendamento #${item.id}`}
@@ -287,14 +287,14 @@ export function AgendamentoList({
                       <button
                         type="button"
                         onClick={() => alternarExpandido(item.id)}
-                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+                        className="rounded-md border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         {expandidoId === item.id ? "▾ Fechar" : "▸ Detalhes"}
                       </button>
                     </td>
                   </tr>
                   {expandidoId === item.id && (
-                    <tr className="bg-accent/20">
+                    <tr className="bg-primary/10">
                       <td colSpan={6} className="px-4 py-3">
                         <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2 text-xs">
@@ -519,7 +519,7 @@ export function NovoAgendamentoForm({ onSuccess, onCancel }: NovoAgendamentoForm
                         <button
                           type="button"
                           onClick={() => selecionarCliente(cliente)}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors"
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-primary/10 hover:text-primary transition-colors"
                         >
                           <div className="font-medium">{cliente.nome}</div>
                           <div className="text-xs text-muted-foreground">
@@ -596,7 +596,7 @@ export function NovoAgendamentoForm({ onSuccess, onCancel }: NovoAgendamentoForm
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
           >
             Cancelar
           </button>

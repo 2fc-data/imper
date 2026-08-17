@@ -266,7 +266,14 @@
   }
 
   .text-gradient-primary {
-    color: var(--primary);
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      oklch(65% 0.1 194.68) 100%
+    );
+    color: #0000;
+    -webkit-background-clip: text;
+    background-clip: text;
   }
 
   h1 {

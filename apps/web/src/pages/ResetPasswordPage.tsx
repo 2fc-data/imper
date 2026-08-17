@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
               </p>
               <Link
                 to="/login"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-md transition-all hover:bg-accent hover:text-accent-foreground hover:shadow-none hover-lift"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:text-primary-foreground hover:shadow-none hover-lift"
               >
                 Ir para o login
               </Link>
@@ -98,7 +98,7 @@ export default function ResetPasswordPage() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground hover-lift font-semibold shadow-md transition-all hover:shadow-none"
                 disabled={loading}
               >
                 {loading ? "Salvando..." : "Redefinir senha"}
