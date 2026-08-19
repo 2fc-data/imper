@@ -92,6 +92,28 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE],
   },
   {
+    to: "/equipamentos",
+    label: "Equipamentos",
+    icon: <Icon d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />,
+    roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.ALMOXARIFE],
+  },
+  {
+    to: "/manutencoes",
+    label: "Manutenções",
+    icon: (
+      <Icon d="M20 8l1-4-1 4a4 4 0 006 0l-1 4M4 8l-1-4 1 4a4 4 0 00-6 0l1 4" />
+    ),
+    roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO],
+  },
+  {
+    to: "/epis",
+    label: "EPIs",
+    icon: (
+      <Icon d="M16 11a1 1 0 01-1 1H9a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3z" />
+    ),
+    roles: [Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE],
+  },
+  {
     to: "/servicos-admin",
     label: "Serviços",
     icon: <Icon d="M19 9l-7 12-7-12a7 7 0 1114 0z" />,

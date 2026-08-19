@@ -10,6 +10,9 @@ import {
   ClienteSidebar,
   DashboardSidebar,
   EmBreveSidebar,
+  EpisSidebar,
+  EquipamentosSidebar,
+  ManutencoesSidebar,
   OrcamentosSidebar,
   OSSidebar,
   ServicosSidebar,
@@ -33,6 +36,9 @@ import { VisitasAdminPage } from "./pages/VisitasAdminPage";
 import { OrcamentosAdminPage } from "./pages/OrcamentosAdminPage";
 import { OSAdminPage } from "./pages/OSAdminPage";
 import ServicosAdminPage from "./pages/ServicosAdminPage";
+import EquipamentosAdminPage from "./pages/EquipamentosAdminPage";
+import ManutencoesAdminPage from "./pages/ManutencoesAdminPage";
+import EpisAdminPage from "./pages/EpisAdminPage";
 
 function ProtectedLayout({
   children,
@@ -68,15 +74,27 @@ function ProtectedLayout({
 
 function UsuariosRoute() {
   const [filtroPapel, setFiltroPapel] = useState<Papel | null>(null);
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista">("lista");
 
   return (
     <ProtectedLayout
       allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
       sidebar={
-        <UsuariosSidebar valor={filtroPapel} onChange={setFiltroPapel} />
+        <UsuariosSidebar
+          valor={filtroPapel}
+          onChange={setFiltroPapel}
+          viewAtiva={viewAtiva}
+          onNavegar={setViewAtiva}
+        />
       }
     >
-      <UsuariosPage filtroPapel={filtroPapel ?? undefined} />
+      <UsuariosPage
+        key={viewAtiva}
+        viewAtiva={viewAtiva}
+        onNavegar={setViewAtiva}
+        filtroPapel={filtroPapel ?? undefined}
+        onFiltroPapelChange={setFiltroPapel}
+      />
     </ProtectedLayout>
   );
 }
@@ -154,6 +172,58 @@ function OSRoute() {
   );
 }
 
+function EquipamentosRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo" | "catalogos">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ALMOXARIFE]}
+      sidebar={<EquipamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <EquipamentosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function ManutencoesRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO]}
+      sidebar={<ManutencoesSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <ManutencoesAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function EpisRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
+      sidebar={<EpisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <EpisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function ServicosRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
+      sidebar={<ServicosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <ServicosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
 function GuestsOnly({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -203,17 +273,7 @@ export default function App() {
         }
       />
       <Route element={<UsuariosRoute />} path="/usuarios" />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
-            sidebar={<ServicosSidebar />}
-          >
-            <ServicosAdminPage />
-          </ProtectedLayout>
-        }
-        path="/servicos-admin"
-      />
+      <Route element={<ServicosRoute />} path="/servicos-admin" />
       <Route
         element={
           <LandingLayout>
@@ -285,6 +345,9 @@ export default function App() {
       <Route element={<VisitasRoute />} path="/visitas" />
       <Route element={<OrcamentosRoute />} path="/orcamentos" />
       <Route element={<OSRoute />} path="/os" />
+      <Route element={<EquipamentosRoute />} path="/equipamentos" />
+      <Route element={<ManutencoesRoute />} path="/manutencoes" />
+      <Route element={<EpisRoute />} path="/epis" />
       <Route
         element={
           <ProtectedLayout

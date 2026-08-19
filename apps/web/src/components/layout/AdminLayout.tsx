@@ -30,12 +30,11 @@ export function AdminLayout({ children, sidebar }: AdminLayoutProps) {
         sessionDuration={SESSAO_SEGUNDOS}
       />
       <div className="flex flex-1">
-        <AdminSidebar
-          openOnMobile={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          sidebar={sidebar}
-        />
+        <AdminSidebar openOnMobile={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 md:px-6 lg:pr-8">
+          {sidebar && (
+            <div className="mb-6 flex flex-wrap items-center gap-3">{sidebar}</div>
+          )}
           {children}
         </main>
       </div>
