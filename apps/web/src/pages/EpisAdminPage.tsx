@@ -4,12 +4,12 @@ import {
   criarEpi,
   excluirEpi,
   listarEpis,
+  listarLookupsEquipamentos,
   type EpiInput,
   type EpiItem,
+  type EquipamentoLookups,
 } from "../lib/api";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import {
   Card,
   CardContent,
@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { cn } from "../lib/utils";
+import { ItemForm, type ItemFormData } from "../components/ItemForm";
 
 function BadgeAtivo({ ativo }: { ativo: boolean }) {
   return (
@@ -55,12 +56,11 @@ function fromLocalDateTime(value: string): string | undefined {
   return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
 }
 
-const vazio: EpiInput = {
+const emptyForm: ItemFormData = {
   codigo: "",
   nome: "",
-  categoria: "",
   numeroCa: "",
-  dataValidade: undefined,
+  dataValidade: "",
   quantidade: 0,
   quantidadeMinima: 0,
 };
@@ -91,7 +91,7 @@ export function EpisAnalises({ epis }: EpisAnalisesProps) {
   const vencendo = epis.filter((e) => venceEm30Dias(e.dataValidade)).length;
 
   const porCategoria = epis.reduce((acc, e) => {
-    const cat = e.categoria || "Sem categoria";
+    const cat = (typeof e.categoria === "object" && e.categoria?.nome) || "Sem categoria";
     acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -170,12 +170,13 @@ export default function EpisAdminPage({
   onNavegar?: (v: "analises" | "lista" | "novo") => void;
 }) {
   const [epis, setEpis] = useState<EpiItem[]>([]);
+  const [lookups, setLookups] = useState<EquipamentoLookups | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
-  const [categoriaFiltro, setCategoriaFiltro] = useState("");
+  const [categoriaFiltro, setCategoriaFiltro] = useState<number | "">("");
   const [saving, setSaving] = useState(false);
   const [editando, setEditando] = useState<EpiItem | null>(null);
-  const [form, setForm] = useState<EpiInput>(vazio);
+  const [form, setForm] = useState<ItemFormData>(emptyForm);
   const [toggling, setToggling] = useState<number | null>(null);
   const [confirmandoExclusao, setConfirmandoExclusao] = useState<number | null>(
     null,
@@ -183,17 +184,21 @@ export default function EpisAdminPage({
   const [excluindo, setExcluindo] = useState<number | null>(null);
 
   useEffect(() => {
-    carregar();
+    carregarTodos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function carregar(q?: string) {
+  async function carregarTodos() {
     setError(null);
     try {
-      const lista = await listarEpis(q ? { q } : undefined);
+      const [lista, cats] = await Promise.all([
+        listarEpis(),
+        listarLookupsEquipamentos(),
+      ]);
       setEpis(lista);
+      setLookups(cats);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Falha ao listar EPIs");
+      setError(err instanceof Error ? err.message : "Falha ao carregar EPIs");
     }
   }
 
@@ -202,19 +207,25 @@ export default function EpisAdminPage({
     setForm({
       codigo: e.codigo,
       nome: e.nome,
-      categoria: e.categoria,
       numeroCa: e.numeroCa ?? "",
       dataValidade: toLocalDateTime(e.dataValidade),
       quantidade: e.quantidade,
       quantidadeMinima: e.quantidadeMinima ?? 0,
+      marcaId: e.marcaId ?? undefined,
+      categoriaId: e.categoriaId ?? undefined,
+      subcategoriaId: e.subcategoriaId ?? undefined,
+      localizacaoId: e.localizacaoId ?? undefined,
+      fornecedorId: e.fornecedorId ?? undefined,
     });
     setError(null);
+    onNavegar?.("novo");
   }
 
   function cancelarEdicao() {
     setEditando(null);
-    setForm(vazio);
+    setForm(emptyForm);
     setError(null);
+    onNavegar?.("lista");
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -222,22 +233,32 @@ export default function EpisAdminPage({
     setSaving(true);
     setError(null);
     try {
+      const payload: EpiInput = {
+        codigo: form.codigo,
+        nome: form.nome ?? "",
+        numeroCa: form.numeroCa || undefined,
+        dataValidade: fromLocalDateTime(form.dataValidade ?? ""),
+        quantidade: form.quantidade ?? 0,
+        quantidadeMinima: form.quantidadeMinima,
+        marcaId: form.marcaId,
+        categoriaId: form.categoriaId,
+        subcategoriaId: form.subcategoriaId,
+        localizacaoId: form.localizacaoId,
+        fornecedorId: form.fornecedorId,
+      };
+
       if (editando) {
         const atualizado = await atualizarEpi(editando.id, {
-          nome: form.nome,
-          categoria: form.categoria,
-          numeroCa: form.numeroCa || undefined,
+          ...payload,
           dataValidade: fromLocalDateTime(form.dataValidade ?? "") ?? null,
-          quantidade: form.quantidade,
           quantidadeMinima: form.quantidadeMinima ?? null,
         });
         setEpis((prev) => prev.map((x) => (x.id === atualizado.id ? atualizado : x)));
         cancelarEdicao();
       } else {
-        const criado = await criarEpi(form);
+        const criado = await criarEpi(payload);
         setEpis((prev) => [criado, ...prev]);
         cancelarEdicao();
-        onNavegar?.("lista");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha ao salvar EPI");
@@ -273,132 +294,16 @@ export default function EpisAdminPage({
     }
   }
 
-  const categorias = Array.from(
-    new Set(epis.map((e) => e.categoria).filter(Boolean)),
-  ).sort((a, b) => a.localeCompare(b));
-
   const filtrados = epis.filter((e) => {
-    if (categoriaFiltro && e.categoria !== categoriaFiltro) return false;
+    if (categoriaFiltro && e.categoriaId !== categoriaFiltro) return false;
     return busca.trim()
-      ? `${e.codigo} ${e.nome} ${e.categoria} ${e.numeroCa ?? ""}`
+      ? `${e.codigo} ${e.nome} ${e.numeroCa ?? ""}`
           .toLowerCase()
           .includes(busca.trim().toLowerCase())
       : true;
   });
 
-  const formulario = (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">
-          {editando ? `Editar EPI ${editando.codigo}` : "Novo EPI"}
-        </CardTitle>
-        <CardDescription>
-          Código, CA e validade devem ser conferidos antes do cadastro.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="codigo">Código</Label>
-              <Input
-                id="codigo"
-                required
-                maxLength={50}
-                placeholder="Ex.: CAP-01"
-                value={form.codigo}
-                onChange={(e) => setForm({ ...form, codigo: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
-              <Input
-                id="nome"
-                required
-                placeholder="Ex.: Capacete de segurança"
-                value={form.nome}
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="categoria">Categoria</Label>
-              <Input
-                id="categoria"
-                required
-                placeholder="Ex.: Proteção da cabeça"
-                value={form.categoria}
-                onChange={(e) => setForm({ ...form, categoria: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="numeroCa">Número CA</Label>
-              <Input
-                id="numeroCa"
-                placeholder="Ex.: 12345"
-                value={form.numeroCa ?? ""}
-                onChange={(e) => setForm({ ...form, numeroCa: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dataValidade">Validade</Label>
-              <Input
-                id="dataValidade"
-                type="datetime-local"
-                value={form.dataValidade ?? ""}
-                onChange={(e) =>
-                  setForm({ ...form, dataValidade: e.target.value })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="quantidade">Quantidade</Label>
-              <Input
-                id="quantidade"
-                type="number"
-                min={0}
-                step={1}
-                required
-                value={form.quantidade}
-                onChange={(e) =>
-                  setForm({ ...form, quantidade: Number(e.target.value) })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="quantidadeMinima">Quantidade mínima</Label>
-              <Input
-                id="quantidadeMinima"
-                type="number"
-                min={0}
-                step={1}
-                value={form.quantidadeMinima ?? 0}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    quantidadeMinima: e.target.value === "" ? 0 : Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button type="submit" disabled={saving}>
-              {saving
-                ? "Salvando..."
-                : editando
-                  ? "Salvar alterações"
-                  : "Cadastrar"}
-            </Button>
-            {editando && (
-              <Button type="button" variant="outline" onClick={cancelarEdicao}>
-                Cancelar
-              </Button>
-            )}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-  );
+  // --- Views ---
 
   if (viewAtiva === "analises") {
     return (
@@ -425,9 +330,11 @@ export default function EpisAdminPage({
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold tracking-tight">Novo EPI</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {editando ? `Editar EPI ${editando.codigo}` : "Novo EPI"}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Cadastre um novo equipamento de proteção individual.
+            Cadastre ou edite um equipamento de proteção individual.
           </p>
         </header>
 
@@ -437,11 +344,21 @@ export default function EpisAdminPage({
           </p>
         )}
 
-        {formulario}
+        <ItemForm
+          tipo="EPI"
+          editando={!!editando}
+          saving={saving}
+          form={form}
+          setForm={setForm}
+          lookups={lookups}
+          onSubmit={handleSubmit}
+          onCancel={cancelarEdicao}
+        />
       </div>
     );
   }
 
+  // Default: lista
   return (
     <div className="space-y-6">
       <header>
@@ -461,7 +378,7 @@ export default function EpisAdminPage({
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Buscar EPI por código, nome ou categoria..."
+            placeholder="Buscar EPI por código, nome ou CA..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
             className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -469,29 +386,19 @@ export default function EpisAdminPage({
         </div>
         <select
           value={categoriaFiltro}
-          onChange={(e) => setCategoriaFiltro(e.target.value)}
+          onChange={(e) =>
+            setCategoriaFiltro(e.target.value ? Number(e.target.value) : "")
+          }
           className="rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <option value="">TODAS AS CATEGORIAS</option>
-          {categorias.map((c) => (
-            <option key={c} value={c}>
-              {c}
+          {(lookups?.categorias ?? []).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nome}
             </option>
           ))}
         </select>
       </div>
-
-      {editando ? (
-        formulario
-      ) : (
-        <Button
-          type="button"
-          onClick={() => onNavegar?.("novo")}
-          className="w-full sm:w-auto"
-        >
-          + Novo EPI
-        </Button>
-      )}
 
       <div className="space-y-3">
         {filtrados.map((e) => (
@@ -504,7 +411,11 @@ export default function EpisAdminPage({
                   </CardTitle>
                   <BadgeAtivo ativo={e.ativo} />
                 </div>
-                <span className="text-xs text-muted-foreground">{e.categoria}</span>
+                <span className="text-xs text-muted-foreground">
+                  {typeof e.categoria === "object" && e.categoria?.nome
+                    ? e.categoria.nome
+                    : "—"}
+                </span>
               </div>
               <CardDescription>
                 CA: {e.numeroCa ?? "—"} · Estoque: {e.quantidade}{" "}
@@ -513,7 +424,15 @@ export default function EpisAdminPage({
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <FormatoValidade value={e.dataValidade} />
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <FormatoValidade value={e.dataValidade} />
+                  {e.marca && typeof e.marca === "object" && (
+                    <span>· Marca: {e.marca.nome}</span>
+                  )}
+                  {e.localizacao && typeof e.localizacao === "object" && (
+                    <span>· {e.localizacao.nome}</span>
+                  )}
+                </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <Button
                     type="button"

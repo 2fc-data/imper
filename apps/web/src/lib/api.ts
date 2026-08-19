@@ -916,12 +916,21 @@ export interface EpiItem {
   id: number;
   codigo: string;
   nome: string;
-  categoria: string;
   numeroCa: string | null;
   dataValidade: string | null;
   quantidade: number;
   quantidadeMinima: number | null;
   ativo: boolean;
+  marcaId: number | null;
+  marca?: LookupItem | null;
+  categoriaId: number | null;
+  categoria?: LookupItem | null;
+  subcategoriaId: number | null;
+  subcategoria?: SubcategoriaItem | null;
+  localizacaoId: number | null;
+  localizacao?: LookupItem | null;
+  fornecedorId: number | null;
+  fornecedor?: FornecedorItem | null;
   createdAt: string;
   updatedAt: string;
   entregas?: EntregaEpiItem[];
@@ -930,11 +939,15 @@ export interface EpiItem {
 export interface EpiInput {
   codigo: string;
   nome: string;
-  categoria: string;
   numeroCa?: string;
   dataValidade?: string;
   quantidade?: number;
   quantidadeMinima?: number;
+  marcaId?: number;
+  categoriaId?: number;
+  subcategoriaId?: number;
+  localizacaoId?: number;
+  fornecedorId?: number;
 }
 
 export async function listarEpis(params?: { q?: string; ativo?: boolean }): Promise<EpiItem[]> {

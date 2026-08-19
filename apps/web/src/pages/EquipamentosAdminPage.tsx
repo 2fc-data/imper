@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   atualizarEquipamento,
   categoriasApi,
@@ -43,12 +43,14 @@ import {
   fromLocalDateTime,
   toLocalDateTime,
 } from "../lib/datetime";
+import { ItemForm, type ItemFormData } from "../components/ItemForm";
 
-const textareaClasses =
-  "flex min-h-[90px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+
 
 const selectClasses =
   "flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+
+
 
 export function BadgeAtivoEquipamento({ ativo }: { ativo: boolean }) {
   return (
@@ -174,7 +176,7 @@ export function EquipamentosAnalises({
   );
 }
 
-const emptyForm: EquipamentoInput = {
+const emptyForm: ItemFormData = {
   codigo: "",
   numeroPatrimonio: undefined,
   descricao: "",
@@ -205,7 +207,7 @@ export default function EquipamentosAdminPage({
   const [categoriaFiltro, setCategoriaFiltro] = useState<number | "">("");
   const [saving, setSaving] = useState(false);
   const [editando, setEditando] = useState<EquipamentoItem | null>(null);
-  const [form, setForm] = useState<EquipamentoInput>(emptyForm);
+  const [form, setForm] = useState<ItemFormData>(emptyForm);
   const [confirmandoExclusao, setConfirmandoExclusao] = useState<number | null>(
     null,
   );
@@ -286,7 +288,7 @@ export default function EquipamentosAdminPage({
       const payload: EquipamentoInput = {
         codigo: form.codigo,
         numeroPatrimonio: form.numeroPatrimonio || undefined,
-        descricao: form.descricao,
+        descricao: form.descricao || "",
         modelo: form.modelo || undefined,
         numeroSerie: form.numeroSerie || undefined,
         marcaId: form.marcaId,
@@ -294,7 +296,7 @@ export default function EquipamentosAdminPage({
         subcategoriaId: form.subcategoriaId,
         localizacaoId: form.localizacaoId,
         fornecedorId: form.fornecedorId,
-        statusId: form.statusId,
+        statusId: form.statusId || 0,
         estadoConservacaoId: form.estadoConservacaoId,
         dataAquisicao: fromLocalDateTime(form.dataAquisicao ?? ""),
         valorAquisicao: form.valorAquisicao,
@@ -374,324 +376,21 @@ export default function EquipamentosAdminPage({
     }
   }
 
-  const subcategorias = useMemo(
-    () => (lookups?.subcategorias ?? []).filter((s) => s.ativo),
-    [lookups],
-  );
-
-  const subcategoriasDaCategoria = useMemo(
-    () => subcategorias.filter((s) => s.categoriaId === form.categoriaId),
-    [subcategorias, form.categoriaId],
-  );
-
-  const filtradas = equipamentos.filter(
-    (e) =>
-      (!categoriaFiltro || e.categoriaId === categoriaFiltro) &&
-      (!busca ||
-        `${e.codigo} ${e.descricao} ${e.numeroPatrimonio ?? ""}`.toLowerCase().includes(busca.toLowerCase())),
-  );
-
   const formulario = (
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">
-            {editando ? "Editar equipamento" : "Novo equipamento"}
-          </CardTitle>
-          <CardDescription>
-            Preencha os dados do equipamento. O status é obrigatório.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="space-y-1.5">
-                <Label htmlFor="codigo">Código</Label>
-                <Input
-                  id="codigo"
-                  required
-                  minLength={2}
-                  placeholder="EQ-001"
-                  value={form.codigo}
-                  onChange={(e) => setForm({ ...form, codigo: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="numeroPatrimonio">Nº de patrimônio</Label>
-                <Input
-                  id="numeroPatrimonio"
-                  placeholder="Opcional"
-                  value={form.numeroPatrimonio ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      numeroPatrimonio: e.target.value || undefined,
-                    })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="statusId">Status</Label>
-                <select
-                  id="statusId"
-                  required
-                  value={form.statusId || ""}
-                  onChange={(e) =>
-                    setForm({ ...form, statusId: Number(e.target.value) })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="" disabled>
-                    Selecione...
-                  </option>
-                  {(lookups?.statuses ?? []).map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5 sm:col-span-2 lg:col-span-2">
-                <Label htmlFor="descricao">Descrição</Label>
-                <Input
-                  id="descricao"
-                  required
-                  minLength={3}
-                  placeholder="Ex.: Compressor de ar 100L"
-                  value={form.descricao}
-                  onChange={(e) =>
-                    setForm({ ...form, descricao: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="modelo">Modelo</Label>
-                <Input
-                  id="modelo"
-                  placeholder="Opcional"
-                  value={form.modelo ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, modelo: e.target.value || undefined })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="numeroSerie">Nº de série</Label>
-                <Input
-                  id="numeroSerie"
-                  placeholder="Opcional"
-                  value={form.numeroSerie ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, numeroSerie: e.target.value || undefined })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="marcaId">Marca</Label>
-                <select
-                  id="marcaId"
-                  value={form.marcaId ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      marcaId: e.target.value ? Number(e.target.value) : undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Sem marca</option>
-                  {(lookups?.marcas ?? []).map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="categoriaId">Categoria</Label>
-                <select
-                  id="categoriaId"
-                  value={form.categoriaId ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      categoriaId: e.target.value ? Number(e.target.value) : undefined,
-                      subcategoriaId: undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Sem categoria</option>
-                  {(lookups?.categorias ?? []).map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="subcategoriaId">Subcategoria</Label>
-                <select
-                  id="subcategoriaId"
-                  value={form.subcategoriaId ?? ""}
-                  disabled={!form.categoriaId}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      subcategoriaId: e.target.value
-                        ? Number(e.target.value)
-                        : undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Selecione a categoria primeiro</option>
-                  {subcategoriasDaCategoria.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="localizacaoId">Localização</Label>
-                <select
-                  id="localizacaoId"
-                  value={form.localizacaoId ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      localizacaoId: e.target.value
-                        ? Number(e.target.value)
-                        : undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Sem localização</option>
-                  {(lookups?.localizacoes ?? []).map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="fornecedorId">Fornecedor</Label>
-                <select
-                  id="fornecedorId"
-                  value={form.fornecedorId ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      fornecedorId: e.target.value
-                        ? Number(e.target.value)
-                        : undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Sem fornecedor</option>
-                  {(lookups?.fornecedores ?? []).map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="estadoConservacaoId">Estado de conservação</Label>
-                <select
-                  id="estadoConservacaoId"
-                  value={form.estadoConservacaoId ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      estadoConservacaoId: e.target.value
-                        ? Number(e.target.value)
-                        : undefined,
-                    })
-                  }
-                  className={selectClasses}
-                >
-                  <option value="">Sem estado</option>
-                  {(lookups?.estadosConservacao ?? []).map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="dataAquisicao">Data de aquisição</Label>
-                <Input
-                  id="dataAquisicao"
-                  type="datetime-local"
-                  value={form.dataAquisicao ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, dataAquisicao: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="valorAquisicao">Valor de aquisição (R$)</Label>
-                <Input
-                  id="valorAquisicao"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  placeholder="0,00"
-                  value={form.valorAquisicao ?? ""}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      valorAquisicao:
-                        e.target.value === "" ? undefined : Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="dataGarantia">Fim da garantia</Label>
-                <Input
-                  id="dataGarantia"
-                  type="datetime-local"
-                  value={form.dataGarantia ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, dataGarantia: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="observacoes">Observações</Label>
-              <textarea
-                id="observacoes"
-                placeholder="Opcional"
-                className={textareaClasses}
-                value={form.observacoes ?? ""}
-                onChange={(e) =>
-                  setForm({ ...form, observacoes: e.target.value || undefined })
-                }
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button type="submit" disabled={saving}>
-                {saving
-                  ? "Salvando..."
-                  : editando
-                    ? "Salvar alterações"
-                    : "Cadastrar"}
-              </Button>
-              {editando && (
-                <Button type="button" variant="outline" onClick={cancelarEdicao}>
-                  Cancelar
-                </Button>
-              )}
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    );
+    <ItemForm
+      tipo="EQUIPAMENTO"
+      editando={!!editando}
+      saving={saving}
+      form={form}
+      setForm={setForm}
+      lookups={lookups}
+      onSubmit={handleSubmit}
+      onCancel={() => {
+        cancelarEdicao();
+        if (viewAtiva === "novo") onNavegar("lista");
+      }}
+    />
+  );
 
   return (
     <div className="space-y-6">
@@ -704,26 +403,7 @@ export default function EquipamentosAdminPage({
         </p>
       </header>
 
-      <div className="flex flex-wrap gap-2">
-        {(
-          [
-            ["lista", "Equipamentos"],
-            ["analises", "Análises"],
-            ["novo", "Novo Equipamento"],
-            ["catalogos", "Catálogos"],
-          ] as const
-        ).map(([v, rotulo]) => (
-          <Button
-            key={v}
-            type="button"
-            variant={viewAtiva === v ? "default" : "outline"}
-            size="sm"
-            onClick={() => onNavegar(v)}
-          >
-            {rotulo}
-          </Button>
-        ))}
-      </div>
+
 
       {error && (
         <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -735,7 +415,9 @@ export default function EquipamentosAdminPage({
         <EquipamentosAnalises equipamentos={equipamentos} />
       )}
 
-      {viewAtiva === "lista" && (
+      {(viewAtiva === "novo" || editando) && formulario}
+
+      {viewAtiva === "lista" && !editando && (
         <>
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
@@ -763,10 +445,13 @@ export default function EquipamentosAdminPage({
             </select>
           </div>
 
-          {formulario}
-
           <div className="space-y-3">
-            {filtradas.map((e) => {
+            {equipamentos.filter(
+              (e) =>
+                (!categoriaFiltro || e.categoriaId === categoriaFiltro) &&
+                (!busca ||
+                  `${e.codigo} ${e.descricao} ${e.numeroPatrimonio ?? ""}`.toLowerCase().includes(busca.toLowerCase())),
+            ).map((e) => {
               const retiradaEmAberto = e.responsavel != null;
               const novo = retiraForm.equipamentoId === e.id;
               return (
@@ -819,9 +504,7 @@ export default function EquipamentosAdminPage({
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        {editando?.id !== e.id && (
-                          <>
-                            {novo ? (
+                        {novo ? (
                               <form
                                 onSubmit={handleRetirar}
                                 className="flex flex-wrap items-center gap-2"
@@ -910,8 +593,6 @@ export default function EquipamentosAdminPage({
                                 </Button>
                               )
                             )}
-                          </>
-                        )}
                         <Button
                           type="button"
                           variant="outline"
@@ -965,7 +646,12 @@ export default function EquipamentosAdminPage({
                 </Card>
               );
             })}
-            {!error && filtradas.length === 0 && (
+            {!error && equipamentos.filter(
+              (e) =>
+                (!categoriaFiltro || e.categoriaId === categoriaFiltro) &&
+                (!busca ||
+                  `${e.codigo} ${e.descricao} ${e.numeroPatrimonio ?? ""}`.toLowerCase().includes(busca.toLowerCase())),
+            ).length === 0 && (
               <p className="py-8 text-center text-sm text-muted-foreground">
                 Nenhum equipamento encontrado.
               </p>
@@ -974,17 +660,7 @@ export default function EquipamentosAdminPage({
         </>
       )}
 
-      {viewAtiva === "novo" && (
-        <>
-          {error && (
-            <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {error}
-            </p>
-          )}
 
-          {formulario}
-        </>
-      )}
 
       {viewAtiva === "catalogos" && (
         <CatalogosSection
@@ -999,7 +675,7 @@ export default function EquipamentosAdminPage({
               );
             }
           }}
-          subcategoriasPadrao={() => subcategorias}
+          subcategoriasPadrao={() => (lookups?.subcategorias ?? []).filter((s) => s.ativo)}
         />
       )}
     </div>

@@ -11,10 +11,16 @@ export const epiService = {
           ? [
               { codigo: { contains: filtro.q } },
               { nome: { contains: filtro.q } },
-              { categoria: { contains: filtro.q } },
               { numeroCa: { contains: filtro.q } },
             ]
           : undefined,
+      },
+      include: {
+        marca: true,
+        categoria: true,
+        subcategoria: true,
+        localizacao: true,
+        fornecedor: true,
       },
       orderBy: [{ ativo: "desc" }, { nome: "asc" }],
     });
@@ -24,6 +30,11 @@ export const epiService = {
     const epi = await prisma.epi.findUnique({
       where: { id },
       include: {
+        marca: true,
+        categoria: true,
+        subcategoria: true,
+        localizacao: true,
+        fornecedor: true,
         entregas: {
           include: { colaborador: { select: { id: true, nome: true } }, registradoPor: { select: { id: true, nome: true } } },
           orderBy: { data: "desc" },
@@ -38,11 +49,15 @@ export const epiService = {
   async criar(data: {
     codigo: string;
     nome: string;
-    categoria: string;
     numeroCa?: string;
     dataValidade?: Date | string;
     quantidade?: number;
     quantidadeMinima?: number;
+    marcaId?: number;
+    categoriaId?: number;
+    subcategoriaId?: number;
+    localizacaoId?: number;
+    fornecedorId?: number;
   }) {
     const codigoNorm = data.codigo.trim().toUpperCase();
     if (await prisma.epi.findUnique({ where: { codigo: codigoNorm } }))
@@ -53,11 +68,15 @@ export const epiService = {
   async atualizar(id: number, data: Partial<{
     codigo: string;
     nome: string;
-    categoria: string;
     numeroCa: string;
     dataValidade: Date | string | null;
     quantidade: number;
     quantidadeMinima: number | null;
+    marcaId: number | null;
+    categoriaId: number | null;
+    subcategoriaId: number | null;
+    localizacaoId: number | null;
+    fornecedorId: number | null;
     ativo: boolean;
   }>) {
     const existente = await prisma.epi.findUnique({ where: { id } });

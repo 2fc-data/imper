@@ -15,11 +15,15 @@ const idSchema = z.object({ id: z.coerce.number().int() });
 const epiBody = z.object({
   codigo: z.string().min(2),
   nome: z.string().min(2),
-  categoria: z.string().min(2),
   numeroCa: z.string().optional(),
   dataValidade: z.string().datetime().optional(),
   quantidade: z.number().nonnegative().optional(),
   quantidadeMinima: z.number().nonnegative().optional(),
+  marcaId: z.number().int().optional(),
+  categoriaId: z.number().int().optional(),
+  subcategoriaId: z.number().int().optional(),
+  localizacaoId: z.number().int().optional(),
+  fornecedorId: z.number().int().optional(),
 });
 const epiUpdate = epiBody.partial().extend({
   dataValidade: z.string().datetime().nullable().optional(),
