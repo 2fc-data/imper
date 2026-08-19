@@ -176,10 +176,26 @@ export function AgendamentoList({
   onRemover,
 }: AgendamentoListProps) {
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
+  const [busca, setBusca] = useState("");
 
   const alternarExpandido = (id: number) => {
     setExpandidoId(expandidoId === id ? null : id);
   };
+
+  const filtrados = agendamentos.filter((item) => {
+    if (!busca.trim()) return true;
+    const alvo = [
+      item.cliente?.nome ?? "",
+      item.atendimento?.descricao ?? "",
+      item.user?.nome ?? "",
+      item.observacoes ?? "",
+      item.endereco?.logradouro ?? "",
+      item.endereco?.bairro ?? item.endereco?.cidade ?? "",
+    ]
+      .join(" ")
+      .toLowerCase();
+    return alvo.includes(busca.toLowerCase());
+  });
 
   return (
     <div className="space-y-4">
@@ -193,6 +209,15 @@ export function AgendamentoList({
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Buscar por cliente, endereço ou observações..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          />
+        </div>
         <select
           value={statusFiltro}
           onChange={(e) => onStatusFiltroChange(e.target.value)}
@@ -237,14 +262,14 @@ export function AgendamentoList({
                   Carregando agendamentos...
                 </td>
               </tr>
-            ) : agendamentos.length === 0 ? (
+            ) : filtrados.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Nenhum agendamento encontrado.
                 </td>
               </tr>
             ) : (
-              agendamentos.map((item) => (
+              filtrados.map((item) => (
                 <Fragment key={item.id}>
                   <tr className="hover:bg-primary/10 transition-colors">
                     <td className="px-4 py-3">

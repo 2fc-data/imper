@@ -685,5 +685,363 @@ export async function cancelarVisita(id: number): Promise<VisitaItem> {
   return api.post<VisitaItem>(`/visitas/${id}/cancelar`);
 }
 
+// ---------------------------------------------------------------------------
+// Equipamentos
+// ---------------------------------------------------------------------------
+
+export interface LookupItem {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  ordem: number;
+  ativo: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LookupInput {
+  nome: string;
+  descricao?: string;
+  ordem?: number;
+}
+
+export interface SubcategoriaItem extends LookupItem {
+  categoriaId: number;
+}
+
+export interface SubcategoriaInput extends LookupInput {
+  categoriaId: number;
+}
+
+export interface FornecedorItem {
+  id: number;
+  nome: string;
+  cnpj: string | null;
+  telefone: string | null;
+  email: string | null;
+  ativo: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FornecedorInput {
+  nome: string;
+  cnpj?: string;
+  telefone?: string;
+  email?: string;
+}
+
+export interface EquipamentoLookups {
+  categorias: LookupItem[];
+  subcategorias: SubcategoriaItem[];
+  marcas: LookupItem[];
+  fornecedores: FornecedorItem[];
+  localizacoes: LookupItem[];
+  statuses: LookupItem[];
+  estadosConservacao: LookupItem[];
+  tiposManutencao: LookupItem[];
+}
+
+export async function listarLookupsEquipamentos(): Promise<EquipamentoLookups> {
+  const [categorias, subcategorias, marcas, fornecedores, localizacoes, statuses, estadosConservacao, tiposManutencao] =
+    await Promise.all([
+      api.get<LookupItem[]>("/equipamentos/lookups/categorias"),
+      api.get<SubcategoriaItem[]>("/equipamentos/lookups/subcategorias"),
+      api.get<LookupItem[]>("/equipamentos/lookups/marcas"),
+      api.get<FornecedorItem[]>("/equipamentos/lookups/fornecedores"),
+      api.get<LookupItem[]>("/equipamentos/lookups/localizacoes"),
+      api.get<LookupItem[]>("/equipamentos/lookups/status"),
+      api.get<LookupItem[]>("/equipamentos/lookups/estados-conservacao"),
+      api.get<LookupItem[]>("/equipamentos/lookups/tipos-manutencao"),
+    ]);
+  return { categorias, subcategorias, marcas, fornecedores, localizacoes, statuses, estadosConservacao, tiposManutencao };
+}
+
+function criarLookupApi<R extends LookupItem>(base: string) {
+  return {
+    listar: () => api.get<R[]>(`${base}`),
+    criar: (input: LookupInput) => api.post<R>(`${base}`, input),
+    atualizar: (id: number, input: Partial<LookupInput> & { ativo?: boolean }) => api.put<R>(`${base}/${id}`, input),
+    desativar: (id: number) => api.del<R>(`${base}/${id}`),
+  };
+}
+
+export const categoriasApi = criarLookupApi<LookupItem>("/equipamentos/lookups/categorias");
+export const marcasApi = criarLookupApi<LookupItem>("/equipamentos/lookups/marcas");
+export const localizacoesApi = criarLookupApi<LookupItem>("/equipamentos/lookups/localizacoes");
+export const statusEquipamentoApi = criarLookupApi<LookupItem>("/equipamentos/lookups/status");
+export const estadosConservacaoApi = criarLookupApi<LookupItem>("/equipamentos/lookups/estados-conservacao");
+export const tiposManutencaoApi = criarLookupApi<LookupItem>("/equipamentos/lookups/tipos-manutencao");
+
+export const subcategoriasApi = {
+  listar: () => api.get<SubcategoriaItem[]>("/equipamentos/lookups/subcategorias"),
+  criar: (input: SubcategoriaInput) => api.post<SubcategoriaItem>("/equipamentos/lookups/subcategorias", input),
+  atualizar: (id: number, input: Partial<SubcategoriaInput> & { ativo?: boolean }) =>
+    api.put<SubcategoriaItem>(`/equipamentos/lookups/subcategorias/${id}`, input),
+  desativar: (id: number) => api.del<SubcategoriaItem>(`/equipamentos/lookups/subcategorias/${id}`),
+};
+
+export const fornecedoresApi = {
+  listar: () => api.get<FornecedorItem[]>("/equipamentos/lookups/fornecedores"),
+  criar: (input: FornecedorInput) => api.post<FornecedorItem>("/equipamentos/lookups/fornecedores", input),
+  atualizar: (id: number, input: Partial<FornecedorInput> & { ativo?: boolean }) =>
+    api.put<FornecedorItem>(`/equipamentos/lookups/fornecedores/${id}`, input),
+  desativar: (id: number) => api.del<FornecedorItem>(`/equipamentos/lookups/fornecedores/${id}`),
+};
+
+export interface RetiradaEquipamentoItem {
+  id: number;
+  equipamentoId: number;
+  colaboradorId: number;
+  colaborador?: { id: number; nome: string };
+  observacao: string | null;
+  registradoPorId: number;
+  dataRetirada: string;
+  dataDevolucao: string | null;
+}
+
+export interface EquipamentoItem {
+  id: number;
+  codigo: string;
+  numeroPatrimonio: string | null;
+  descricao: string;
+  modelo: string | null;
+  numeroSerie: string | null;
+  marcaId: number | null;
+  marca?: LookupItem | null;
+  categoriaId: number | null;
+  categoria?: LookupItem | null;
+  subcategoriaId: number | null;
+  subcategoria?: SubcategoriaItem | null;
+  localizacaoId: number | null;
+  localizacao?: LookupItem | null;
+  fornecedorId: number | null;
+  statusId: number;
+  status?: LookupItem;
+  estadoConservacaoId: number | null;
+  estadoConservacao?: LookupItem | null;
+  responsavelId: number | null;
+  responsavel?: { id: number; nome: string } | null;
+  dataAquisicao: string | null;
+  valorAquisicao: number | null;
+  dataGarantia: string | null;
+  observacoes: string | null;
+  ativo: boolean;
+  createdAt: string;
+  updatedAt: string;
+  retiradas?: RetiradaEquipamentoItem[];
+}
+
+export interface EquipamentoInput {
+  codigo: string;
+  numeroPatrimonio?: string;
+  descricao: string;
+  modelo?: string;
+  numeroSerie?: string;
+  marcaId?: number;
+  categoriaId?: number;
+  subcategoriaId?: number;
+  localizacaoId?: number;
+  fornecedorId?: number;
+  statusId: number;
+  estadoConservacaoId?: number;
+  dataAquisicao?: string;
+  valorAquisicao?: number;
+  dataGarantia?: string;
+  observacoes?: string;
+}
+
+export async function listarEquipamentos(params?: {
+  q?: string;
+  statusId?: number;
+  categoriaId?: number;
+  ativo?: boolean;
+}): Promise<EquipamentoItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.q) searchParams.set("q", params.q);
+  if (params?.statusId) searchParams.set("statusId", String(params.statusId));
+  if (params?.categoriaId) searchParams.set("categoriaId", String(params.categoriaId));
+  if (params?.ativo !== undefined) searchParams.set("ativo", String(params.ativo));
+  const queryStr = searchParams.toString();
+  return api.get<EquipamentoItem[]>(`/equipamentos${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function detalharEquipamento(id: number): Promise<EquipamentoItem> {
+  return api.get<EquipamentoItem>(`/equipamentos/${id}`);
+}
+
+export async function criarEquipamento(input: EquipamentoInput): Promise<EquipamentoItem> {
+  return api.post<EquipamentoItem>("/equipamentos", input);
+}
+
+export async function atualizarEquipamento(
+  id: number,
+  input: Partial<EquipamentoInput> & { ativo?: boolean },
+): Promise<EquipamentoItem> {
+  return api.put<EquipamentoItem>(`/equipamentos/${id}`, input);
+}
+
+export async function excluirEquipamento(id: number): Promise<EquipamentoItem> {
+  return api.del<EquipamentoItem>(`/equipamentos/${id}`);
+}
+
+export async function registrarRetiradaEquipamento(
+  id: number,
+  input: { colaboradorId: number; observacao?: string },
+): Promise<RetiradaEquipamentoItem> {
+  return api.post<RetiradaEquipamentoItem>(`/equipamentos/${id}/retirada`, input);
+}
+
+export async function registrarDevolucaoEquipamento(id: number): Promise<RetiradaEquipamentoItem> {
+  return api.post<RetiradaEquipamentoItem>(`/equipamentos/${id}/devolucao`);
+}
+
+// ---------------------------------------------------------------------------
+// EPIs
+// ---------------------------------------------------------------------------
+
+export interface EntregaEpiItem {
+  id: number;
+  epiId: number;
+  colaboradorId: number;
+  colaborador?: { id: number; nome: string };
+  quantidade: number;
+  observacao: string | null;
+  registradoPorId: number;
+  registradoPor?: { id: number; nome: string };
+  data: string;
+}
+
+export interface EpiItem {
+  id: number;
+  codigo: string;
+  nome: string;
+  categoria: string;
+  numeroCa: string | null;
+  dataValidade: string | null;
+  quantidade: number;
+  quantidadeMinima: number | null;
+  ativo: boolean;
+  createdAt: string;
+  updatedAt: string;
+  entregas?: EntregaEpiItem[];
+}
+
+export interface EpiInput {
+  codigo: string;
+  nome: string;
+  categoria: string;
+  numeroCa?: string;
+  dataValidade?: string;
+  quantidade?: number;
+  quantidadeMinima?: number;
+}
+
+export async function listarEpis(params?: { q?: string; ativo?: boolean }): Promise<EpiItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.q) searchParams.set("q", params.q);
+  if (params?.ativo !== undefined) searchParams.set("ativo", String(params.ativo));
+  const queryStr = searchParams.toString();
+  return api.get<EpiItem[]>(`/epis${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function detalharEpi(id: number): Promise<EpiItem> {
+  return api.get<EpiItem>(`/epis/${id}`);
+}
+
+export async function criarEpi(input: EpiInput): Promise<EpiItem> {
+  return api.post<EpiItem>("/epis", input);
+}
+
+export async function atualizarEpi(
+  id: number,
+  input: Partial<Omit<EpiInput, "dataValidade" | "quantidadeMinima">> & {
+    dataValidade?: string | null;
+    quantidadeMinima?: number | null;
+    ativo?: boolean;
+  },
+): Promise<EpiItem> {
+  return api.put<EpiItem>(`/epis/${id}`, input);
+}
+
+export async function excluirEpi(id: number): Promise<EpiItem> {
+  return api.del<EpiItem>(`/epis/${id}`);
+}
+
+export async function registrarEntregaEpi(
+  id: number,
+  input: { colaboradorId: number; quantidade: number; observacao?: string },
+): Promise<EntregaEpiItem> {
+  return api.post<EntregaEpiItem>(`/epis/${id}/entrega`, input);
+}
+
+// ---------------------------------------------------------------------------
+// Manutenções
+// ---------------------------------------------------------------------------
+
+export type StatusManutencao = "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+
+export interface ManutencaoItem {
+  id: number;
+  equipamentoId: number;
+  tipoId: number;
+  data: string;
+  descricao: string;
+  custo: number | null;
+  status: StatusManutencao;
+  responsavelManutencaoId: number;
+  proximaManutencao: string | null;
+  createdAt: string;
+  updatedAt: string;
+  equipamento?: { id: number; codigo: string | null; descricao: string; numeroPatrimonio: string | null };
+  tipo?: LookupItem | null;
+  responsavelManutencao?: { id: number; nome: string } | null;
+}
+
+export interface ManutencaoInput {
+  equipamentoId: number;
+  tipoId: number;
+  data: string;
+  descricao: string;
+  custo?: number;
+  responsavelManutencaoId?: number;
+  proximaManutencao?: string;
+}
+
+export async function listarManutencoes(params?: {
+  equipamentoId?: number;
+  status?: StatusManutencao;
+}): Promise<ManutencaoItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.equipamentoId) searchParams.set("equipamentoId", String(params.equipamentoId));
+  if (params?.status) searchParams.set("status", params.status);
+  const queryStr = searchParams.toString();
+  return api.get<ManutencaoItem[]>(`/manutencoes${queryStr ? `?${queryStr}` : ""}`);
+}
+
+export async function detalharManutencao(id: number): Promise<ManutencaoItem> {
+  return api.get<ManutencaoItem>(`/manutencoes/${id}`);
+}
+
+export async function criarManutencao(input: ManutencaoInput): Promise<ManutencaoItem> {
+  return api.post<ManutencaoItem>("/manutencoes", input);
+}
+
+export async function atualizarManutencao(
+  id: number,
+  input: Partial<Omit<ManutencaoInput, "custo" | "responsavelManutencaoId" | "proximaManutencao">> & {
+    custo?: number | null;
+    responsavelManutencaoId?: number | null;
+    proximaManutencao?: string | null;
+    status?: StatusManutencao;
+  },
+): Promise<ManutencaoItem> {
+  return api.put<ManutencaoItem>(`/manutencoes/${id}`, input);
+}
+
+export async function excluirManutencao(id: number): Promise<ManutencaoItem> {
+  return api.del<ManutencaoItem>(`/manutencoes/${id}`);
+}
+
 
 

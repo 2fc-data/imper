@@ -81,10 +81,70 @@ const vazio: ServicoMarketingInput = {
   ativo: true,
 };
 
-export default function ServicosAdminPage() {
+interface ServicosAnalisesProps {
+  servicos: ServicoMarketing[];
+}
+
+export function ServicosAnalises({ servicos }: ServicosAnalisesProps) {
+  const total = servicos.length;
+  const ativos = servicos.filter((s) => s.ativo).length;
+  const inativos = servicos.filter((s) => !s.ativo).length;
+  const taxa = total ? Math.round((ativos / total) * 100) : 0;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold tracking-tight">Análises de Serviços</h2>
+        <p className="text-sm text-muted-foreground">
+          Visão geral dos serviços exibidos na página de orçamento.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-muted-foreground">Total de serviços</p>
+          <p className="mt-2 text-2xl font-bold">{total}</p>
+        </div>
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-success">Ativos</p>
+          <p className="mt-2 text-2xl font-bold">{ativos}</p>
+        </div>
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-muted-foreground">Inativos</p>
+          <p className="mt-2 text-2xl font-bold">{inativos}</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border bg-card p-5 shadow-sm space-y-3">
+        <h3 className="font-semibold text-base">Taxa de serviços ativos</h3>
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs font-medium">
+            <span>{ativos} de {total} ativos</span>
+            <span>{taxa}%</span>
+          </div>
+          <div className="h-2 w-full rounded-full bg-primary/40 overflow-hidden">
+            <div
+              className="h-full bg-primary transition-all"
+              style={{ width: `${taxa}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ServicosAdminPage({
+  viewAtiva = "lista",
+  onNavegar,
+}: {
+  viewAtiva?: "analises" | "lista" | "novo";
+  onNavegar?: (v: "analises" | "lista" | "novo") => void;
+}) {
   const [servicos, setServicos] = useState<ServicoMarketing[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
+  const [filtroAtivo, setFiltroAtivo] = useState<"" | "ativos" | "inativos">("");
   const [saving, setSaving] = useState(false);
   const [editando, setEditando] = useState<ServicoMarketing | null>(null);
   const [form, setForm] = useState<ServicoMarketingInput>(vazio);
@@ -134,6 +194,7 @@ export default function ServicosAdminPage() {
       } else {
         const criado = await criarServico(form);
         setServicos((prev) => [criado, ...prev]);
+        onNavegar?.("lista");
       }
       setForm(vazio);
       setEditando(null);
@@ -173,12 +234,142 @@ export default function ServicosAdminPage() {
     }
   }
 
-  const filtrados = servicos.filter((s) =>
-    s.titulo.toLowerCase().includes(busca.toLowerCase()),
+  const filtrados = servicos.filter((s) => {
+    if (filtroAtivo === "ativos" && !s.ativo) return false;
+    if (filtroAtivo === "inativos" && s.ativo) return false;
+    const texto = busca.trim().toLowerCase();
+    if (!texto) return true;
+    return `${s.titulo} ${s.descricao}`.toLowerCase().includes(texto);
+  });
+
+  const formulario = (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base">
+          {editando ? `Editar: ${editando.titulo}` : "Novo serviço"}
+        </CardTitle>
+        <CardDescription>
+          {editando
+            ? "Altere os campos e salve as alterações."
+            : "Preencha os dados para cadastrar um serviço."}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="titulo">Título</Label>
+            <Input
+              id="titulo"
+              required
+              minLength={2}
+              placeholder="Ex.: Manutenção preventiva"
+              value={form.titulo}
+              onChange={(e) => setForm({ ...form, titulo: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="descricao">Descrição</Label>
+            <textarea
+              id="descricao"
+              required
+              minLength={2}
+              placeholder="Descreva o serviço..."
+              className={textareaClasses}
+              value={form.descricao}
+              onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="icone">Ícone</Label>
+            <select
+              id="icone"
+              required
+              value={form.icone}
+              onChange={(e) => setForm({ ...form, icone: e.target.value })}
+              className={selectClasses}
+            >
+              <option value="" disabled>
+                Selecione um ícone...
+              </option>
+              {ICONES.map((ic) => (
+                <option key={ic.d} value={ic.d}>
+                  {ic.rotulo}
+                </option>
+              ))}
+            </select>
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.ativo ?? true}
+              onChange={(e) => setForm({ ...form, ativo: e.target.checked })}
+              className="h-4 w-4 rounded border-input accent-primary"
+            />
+            Ativo na página de orçamento
+          </label>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={saving}>
+              {saving
+                ? "Salvando..."
+                : editando
+                  ? "Salvar alterações"
+                  : "Cadastrar"}
+            </Button>
+            {editando && (
+              <Button type="button" variant="outline" onClick={cancelarEdicao}>
+                Cancelar
+              </Button>
+            )}
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 
+  if (viewAtiva === "analises") {
+    return (
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-2xl font-semibold tracking-tight">Serviços</h1>
+          <p className="text-sm text-muted-foreground">
+            Gerencie os serviços exibidos na página de orçamento
+          </p>
+        </header>
+
+        <ServicosAnalises servicos={servicos} />
+
+        {onNavegar && (
+          <Button type="button" variant="outline" onClick={() => onNavegar("lista")}>
+            ← Voltar para a lista
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  if (viewAtiva === "novo") {
+    return (
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-2xl font-semibold tracking-tight">Novo serviço</h1>
+          <p className="text-sm text-muted-foreground">
+            Cadastre um novo serviço para exibição na página de orçamento.
+          </p>
+        </header>
+
+        {error && (
+          <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
+        {formulario}
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Serviços</h1>
         <p className="text-sm text-muted-foreground">
@@ -192,93 +383,38 @@ export default function ServicosAdminPage() {
         </p>
       )}
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">
-            {editando ? `Editar: ${editando.titulo}` : "Novo serviço"}
-          </CardTitle>
-          <CardDescription>
-            {editando
-              ? "Altere os campos e salve as alterações."
-              : "Preencha os dados para cadastrar um serviço."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="titulo">Título</Label>
-              <Input
-                id="titulo"
-                required
-                minLength={2}
-                placeholder="Ex.: Manutenção preventiva"
-                value={form.titulo}
-                onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="descricao">Descrição</Label>
-              <textarea
-                id="descricao"
-                required
-                minLength={2}
-                placeholder="Descreva o serviço..."
-                className={textareaClasses}
-                value={form.descricao}
-                onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="icone">Ícone</Label>
-              <select
-                id="icone"
-                required
-                value={form.icone}
-                onChange={(e) => setForm({ ...form, icone: e.target.value })}
-                className={selectClasses}
-              >
-                <option value="" disabled>
-                  Selecione um ícone...
-                </option>
-                {ICONES.map((ic) => (
-                  <option key={ic.d} value={ic.d}>
-                    {ic.rotulo}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={form.ativo ?? true}
-                onChange={(e) => setForm({ ...form, ativo: e.target.checked })}
-                className="h-4 w-4 rounded border-input accent-primary"
-              />
-              Ativo na página de orçamento
-            </label>
-            <div className="flex gap-2">
-              <Button type="submit" disabled={saving}>
-                {saving
-                  ? "Salvando..."
-                  : editando
-                    ? "Salvar alterações"
-                    : "Cadastrar"}
-              </Button>
-              {editando && (
-                <Button type="button" variant="outline" onClick={cancelarEdicao}>
-                  Cancelar
-                </Button>
-              )}
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Buscar serviço por título ou descrição..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          />
+        </div>
+        <select
+          value={filtroAtivo}
+          onChange={(e) => setFiltroAtivo(e.target.value as "" | "ativos" | "inativos")}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
+          <option value="">TODOS OS STATUS</option>
+          <option value="ativos">Ativos</option>
+          <option value="inativos">Inativos</option>
+        </select>
+      </div>
 
-      <Input
-        placeholder="Buscar serviço por título..."
-        value={busca}
-        onChange={(e) => setBusca(e.target.value)}
-      />
+      {editando ? (
+        formulario
+      ) : (
+        <Button
+          type="button"
+          onClick={() => onNavegar?.("novo")}
+          className="w-full sm:w-auto"
+        >
+          + Novo serviço
+        </Button>
+      )}
 
       <div className="space-y-3">
         {filtrados.map((s) => (

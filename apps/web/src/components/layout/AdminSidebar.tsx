@@ -1,43 +1,76 @@
 import { useEffect, type ReactNode } from "react";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { NAV_ITEMS } from "../../lib/nav";
+import { useAuth } from "../../auth/AuthContext";
+import { itensPara, type NavItem } from "../../lib/nav";
 import { cn } from "../../lib/utils";
 
 interface AdminSidebarProps {
   openOnMobile: boolean;
   onClose: () => void;
-  sidebar?: ReactNode;
 }
 
-function tituloDaRota(pathname: string): string {
-  const item = [...NAV_ITEMS].reverse().find((it) => pathname.startsWith(it.to));
-  return item?.label ?? "";
+function RotuloSecao({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      {children}
+    </p>
+  );
 }
 
-export function AdminSidebar({
-  openOnMobile,
-  onClose,
-  sidebar,
-}: AdminSidebarProps) {
+function ItemMenu({ item, end }: { item: NavItem; end?: boolean }) {
+  return (
+    <NavLink
+      to={item.to}
+      end={end}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary",
+          isActive && "bg-primary/10 text-primary",
+        )
+      }
+    >
+      {item.icon}
+      <span>{item.label}</span>
+    </NavLink>
+  );
+}
+
+export function AdminSidebar({ openOnMobile, onClose }: AdminSidebarProps) {
   const { pathname } = useLocation();
+  const { user } = useAuth();
+  const itens = itensPara(user?.papel ?? null);
+  const analiticos = itens.filter((item) => item.to === "/painel");
+  const operacionais = itens.filter((item) => item.to !== "/painel");
 
   useEffect(() => {
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-
-
   const conteudo = (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {tituloDaRota(pathname)}
-        </p>
-        <p className="mt-1 text-sm font-medium">Ações</p>
-      </div>
-      <div className="flex flex-1 flex-col gap-3">{sidebar}</div>
+    <div className="flex h-full flex-col gap-5 overflow-y-auto p-4">
+      {analiticos.length > 0 && (
+        <div>
+          <RotuloSecao>Menu Analítico</RotuloSecao>
+          <nav aria-label="Menu analítico" className="mt-2 flex flex-col gap-1">
+            {analiticos.map((item) => (
+              <ItemMenu key={item.to} item={item} end />
+            ))}
+          </nav>
+        </div>
+      )}
+
+      {operacionais.length > 0 && (
+        <div>
+          <RotuloSecao>Menu operacional</RotuloSecao>
+          <nav aria-label="Menu operacional" className="mt-2 flex flex-col gap-1">
+            {operacionais.map((item) => (
+              <ItemMenu key={item.to} item={item} />
+            ))}
+          </nav>
+        </div>
+      )}
     </div>
   );
 
@@ -69,10 +102,10 @@ export function AdminSidebar({
               className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] border-r bg-background shadow-xl lg:hidden"
               role="dialog"
               aria-modal="true"
-              aria-label="Ações da página"
+              aria-label="Menu"
             >
               <div className={cn("flex items-center justify-between border-b px-4 py-3 h-14")}>
-                <span className="text-sm font-semibold">Ações da página</span>
+                <span className="text-sm font-semibold">Menu</span>
                 <button
                   type="button"
                   aria-label="Fechar"

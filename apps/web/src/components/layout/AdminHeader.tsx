@@ -1,7 +1,6 @@
-import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { cn } from "../../lib/utils";
-import { iniciais, itensPara } from "../../lib/nav";
+import { iniciais } from "../../lib/nav";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 
 interface AdminHeaderProps {
@@ -25,7 +24,6 @@ export function AdminHeader({
   sessionDuration,
 }: AdminHeaderProps) {
   const { user } = useAuth();
-  const itens = itensPara(user?.papel ?? null);
   const baixo = timeLeft !== undefined && timeLeft <= 60;
 
   return (
@@ -65,33 +63,8 @@ export function AdminHeader({
             <path d="M8 8h8M8 12h8M8 16h8" />
           </svg>
         </div>
-        <span className="text-base font-semibold tracking-tight">ImperMeab</span>
+        <span className="text-base font-semibold tracking-tight uppercase">Imperpoços</span>
       </div>
-
-      {itens.length > 0 && (
-        <nav
-          aria-label="Navegação principal"
-          className="ml-2 hidden items-center gap-1 md:flex"
-        >
-          {itens.map((item, i) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/painel"}
-              className={({ isActive }) =>
-                cn(
-                  "-ml-2 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
-                  isActive && "text-foreground",
-                  i === 0 && "-ml-3",
-                )
-              }
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-      )}
 
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />

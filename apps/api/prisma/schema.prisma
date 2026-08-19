@@ -243,6 +243,12 @@ model User {
   passwordResetTokens      PasswordResetToken[]
   agendamentosCriados      Agendamento[]          @relation("AgendamentoCriadoPor")
   agendamentosProfissional Agendamento[]          @relation("AgendamentoProfissional")
+  equipamentosResponsaveis Equipamento[]          @relation("EquipamentoResponsavel")
+  retiradasColaborador     RetiradaEquipamento[]  @relation("EquipamentoColaborador")
+  retiradasRegistradas     RetiradaEquipamento[]  @relation("RetiradaRegistradoPor")
+  manutencoesResponsaveis  Manutencao[]           @relation("ManutencaoResponsavel")
+  entregasEpiRecebidas     EntregaEpi[]           @relation("EpiColaborador")
+  entregasEpiRegistradas   EntregaEpi[]           @relation("EntregaEpiRegistradoPor")
 
   @@map("users")
 }
@@ -940,4 +946,238 @@ model Upload {
   createdAt  DateTime @default(now())
 
   @@map("uploads")
+}
+
+// ============================================================
+// EQUIPAMENTOS E EPIs
+// ============================================================
+
+enum StatusManutencao {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+  CANCELADA
+}
+
+model CategoriaEquipamento {
+  id            Int                       @id @default(autoincrement())
+  nome          String                    @db.VarChar(120)
+  descricao     String?                   @db.VarChar(255)
+  ativo         Boolean                   @default(true)
+  ordem         Int                       @default(0)
+  subcategorias SubcategoriaEquipamento[]
+  equipamentos  Equipamento[]
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  @@map("categorias_equipamentos")
+}
+
+model SubcategoriaEquipamento {
+  id           Int                  @id @default(autoincrement())
+  categoriaId  Int
+  categoria    CategoriaEquipamento @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
+  nome         String               @db.VarChar(120)
+  descricao    String?              @db.VarChar(255)
+  ativo        Boolean              @default(true)
+  ordem        Int                  @default(0)
+  equipamentos Equipamento[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@index([categoriaId])
+
+  @@map("subcategorias_equipamentos")
+}
+
+model MarcaEquipamento {
+  id           Int            @id @default(autoincrement())
+  nome         String         @db.VarChar(120)
+  ativo        Boolean        @default(true)
+  ordem        Int            @default(0)
+  equipamentos Equipamento[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("marcas_equipamentos")
+}
+
+model Fornecedor {
+  id           Int            @id @default(autoincrement())
+  nome         String         @db.VarChar(150)
+  cnpj         String?        @unique @db.VarChar(20)
+  telefone     String?        @db.VarChar(20)
+  email        String?        @db.VarChar(120)
+  ativo        Boolean        @default(true)
+  equipamentos Equipamento[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("fornecedores")
+}
+
+model Localizacao {
+  id           Int            @id @default(autoincrement())
+  nome         String         @db.VarChar(120)
+  descricao    String?        @db.VarChar(255)
+  ativo        Boolean        @default(true)
+  ordem        Int            @default(0)
+  equipamentos Equipamento[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("localizacoes")
+}
+
+model StatusEquipamento {
+  id           Int            @id @default(autoincrement())
+  nome         String         @db.VarChar(120)
+  ativo        Boolean        @default(true)
+  ordem        Int            @default(0)
+  equipamentos Equipamento[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("status_equipamentos")
+}
+
+model EstadoConservacao {
+  id           Int            @id @default(autoincrement())
+  nome         String         @db.VarChar(120)
+  ativo        Boolean        @default(true)
+  ordem        Int            @default(0)
+  equipamentos Equipamento[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("estados_conservacao")
+}
+
+model TipoManutencao {
+  id          Int            @id @default(autoincrement())
+  nome        String         @db.VarChar(120)
+  ativo       Boolean        @default(true)
+  ordem       Int            @default(0)
+  manutencoes Manutencao[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("tipos_manutencao")
+}
+
+model Equipamento {
+  id                    Int                      @id @default(autoincrement())
+  codigo                String                   @unique @db.VarChar(50)
+  numeroPatrimonio      String?                  @db.VarChar(50)
+  descricao             String                   @db.VarChar(255)
+  modelo                String?                  @db.VarChar(120)
+  numeroSerie           String?                  @db.VarChar(120)
+  marcaId               Int?
+  marca                 MarcaEquipamento?        @relation(fields: [marcaId], references: [id], onDelete: SetNull)
+  categoriaId           Int?
+  categoria             CategoriaEquipamento?    @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  subcategoriaId        Int?
+  subcategoria          SubcategoriaEquipamento? @relation(fields: [subcategoriaId], references: [id], onDelete: SetNull)
+  localizacaoId         Int?
+  localizacao           Localizacao?             @relation(fields: [localizacaoId], references: [id], onDelete: SetNull)
+  fornecedorId          Int?
+  fornecedor            Fornecedor?              @relation(fields: [fornecedorId], references: [id], onDelete: SetNull)
+  statusId              Int
+  status                StatusEquipamento        @relation(fields: [statusId], references: [id])
+  estadoConservacaoId   Int?
+  estadoConservacao     EstadoConservacao?       @relation(fields: [estadoConservacaoId], references: [id], onDelete: SetNull)
+  responsavelId         Int?
+  responsavel           User?                    @relation("EquipamentoResponsavel", fields: [responsavelId], references: [id], onDelete: SetNull)
+  dataAquisicao         DateTime?
+  valorAquisicao        Decimal?                 @db.Decimal(12, 2)
+  dataGarantia          DateTime?
+  observacoes           String?                  @db.VarChar(1000)
+  ativo                 Boolean                  @default(true)
+  retiradas             RetiradaEquipamento[]
+  manutencoes           Manutencao[]
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+
+  @@index([statusId])
+  @@index([categoriaId])
+  @@index([descricao])
+
+  @@map("equipamentos")
+}
+
+model RetiradaEquipamento {
+  id              Int         @id @default(autoincrement())
+  equipamentoId   Int
+  equipamento     Equipamento @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  colaboradorId   Int
+  colaborador     User        @relation("EquipamentoColaborador", fields: [colaboradorId], references: [id], onDelete: Restrict)
+  dataRetirada    DateTime    @default(now())
+  dataDevolucao   DateTime?
+  observacao      String?     @db.VarChar(500)
+  registradoPorId Int?
+  registradoPor   User?       @relation("RetiradaRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
+  createdAt       DateTime    @default(now())
+
+  @@index([equipamentoId, dataRetirada])
+
+  @@map("retiradas_equipamentos")
+}
+
+model Manutencao {
+  id                      Int              @id @default(autoincrement())
+  equipamentoId           Int
+  equipamento             Equipamento      @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  tipoId                  Int
+  tipo                    TipoManutencao   @relation(fields: [tipoId], references: [id], onDelete: Restrict)
+  data                    DateTime
+  descricao               String           @db.VarChar(500)
+  custo                   Decimal?         @db.Decimal(12, 2)
+  status                  StatusManutencao @default(PENDENTE)
+  responsavelManutencaoId Int?
+  responsavelManutencao   User?            @relation("ManutencaoResponsavel", fields: [responsavelManutencaoId], references: [id], onDelete: SetNull)
+  proximaManutencao       DateTime?
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  @@index([equipamentoId])
+  @@index([status])
+
+  @@map("manutencoes")
+}
+
+model Epi {
+  id               Int          @id @default(autoincrement())
+  codigo           String       @unique @db.VarChar(50)
+  nome             String       @db.VarChar(150)
+  categoria        String       @db.VarChar(120)
+  numeroCa         String?      @db.VarChar(50)
+  dataValidade     DateTime?
+  quantidade       Decimal      @default(0) @db.Decimal(12, 3)
+  quantidadeMinima Decimal?     @db.Decimal(12, 3)
+  ativo            Boolean      @default(true)
+  entregas         EntregaEpi[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([nome])
+
+  @@map("epis")
+}
+
+model EntregaEpi {
+  id              Int         @id @default(autoincrement())
+  epiId           Int
+  epi             Epi         @relation(fields: [epiId], references: [id], onDelete: Cascade)
+  colaboradorId   Int
+  colaborador     User        @relation("EpiColaborador", fields: [colaboradorId], references: [id], onDelete: Restrict)
+  quantidade      Decimal     @db.Decimal(12, 3)
+  data            DateTime    @default(now())
+  observacao      String?     @db.VarChar(500)
+  registradoPorId Int?
+  registradoPor   User?       @relation("EntregaEpiRegistradoPor", fields: [registradoPorId], references: [id], onDelete: SetNull)
+  createdAt       DateTime    @default(now())
+
+  @@index([epiId])
+
+  @@map("entregas_epi")
 }

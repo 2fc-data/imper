@@ -24,6 +24,9 @@ import clienteRoutes from "./routes/cliente.routes";
 import publicoRoutes from "./routes/publico.routes";
 import servicosAdminRoutes from "./routes/servicosAdmin.routes";
 import agendamentosRoutes from "./routes/agendamentos.routes";
+import equipamentosRoutes from "./routes/equipamentos.routes";
+import manutencoesRoutes from "./routes/manutencoes.routes";
+import episRoutes from "./routes/epis.routes";
 
 fs.mkdirSync(config.uploadsDir, { recursive: true });
 
@@ -53,6 +56,9 @@ app.use("/cliente", clienteRoutes);
 app.use("/publico", publicoRoutes);
 app.use("/servicos-admin", servicosAdminRoutes);
 app.use("/agendamentos", agendamentosRoutes);
+app.use("/equipamentos", equipamentosRoutes);
+app.use("/manutencoes", manutencoesRoutes);
+app.use("/epis", episRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() });

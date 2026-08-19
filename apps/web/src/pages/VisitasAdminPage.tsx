@@ -124,10 +124,27 @@ export function VisitasList({
   onRealizar,
 }: VisitasListProps) {
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
+  const [busca, setBusca] = useState("");
 
   const alternarExpandido = (id: number) => {
     setExpandidoId(expandidoId === id ? null : id);
   };
+
+  const filtrados = visitas.filter((item) => {
+    if (!busca.trim()) return true;
+    const alvo = [
+      item.atendimento?.cliente?.nome ?? "",
+      item.atendimento?.descricao ?? "",
+      item.tecnico?.nome ?? "",
+      item.relatorio ?? "",
+      item.constatacao ?? "",
+      item.endereco?.logradouro ?? "",
+      item.endereco?.bairro ?? item.endereco?.cidade ?? "",
+    ]
+      .join(" ")
+      .toLowerCase();
+    return alvo.includes(busca.toLowerCase());
+  });
 
   return (
     <div className="space-y-4">
@@ -137,6 +154,18 @@ export function VisitasList({
           <p className="text-sm text-muted-foreground">
             Acompanhe as visitas técnicas agendadas aos clientes.
           </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Buscar por cliente, descrição ou técnico..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          />
         </div>
         <select
           value={statusFiltro}
@@ -169,14 +198,14 @@ export function VisitasList({
                   Carregando visitas...
                 </td>
               </tr>
-            ) : visitas.length === 0 ? (
+            ) : filtrados.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Nenhuma visita encontrada.
                 </td>
               </tr>
             ) : (
-              visitas.map((item) => (
+              filtrados.map((item) => (
                 <Fragment key={item.id}>
                   <tr className="hover:bg-primary/10 transition-colors">
                     <td className="px-4 py-3">
