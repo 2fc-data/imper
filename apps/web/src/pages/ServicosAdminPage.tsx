@@ -404,17 +404,7 @@ export default function ServicosAdminPage({
         </select>
       </div>
 
-      {editando ? (
-        formulario
-      ) : (
-        <Button
-          type="button"
-          onClick={() => onNavegar?.("novo")}
-          className="w-full sm:w-auto"
-        >
-          + Novo serviço
-        </Button>
-      )}
+      {editando && formulario}
 
       <div className="space-y-3">
         {filtrados.map((s) => (

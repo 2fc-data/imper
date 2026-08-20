@@ -48,6 +48,10 @@
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-hover: var(--whatsapp-hover);
   --color-whatsapp-foreground: var(--whatsapp-foreground);
+  --color-instagram: var(--instagram);
+  --color-instagram-hover: var(--instagram-hover);
+  --color-facebook: var(--facebook);
+  --color-facebook-hover: var(--facebook-hover);
   --color-overlay: var(--overlay);
   --color-marker: var(--marker);
   --color-marker-ring: var(--marker-ring);
@@ -127,6 +131,10 @@
   --whatsapp: oklch(0.55 0.14 145);
   --whatsapp-hover: oklch(0.47 0.14 145);
   --whatsapp-foreground: oklch(0.98 0.01 100);
+  --instagram: oklch(0.64 0.24 10);
+  --instagram-hover: oklch(0.55 0.22 10);
+  --facebook: oklch(0.48 0.15 253);
+  --facebook-hover: oklch(0.42 0.14 253);
   --overlay: oklch(0% 0 0);
   --marker: oklch(0.62 0.13 228);
   --marker-ring: oklch(0.997 0 0);
@@ -202,6 +210,10 @@
   --whatsapp: oklch(0.55 0.14 145);
   --whatsapp-hover: oklch(0.62 0.13 150);
   --whatsapp-foreground: oklch(0.98 0.01 100);
+  --instagram: oklch(0.67 0.24 10);
+  --instagram-hover: oklch(0.73 0.22 10);
+  --facebook: oklch(0.52 0.16 253);
+  --facebook-hover: oklch(0.6 0.15 253);
   --overlay: oklch(0% 0 0);
   --marker: oklch(0.78 0.12 228);
   --marker-ring: oklch(0.18 0.015 195);

@@ -18,7 +18,7 @@ router.get("/", authMiddleware(...perfil), wrap(async (req, res) => {
   res.json(await materialService.listar(query));
 }));
 
-router.post("/", authMiddleware("ADMIN", "ALMOXARIFE"), wrap(async (req, res) => {
+router.post("/", authMiddleware(...perfil), wrap(async (req, res) => {
   const body = parseBody(
     z.object({
       nome: z.string().min(2),
@@ -37,7 +37,7 @@ router.get("/:id", authMiddleware(...perfil), wrap(async (req, res) => {
   res.json(await materialService.detalhar(id));
 }));
 
-router.put("/:id", authMiddleware("ADMIN", "ALMOXARIFE"), wrap(async (req, res) => {
+router.put("/:id", authMiddleware(...perfil), wrap(async (req, res) => {
   const { id } = parseParams(z.object({ id: z.coerce.number().int() }), req.params);
   const body = parseBody(
     z.object({
@@ -53,13 +53,13 @@ router.put("/:id", authMiddleware("ADMIN", "ALMOXARIFE"), wrap(async (req, res) 
   res.json(await materialService.atualizar(id, body));
 }));
 
-router.post("/:id/entrada", authMiddleware("ADMIN", "ALMOXARIFE"), wrap(async (req, res) => {
+router.post("/:id/entrada", authMiddleware(...perfil), wrap(async (req, res) => {
   const { id } = parseParams(z.object({ id: z.coerce.number().int() }), req.params);
   const body = parseBody(z.object({ quantidade: z.number().positive(), observacao: z.string().optional() }), req.body);
   res.json(await materialService.entrada({ materialId: id, ...body }, toCtx(req.user!)));
 }));
 
-router.post("/:id/saida", authMiddleware("ADMIN", "ALMOXARIFE"), wrap(async (req, res) => {
+router.post("/:id/saida", authMiddleware(...perfil), wrap(async (req, res) => {
   const { id } = parseParams(z.object({ id: z.coerce.number().int() }), req.params);
   const body = parseBody(z.object({ quantidade: z.number().positive(), observacao: z.string().optional() }), req.body);
   res.json(await materialService.saida({ materialId: id, ...body }, toCtx(req.user!)));

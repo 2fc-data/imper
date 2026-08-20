@@ -9,10 +9,10 @@ import {
   AgendamentosSidebar,
   ClienteSidebar,
   DashboardSidebar,
-  EmBreveSidebar,
   EpisSidebar,
   EquipamentosSidebar,
   ManutencoesSidebar,
+  MateriaisSidebar,
   OrcamentosSidebar,
   OSSidebar,
   ServicosSidebar,
@@ -29,7 +29,6 @@ import MinhaContaPage from "./pages/MinhaContaPage";
 import LandingContent from "./pages/LandingContent";
 import OrcamentoPage from "./pages/OrcamentoPage";
 import { LandingLayout } from "./components/landing/LandingLayout";
-import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { AtendimentosAdminPage } from "./pages/AtendimentosAdminPage";
 import { AgendamentosAdminPage } from "./pages/AgendamentosAdminPage";
 import { VisitasAdminPage } from "./pages/VisitasAdminPage";
@@ -39,6 +38,7 @@ import ServicosAdminPage from "./pages/ServicosAdminPage";
 import EquipamentosAdminPage from "./pages/EquipamentosAdminPage";
 import ManutencoesAdminPage from "./pages/ManutencoesAdminPage";
 import EpisAdminPage from "./pages/EpisAdminPage";
+import MateriaisAdminPage from "./pages/MateriaisAdminPage";
 
 function ProtectedLayout({
   children,
@@ -199,7 +199,9 @@ function ManutencoesRoute() {
 }
 
 function EpisRoute() {
-  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
+  const [viewAtiva, setViewAtiva] = useState<
+    "analises" | "lista" | "novo" | "catalogos"
+  >("lista");
 
   return (
     <ProtectedLayout
@@ -207,6 +209,21 @@ function EpisRoute() {
       sidebar={<EpisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <EpisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
+function MateriaisRoute() {
+  const [viewAtiva, setViewAtiva] = useState<
+    "analises" | "lista" | "novo" | "movimentos"
+  >("lista");
+
+  return (
+    <ProtectedLayout
+      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
+      sidebar={<MateriaisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <MateriaisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -348,22 +365,7 @@ export default function App() {
       <Route element={<EquipamentosRoute />} path="/equipamentos" />
       <Route element={<ManutencoesRoute />} path="/manutencoes" />
       <Route element={<EpisRoute />} path="/epis" />
-      <Route
-        element={
-          <ProtectedLayout
-            allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
-            sidebar={
-              <EmBreveSidebar texto="Gestão de materiais e estoque em breve." />
-            }
-          >
-            <PlaceholderPage
-              title="Materiais"
-              description="Gestão de materiais e estoque (em breve)"
-            />
-          </ProtectedLayout>
-        }
-        path="/materiais"
-      />
+      <Route element={<MateriaisRoute />} path="/materiais" />
       <Route
         element={
           <ProtectedLayout

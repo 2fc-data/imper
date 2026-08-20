@@ -19,6 +19,7 @@ import {
 } from "../components/ui/card";
 import { cn } from "../lib/utils";
 import { ItemForm, type ItemFormData } from "../components/ItemForm";
+import { CatalogosOperacionais } from "../components/CatalogosOperacionais";
 
 function BadgeAtivo({ ativo }: { ativo: boolean }) {
   return (
@@ -166,8 +167,8 @@ export default function EpisAdminPage({
   viewAtiva = "lista",
   onNavegar,
 }: {
-  viewAtiva?: "analises" | "lista" | "novo";
-  onNavegar?: (v: "analises" | "lista" | "novo") => void;
+  viewAtiva?: "analises" | "lista" | "novo" | "catalogos";
+  onNavegar?: (v: "analises" | "lista" | "novo" | "catalogos") => void;
 }) {
   const [epis, setEpis] = useState<EpiItem[]>([]);
   const [lookups, setLookups] = useState<EquipamentoLookups | null>(null);
@@ -199,6 +200,17 @@ export default function EpisAdminPage({
       setLookups(cats);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha ao carregar EPIs");
+    }
+  }
+
+  async function relerLookups() {
+    try {
+      const cats = await listarLookupsEquipamentos();
+      setLookups(cats);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Falha ao recarregar catálogos",
+      );
     }
   }
 
@@ -355,6 +367,16 @@ export default function EpisAdminPage({
           onCancel={cancelarEdicao}
         />
       </div>
+    );
+  }
+
+  if (viewAtiva === "catalogos") {
+    return (
+      <CatalogosOperacionais
+        modulo="EPI"
+        lookups={lookups}
+        relerLookups={relerLookups}
+      />
     );
   }
 

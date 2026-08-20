@@ -292,8 +292,8 @@ export function EpisSidebar({
   viewAtiva,
   onNavegar,
 }: {
-  viewAtiva: "analises" | "lista" | "novo";
-  onNavegar: (view: "analises" | "lista" | "novo") => void;
+  viewAtiva: "analises" | "lista" | "novo" | "catalogos";
+  onNavegar: (view: "analises" | "lista" | "novo" | "catalogos") => void;
 }) {
   return (
     <>
@@ -317,6 +317,13 @@ export function EpisSidebar({
         icon={icone("M12 4v16m8-8H4")}
       >
         Novo EPI
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "catalogos"}
+        onClick={() => onNavegar("catalogos")}
+        icon={icone("M3 5h18v14H3zM8 8h8M8 12h8M8 16h4")}
+      >
+        Catálogos
       </SidebarButton>
       <SidebarNote>
         Cadastro e gestão de equipamentos de proteção individual.
@@ -480,6 +487,43 @@ export function AgendamentosSidebar({
         Novo Agendamento
       </SidebarButton>
       
+    </>
+  );
+}
+
+export function MateriaisSidebar({
+  viewAtiva,
+  onNavegar,
+}: {
+  viewAtiva: "analises" | "lista" | "novo" | "movimentos";
+  onNavegar: (view: "analises" | "lista" | "novo" | "movimentos") => void;
+}) {
+  return (
+    <>
+      <SidebarButton
+        active={viewAtiva === "analises"}
+        onClick={() => onNavegar("analises")}
+        icon={icone("M3 3v18h18M18 17V9M13 17V5M8 17v-3")}
+      >
+        Análises
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "lista"}
+        onClick={() => onNavegar("lista")}
+        icon={icone("M4 6h16M4 10h16M4 14h16M4 18h16")}
+      >
+        Lista de Materiais
+      </SidebarButton>
+      <SidebarButton
+        active={viewAtiva === "novo"}
+        onClick={() => onNavegar("novo")}
+        icon={icone("M12 4v16m8-8H4")}
+      >
+        Novo Material
+      </SidebarButton>
+      <SidebarNote>
+        Cadastro, saldo e movimentação (entrada/saída) do estoque.
+      </SidebarNote>
     </>
   );
 }

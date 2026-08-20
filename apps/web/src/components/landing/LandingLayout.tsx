@@ -4,6 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 import {
+  FacebookIconButton,
   InstagramIconButton,
   WhatsAppIconButton,
 } from "./SocialIconButtons";
@@ -79,10 +80,11 @@ export function LandingLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
             <WhatsAppIconButton />
             <InstagramIconButton />
+            <FacebookIconButton />
             <Link
               to="/login"
               aria-label="Fazer login"
-              className="hidden items-center justify-center rounded-lg p-2 transition-colors hover:bg-primary/10 hover:text-foreground lg:inline-flex"
+              className="hidden h-8 w-8 items-center justify-center rounded-lg bg-transparent text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground lg:inline-flex"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -91,7 +93,7 @@ export function LandingLayout({ children }: { children: ReactNode }) {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-7 w-7"
+                className="h-5 w-5"
                 aria-hidden="true"
               >
                 <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />

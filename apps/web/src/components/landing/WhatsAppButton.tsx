@@ -15,7 +15,7 @@ export function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg bg-whatsapp px-5 py-3 text-base font-semibold text-whatsapp-foreground transition-colors hover:bg-whatsapp-hover",
+        "inline-flex items-center justify-center gap-2 rounded-lg bg-transparent px-5 py-3 text-base font-semibold text-whatsapp transition-colors hover:bg-whatsapp-hover hover:text-white",
         className,
       )}
     >

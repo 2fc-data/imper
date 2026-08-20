@@ -1,6 +1,7 @@
 export const WHATSAPP_URL = "https://wa.me/553599994663";
 export const WHATSAPP_TEXT = "Olá! Gostaria de um orçamento de impermeabilização.";
 export const INSTAGRAM_URL = "https://www.instagram.com/imperpocos";
+export const FACEBOOK_URL = "https://www.facebook.com/Imperpocos/";
 
 export const ETAPAS = [
   {

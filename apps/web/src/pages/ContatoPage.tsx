@@ -1,11 +1,12 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { m, useInView } from "framer-motion";
-import { buttonVariants } from "../components/ui/button";
+
 import { cn } from "../lib/utils";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 import { WHATSAPP_TEXT, WHATSAPP_URL } from "../lib/landing";
 import {
+  FacebookIconButton,
   InstagramIconButton,
   WhatsAppIconButton,
 } from "../components/landing/SocialIconButtons";
@@ -37,7 +38,7 @@ export default function ContatoPage() {
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/80 sm:text-base">
               Peça orçamentos ou tire dúvidas sobre nossos serviços.
             </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-4">
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60">
                   WhatsApp
@@ -73,29 +74,12 @@ export default function ContatoPage() {
                   impershop@imperpocos.com.br
                 </a>
               </div>
-              <div className="flex flex-col items-stretch gap-3">
-                <Link
-                  to="/orcamento"
-                  className={cn(
-                    buttonVariants({
-                      size: "lg",
-                      className: "w-full bg-primary text-primary-foreground hover:bg-primary/90 hover-lift font-semibold shadow-md transition-all",
-                    }),
-                  )}
-                >
-                  Solicitar Orçamento
-                </Link>
-                <div className="grid grid-cols-2 justify-items-center gap-3">
-                  <WhatsAppIconButton className="h-10 w-10 rounded-xl" />
-                  <InstagramIconButton className="h-10 w-10 rounded-xl" />
-                </div>
-              </div>
             </div>
           </div>
         </m.div>
 
         <m.div
-          className="mt-8 grid gap-4 sm:grid-cols-2"
+          className="mt-8 grid gap-4 sm:grid-cols-3"
           variants={stagger()}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -152,6 +136,41 @@ export default function ContatoPage() {
               <br />
               07h15 às 12h e 13h às 17h
             </p>
+          </m.div>
+          <m.div variants={fadeUp} className="rounded-xl border bg-card p-5">
+            <h3 className="flex items-center gap-2 font-semibold">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5 text-primary"
+                aria-hidden="true"
+              >
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+              Canais online
+            </h3>
+            <div className="mt-4 flex flex-col items-stretch gap-3">
+<div className="grid grid-cols-4 justify-items-center gap-3">
+              <Link
+                to="/orcamento"
+                aria-label="Solicitar orçamento"
+                title="Solicitar orçamento"
+                className={cn(
+                  "inline-flex h-10 w-10 items-center justify-center rounded-xl bg-transparent text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground",
+                )}
+              >
+                SO
+              </Link>
+
+              <WhatsAppIconButton className="h-10 w-10 rounded-xl" />
+              <InstagramIconButton className="h-10 w-10 rounded-xl" />
+              <FacebookIconButton className="h-10 w-10 rounded-xl" />
+            </div>
+            </div>
           </m.div>
         </m.div>
       </div>
