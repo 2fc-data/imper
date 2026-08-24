@@ -291,8 +291,8 @@ export function useServicos() {
 ### Fases 2–3 (API)
 - `npm run typecheck --workspace @imper/api`
 - `npm run dev` (API) e:
-  - `curl -s http://localhost:3333/publico/servicos` → array com 4 itens.
-  - `curl -s -X POST http://localhost:3333/publico/orcamento -H "Content-Type: application/json" -d '{"nome":"Fulano","telefone":"(35)99999-0000","email":"fulano@exemplo.com","servico":"Manta asfáltica","mensagem":"Teste","turnstileToken":"dev-bypass"}'` → 201 com `{ id, nome, canal:"FORMULARIO", tipo:"DUVIDA", status:"NOVO", createdAt }`.
+  - `curl -s http://localhost:3000/publico/servicos` → array com 4 itens.
+  - `curl -s -X POST http://localhost:3000/publico/orcamento -H "Content-Type: application/json" -d '{"nome":"Fulano","telefone":"(35)99999-0000","email":"fulano@exemplo.com","servico":"Manta asfáltica","mensagem":"Teste","turnstileToken":"dev-bypass"}'` → 201 com `{ id, nome, canal:"FORMULARIO", tipo:"DUVIDA", status:"NOVO", createdAt }`.
   - `curl` sem `nome` → 400.
   - `curl` com `mensagem` de 701+ chars → 400.
 - Conferir o registro criado via rota autenticada `/contatos` (login com

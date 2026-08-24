@@ -20,7 +20,7 @@ const TOKEN_KEY = "imper_token";
 
 const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:3333";
+  "http://localhost:3000";
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);

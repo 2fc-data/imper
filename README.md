@@ -47,7 +47,7 @@ npm run db:seed
 ### 4. Rodar
 
 ```bash
-npm run dev        # API (http://localhost:3333)
+npm run dev        # API (http://localhost:3000)
 npm run dev:web    # Web (http://localhost:5173)
 ```
 
