@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { Papel } from "@imper/shared";
+
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       const authed = await login(email, senha);
       navigate(
-        authed.papel === Papel.CLIENTE ? "/minha-conta" : "/painel",
+        authed.permissoes.length === 0 ? "/minha-conta" : "/painel",
         { replace: true },
       );
     } catch (err) {

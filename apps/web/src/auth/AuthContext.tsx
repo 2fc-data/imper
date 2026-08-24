@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Papel } from "@imper/shared";
+
 import {
   cadastrar as apiCadastrar,
   fetchMe,
@@ -21,7 +21,8 @@ interface User {
   id: number;
   nome: string;
   email: string;
-  papel: Papel;
+  papel: string;
+  permissoes: string[];
 }
 
 interface AuthContextValue {

@@ -1,4 +1,3 @@
-import { Papel } from "@imper/shared";
 
 export interface LoginResponse {
   token: string;
@@ -6,7 +5,8 @@ export interface LoginResponse {
     id: number;
     nome: string;
     email: string;
-    papel: Papel;
+    papel: string;
+    permissoes: string[];
   };
 }
 
@@ -135,12 +135,20 @@ export async function redefinirSenha(
   return api.post<{ ok: boolean }>("/auth/redefinir-senha", { token, novaSenha });
 }
 
+export interface PapelRbac {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  ativo: boolean;
+}
+
 export interface Usuario {
   id: number;
   nome: string;
   email: string;
   telefone: string | null;
-  papel: Papel;
+  papel: string;
+  papeis: PapelRbac[];
   ativo: boolean;
   cargoId: number | null;
   cargo?: { id: number; nome: string } | null;
@@ -151,11 +159,30 @@ export async function listarUsuarios(): Promise<Usuario[]> {
   return api.get<Usuario[]>("/usuarios");
 }
 
+export async function listarPapeis(): Promise<PapelRbac[]> {
+  return api.get<PapelRbac[]>("/usuarios/papeis");
+}
+
 export async function definirPerfilUsuario(
   id: number,
-  papel: Papel,
+  papelId: number,
 ): Promise<Usuario> {
-  return api.patch<Usuario>(`/usuarios/${id}/perfil`, { papel });
+  return api.patch<Usuario>(`/usuarios/${id}/perfil`, { papelId });
+}
+
+export interface CriarUsuarioInput {
+  nome: string;
+  email: string;
+  senha: string;
+  telefone?: string;
+  papelId: number;
+  cargoId?: number | null;
+}
+
+export async function criarUsuario(
+  input: CriarUsuarioInput,
+): Promise<Usuario> {
+  return api.post<Usuario>("/usuarios", input);
 }
 
 export interface MeuCliente {
@@ -172,7 +199,8 @@ export interface MinhaConta {
   nome: string;
   email: string;
   telefone: string | null;
-  papel: Papel;
+  papel: string;
+  permissoes: string[];
   cliente: MeuCliente | null;
 }
 
@@ -1156,5 +1184,66 @@ export async function registrarSaidaMaterial(
   return api.post<number>(`/materiais/${id}/saida`, input);
 }
 
+// ─── RBAC (Papéis e Permissões) ───────────────────────────────────────────
 
+export interface PermissaoRbac {
+  id: number;
+  chave: string;
+  descricao: string;
+  categoria: string;
+}
+
+export interface PapelRbacAdmin {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  permissoes: PermissaoRbac[];
+}
+
+export async function listarPapeisRbac(): Promise<PapelRbacAdmin[]> {
+  const data = await api.get<{ papeis: PapelRbacAdmin[] }>("/rbac/papeis");
+  return data.papeis;
+}
+
+export async function criarPapelRbac(input: {
+  nome: string;
+  descricao?: string;
+}): Promise<PapelRbacAdmin> {
+  const data = await api.post<{ papel: PapelRbacAdmin }>("/rbac/papeis", input);
+  return data.papel;
+}
+
+export async function atualizarPapelRbac(
+  id: number,
+  input: { nome?: string; descricao?: string }
+): Promise<PapelRbacAdmin> {
+  const data = await api.patch<{ papel: PapelRbacAdmin }>(
+    `/rbac/papeis/${id}`,
+    input,
+  );
+  return data.papel;
+}
+
+export async function excluirPapelRbac(id: number): Promise<void> {
+  await api.del(`/rbac/papeis/${id}`);
+}
+
+export async function listarPermissoesRbac(): Promise<PermissaoRbac[]> {
+  const data = await api.get<{ permissoes: PermissaoRbac[] }>("/rbac/permissoes");
+  return data.permissoes;
+}
+
+export async function listarPermissoesPorPapel(papelId: number): Promise<number[]> {
+  const data = await api.get<{ permissoesIds: number[] }>(
+    `/rbac/papeis/${papelId}/permissoes`,
+  );
+  return data.permissoesIds;
+}
+
+export async function definirPermissoesRbac(
+  papelId: number,
+  permissoesIds: number[],
+): Promise<void> {
+  await api.put(`/rbac/papeis/${papelId}/permissoes`, { permissoesIds });
+}
 

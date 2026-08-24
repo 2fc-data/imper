@@ -25,7 +25,6 @@ export const clienteService = {
         nome: true,
         email: true,
         telefone: true,
-        papel: true,
         cliente: {
           select: {
             id: true,

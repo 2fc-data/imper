@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
-import { Papel } from "@imper/shared";
+
 import { homeFor } from "./lib/nav";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import {
@@ -18,6 +18,7 @@ import {
   ServicosSidebar,
   UsuariosSidebar,
   VisitasSidebar,
+  RbacSidebar,
 } from "./components/layout/sidebarContent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -39,14 +40,17 @@ import EquipamentosAdminPage from "./pages/EquipamentosAdminPage";
 import ManutencoesAdminPage from "./pages/ManutencoesAdminPage";
 import EpisAdminPage from "./pages/EpisAdminPage";
 import MateriaisAdminPage from "./pages/MateriaisAdminPage";
+import RbacAdminPage from "./pages/RbacAdminPage";
 
 function ProtectedLayout({
   children,
-  allowedRoles,
+  requiredPermissions,
+  onlyNoPermissions,
   sidebar,
 }: {
   children: ReactNode;
-  allowedRoles?: Papel[];
+  requiredPermissions?: string[];
+  onlyNoPermissions?: boolean;
   sidebar?: ReactNode;
 }) {
   const { user, loading } = useAuth();
@@ -63,8 +67,12 @@ function ProtectedLayout({
     return <Navigate to="/" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.papel)) {
-    return <Navigate to={homeFor(user.papel)} replace />;
+  if (onlyNoPermissions && user.permissoes.length > 0) {
+    return <Navigate to={homeFor(user.permissoes)} replace />;
+  }
+
+  if (requiredPermissions && !requiredPermissions.some((p) => user.permissoes.includes(p))) {
+    return <Navigate to={homeFor(user.permissoes)} replace />;
   }
 
   return (
@@ -73,16 +81,13 @@ function ProtectedLayout({
 }
 
 function UsuariosRoute() {
-  const [filtroPapel, setFiltroPapel] = useState<Papel | null>(null);
-  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista">("lista");
+  const [viewAtiva, setViewAtiva] = useState<"analises" | "lista" | "novo">("lista");
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
+      requiredPermissions={["criar_usuario", "editar_usuario", "definir_perfil"]}
       sidebar={
         <UsuariosSidebar
-          valor={filtroPapel}
-          onChange={setFiltroPapel}
           viewAtiva={viewAtiva}
           onNavegar={setViewAtiva}
         />
@@ -92,8 +97,6 @@ function UsuariosRoute() {
         key={viewAtiva}
         viewAtiva={viewAtiva}
         onNavegar={setViewAtiva}
-        filtroPapel={filtroPapel ?? undefined}
-        onFiltroPapelChange={setFiltroPapel}
       />
     </ProtectedLayout>
   );
@@ -104,7 +107,7 @@ function AtendimentosRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE]}
+      requiredPermissions={["criar_atendimento", "editar_atendimento"]}
       sidebar={<AtendimentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <AtendimentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
@@ -117,7 +120,7 @@ function AgendamentosRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE]}
+      requiredPermissions={["criar_atendimento", "editar_atendimento"]}
       sidebar={<AgendamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <AgendamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
@@ -130,7 +133,7 @@ function VisitasRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE, Papel.TECNICO]}
+      requiredPermissions={["editar_os", "iniciar_os", "confirmar_obra"]}
       sidebar={<VisitasSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <VisitasAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
@@ -143,7 +146,7 @@ function OrcamentosRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ATENDENTE, Papel.CONTABILIDADE]}
+      requiredPermissions={["aprovar_compra", "ver_financeiro"]}
       sidebar={<OrcamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <OrcamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
@@ -157,13 +160,13 @@ function OSRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[
-        Papel.ADMIN,
-        Papel.SUPERVISOR,
-        Papel.ATENDENTE,
-        Papel.TECNICO,
-        Papel.ALMOXARIFE,
-        Papel.CONTABILIDADE,
+      requiredPermissions={[
+        "criar_os",
+        "editar_os",
+        "iniciar_os",
+        "concluir_os",
+        "aprovar_os",
+        "entregar_os",
       ]}
       sidebar={<OSSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
@@ -177,7 +180,7 @@ function EquipamentosRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.ALMOXARIFE]}
+      requiredPermissions={["gerenciar_estoque", "gerenciar_equipamentos"]}
       sidebar={<EquipamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <EquipamentosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
@@ -190,7 +193,7 @@ function ManutencoesRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO]}
+      requiredPermissions={["editar_os", "iniciar_os", "concluir_os"]}
       sidebar={<ManutencoesSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <ManutencoesAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
@@ -205,7 +208,7 @@ function EpisRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
+      requiredPermissions={["gerenciar_epis", "gerenciar_estoque"]}
       sidebar={<EpisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <EpisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
@@ -220,7 +223,7 @@ function MateriaisRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR, Papel.TECNICO, Papel.ALMOXARIFE]}
+      requiredPermissions={["gerenciar_estoque", "criar_material", "entrada_estoque"]}
       sidebar={<MateriaisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <MateriaisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
@@ -233,7 +236,7 @@ function ServicosRoute() {
 
   return (
     <ProtectedLayout
-      allowedRoles={[Papel.ADMIN, Papel.SUPERVISOR]}
+      requiredPermissions={["criar_servico", "editar_servico"]}
       sidebar={<ServicosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
       <ServicosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
@@ -241,17 +244,30 @@ function ServicosRoute() {
   );
 }
 
+function RbacRoute() {
+  const [viewAtiva, setViewAtiva] = useState<"papeis" | "permissoes">("papeis");
+
+  return (
+    <ProtectedLayout
+      requiredPermissions={["gerenciar_papeis"]}
+      sidebar={<RbacSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
+    >
+      <RbacAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+    </ProtectedLayout>
+  );
+}
+
 function GuestsOnly({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to={homeFor(user.papel)} replace />;
+  if (user) return <Navigate to={homeFor(user.permissoes)} replace />;
   return <>{children}</>;
 }
 
 function CatchAllRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
-  return <Navigate to={user ? homeFor(user.papel) : "/login"} replace />;
+  return <Navigate to={user ? homeFor(user.permissoes) : "/login"} replace />;
 }
 
 export default function App() {
@@ -291,6 +307,7 @@ export default function App() {
       />
       <Route element={<UsuariosRoute />} path="/usuarios" />
       <Route element={<ServicosRoute />} path="/servicos-admin" />
+      <Route element={<RbacRoute />} path="/rbac" />
       <Route
         element={
           <LandingLayout>
@@ -343,14 +360,6 @@ export default function App() {
         path="/painel"
         element={
           <ProtectedLayout
-            allowedRoles={[
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-              Papel.TECNICO,
-              Papel.ALMOXARIFE,
-              Papel.CONTABILIDADE,
-            ]}
             sidebar={<DashboardSidebar />}
           >
             <DashboardPage />
@@ -369,7 +378,7 @@ export default function App() {
       <Route
         element={
           <ProtectedLayout
-            allowedRoles={[Papel.CLIENTE]}
+            onlyNoPermissions
             sidebar={<ClienteSidebar />}
           >
             <MinhaContaPage />

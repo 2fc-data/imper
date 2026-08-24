@@ -11,16 +11,6 @@ datasource db {
 // ENUMS
 // ============================================================
 
-enum Papel {
-  ADMIN
-  SUPERVISOR
-  TECNICO
-  ALMOXARIFE
-  CONTABILIDADE
-  ATENDENTE
-  CLIENTE
-}
-
 enum CanalAtendimento {
   WHATSAPP
   FORMULARIO
@@ -213,7 +203,6 @@ model User {
   nome      String   @db.VarChar(120)
   email     String   @unique @db.VarChar(120)
   senhaHash String   @db.VarChar(255)
-  papel     Papel    @default(ATENDENTE)
   ativo     Boolean  @default(true)
   cargoId   Int?
   cargo     Cargo?   @relation(fields: [cargoId], references: [id])
@@ -249,6 +238,7 @@ model User {
   manutencoesResponsaveis  Manutencao[]           @relation("ManutencaoResponsavel")
   entregasEpiRecebidas     EntregaEpi[]           @relation("EpiColaborador")
   entregasEpiRegistradas   EntregaEpi[]           @relation("EntregaEpiRegistradoPor")
+  papeis                   UsuarioPapel[]
 
   @@map("users")
 }
@@ -1175,4 +1165,52 @@ model EntregaEpi {
 
   @@index([epiId])
   @@map("entregas_epi")
+}
+
+// ============================================================
+// RBAC — PAPEIS & PERMISSÕES
+// ============================================================
+
+model PapelRbac {
+  id         Int              @id @default(autoincrement())
+  nome       String           @unique @db.VarChar(60)
+  descricao  String?          @db.VarChar(200)
+  ativo      Boolean          @default(true)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  usuarios   UsuarioPapel[]
+  permissoes PapelPermissao[]
+
+  @@map("papeis")
+}
+
+model Permissao {
+  id        Int              @id @default(autoincrement())
+  chave     String           @unique @db.VarChar(80)
+  descricao String           @db.VarChar(200)
+  categoria String           @db.VarChar(60)
+  createdAt DateTime         @default(now())
+  papeis    PapelPermissao[]
+
+  @@map("permissoes")
+}
+
+model PapelPermissao {
+  papelId     Int
+  permissaoId Int
+  papel       PapelRbac @relation(fields: [papelId], references: [id], onDelete: Cascade)
+  permissao   Permissao @relation(fields: [permissaoId], references: [id], onDelete: Cascade)
+
+  @@id([papelId, permissaoId])
+  @@map("papel_permissao")
+}
+
+model UsuarioPapel {
+  userId  Int
+  papelId Int
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  papel   PapelRbac @relation(fields: [papelId], references: [id], onDelete: Cascade)
+
+  @@id([userId, papelId])
+  @@map("usuario_papel")
 }

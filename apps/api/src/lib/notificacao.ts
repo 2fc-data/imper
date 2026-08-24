@@ -1,4 +1,3 @@
-import { Papel } from "@prisma/client";
 import { prisma } from "../db";
 
 interface NotificacaoInput {
@@ -22,10 +21,17 @@ export async function notificarUsuarios(userIds: number[], input: NotificacaoInp
   });
 }
 
-export async function notificarPapeis(papeis: Papel[], input: NotificacaoInput): Promise<void> {
-  const users = await prisma.user.findMany({
-    where: { papel: { in: papeis }, ativo: true },
+export async function notificarPapeis(nomesPapeis: string[], input: NotificacaoInput): Promise<void> {
+  const papeis = await prisma.papelRbac.findMany({
+    where: { nome: { in: nomesPapeis } },
     select: { id: true },
   });
-  await notificarUsuarios(users.map((u) => u.id), input);
+  const vinculacoes = await prisma.usuarioPapel.findMany({
+    where: { papelId: { in: papeis.map((p) => p.id) } },
+    select: { userId: true },
+  });
+  const uniqueIds = [...new Set(vinculacoes.map((v) => v.userId))];
+  if (uniqueIds.length) {
+    await notificarUsuarios(uniqueIds, input);
+  }
 }

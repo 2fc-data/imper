@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { Papel } from "@imper/shared";
+
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -38,7 +38,7 @@ export default function RegisterPage() {
         senha,
         turnstileToken: turnstileToken || undefined,
       });
-      navigate(authed.papel === Papel.CLIENTE ? "/minha-conta" : "/", {
+      navigate(authed.permissoes.length === 0 ? "/minha-conta" : "/", {
         replace: true,
       });
     } catch (err) {

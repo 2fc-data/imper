@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
-import { Papel } from "@prisma/client";
 import { parseBody, parseParams } from "../lib/validators";
 import { wrap } from "../lib/errors";
 import { authMiddleware } from "../lib/auth";
 import { toCtx } from "../lib/ctx";
 import { usuariosService } from "../services/usuario.service";
+import { prisma } from "../db";
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.post("/", authMiddleware("ADMIN"), wrap(async (req, res) => {
       email: z.string().email(),
       senha: z.string().min(6),
       telefone: z.string().optional(),
-      papel: z.nativeEnum(Papel),
+      papelId: z.number().int().positive(),
       cargoId: z.number().int().positive().nullish(),
     }),
     req.body,
@@ -35,7 +35,7 @@ router.put("/:id", authMiddleware("ADMIN"), wrap(async (req, res) => {
     z.object({
       nome: z.string().min(2).optional(),
       telefone: z.string().optional(),
-      papel: z.nativeEnum(Papel).optional(),
+      papelId: z.number().int().positive().optional(),
       cargoId: z.number().int().positive().nullish(),
       ativo: z.boolean().optional(),
     }),
@@ -54,13 +54,25 @@ router.patch("/:id/perfil", authMiddleware("ADMIN", "SUPERVISOR", "ATENDENTE"), 
   const { id } = parseParams(z.object({ id: z.coerce.number().int() }), req.params);
   const body = parseBody(
     z.object({
-      papel: z.nativeEnum(Papel).refine((p) => p !== Papel.ADMIN, {
-        message: "Não é permitido atribuir o perfil ADMIN",
-      }),
+      papelId: z.number().int().positive(),
     }),
     req.body,
   );
-  res.json(await usuariosService.atualizar(id, { papel: body.papel }));
+  // Verificar que não está atribuindo ADMIN (a menos que o caller seja ADMIN)
+  const papel = await prisma.papelRbac.findUnique({ where: { id: body.papelId } });
+  if (papel?.nome === "ADMIN" && !req.user?.permissoes?.includes("gerenciar_cargos")) {
+    return res.status(403).json({ error: "Não é permitido atribuir o perfil ADMIN" });
+  }
+  res.json(await usuariosService.atualizar(id, { papelId: body.papelId }));
+}));
+
+// Listar papeis disponíveis
+router.get("/papeis", authMiddleware(), wrap(async (_req, res) => {
+  const papeis = await prisma.papelRbac.findMany({
+    where: { ativo: true },
+    orderBy: { nome: "asc" },
+  });
+  res.json(papeis);
 }));
 
 export default router;

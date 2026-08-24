@@ -1,11 +1,8 @@
-import { useAuth } from "../../auth/AuthContext";
 import { cn } from "../../lib/utils";
-import { iniciais } from "../../lib/nav";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void;
-  onLogout: () => void;
   timeLeft?: number;
   sessionDuration?: number;
 }
@@ -19,11 +16,9 @@ function formatarTempo(totalSeg: number): string {
 
 export function AdminHeader({
   onToggleSidebar,
-  onLogout,
   timeLeft,
   sessionDuration,
 }: AdminHeaderProps) {
-  const { user } = useAuth();
   const baixo = timeLeft !== undefined && timeLeft <= 60;
 
   return (
@@ -68,16 +63,6 @@ export function AdminHeader({
 
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
-        {user && (
-          <>
-            <span className="hidden max-w-[10rem] truncate text-sm text-muted-foreground sm:block">
-              {user.nome}
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground">
-              {iniciais(user.nome)}
-            </div>
-          </>
-        )}
         {timeLeft !== undefined && sessionDuration !== undefined && (
           <span
             title="Sessão expira em"
@@ -104,25 +89,6 @@ export function AdminHeader({
             </span>
           </span>
         )}
-        <button
-          type="button"
-          onClick={onLogout}
-          className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive sm:px-3"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-5 w-5"
-            aria-hidden="true"
-          >
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
-          </svg>
-          <span className="hidden sm:inline">Sair</span>
-        </button>
       </div>
     </header>
   );

@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { Papel } from "@prisma/client";
 import { prisma } from "../db";
 import { signToken } from "../lib/auth";
 import { AppError } from "../lib/errors";
@@ -10,25 +9,55 @@ const selectPerfil = {
   id: true,
   nome: true,
   email: true,
-  papel: true,
   telefone: true,
   cargoId: true,
 } as const;
+
+async function buscarPermissoes(userId: number): Promise<string[]> {
+  const userPapeis = await prisma.usuarioPapel.findMany({
+    where: { userId },
+    include: {
+      papel: {
+        include: {
+          permissoes: { include: { permissao: true } },
+        },
+      },
+    },
+  });
+  const permissoes = new Set<string>();
+  for (const up of userPapeis) {
+    for (const pp of up.papel.permissoes) {
+      permissoes.add(pp.permissao.chave);
+    }
+  }
+  return Array.from(permissoes);
+}
 
 export async function login(email: string, senha: string) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !user.ativo) throw new AppError(401, "Credenciais inválidas");
   const ok = await bcrypt.compare(senha, user.senhaHash);
   if (!ok) throw new AppError(401, "Credenciais inválidas");
+
+  const permissoes = await buscarPermissoes(user.id);
+
+  // Buscar papel principal (primeiro vinculado)
+  const userPapel = await prisma.usuarioPapel.findFirst({
+    where: { userId: user.id },
+    include: { papel: { select: { nome: true } } },
+  });
+  const papel = userPapel?.papel?.nome ?? "CLIENTE";
+
   const perfil = {
     id: user.id,
     nome: user.nome,
     email: user.email,
-    papel: user.papel as Papel,
+    papel,
+    permissoes,
     telefone: user.telefone,
     cargoId: user.cargoId,
   };
-  const token = signToken(perfil);
+  const token = signToken({ id: user.id, nome: user.nome, email: user.email, permissoes });
   return { token, user: perfil };
 }
 
@@ -37,6 +66,7 @@ export async function cadastrar(data: {
   email: string;
   telefone?: string;
   senha: string;
+  papelId?: number;
 }) {
   const existente = await prisma.user.findUnique({ where: { email: data.email } });
   if (existente) throw new AppError(409, "E-mail já cadastrado");
@@ -55,31 +85,45 @@ export async function cadastrar(data: {
         },
       });
     }
-    return tx.user.create({
+    // Buscar papel padrão CLIENTE na tabela rbac
+    const papelPadrao = await tx.papelRbac.findUnique({ where: { nome: "CLIENTE" } });
+    const papelId = data.papelId ?? papelPadrao?.id;
+
+    const novoUser = await tx.user.create({
       data: {
         nome: data.nome,
         email: data.email,
         telefone: data.telefone ?? null,
-        papel: Papel.CLIENTE,
         ativo: true,
         senhaHash,
         clienteId: cliente.id,
       },
       select: selectPerfil,
     });
+
+    // Vincular papel na tabela RBAC
+    if (papelId) {
+      await tx.usuarioPapel.create({
+        data: { userId: novoUser.id, papelId },
+      });
+    }
+
+    return novoUser;
   });
 
-  const notificaveis = await prisma.user.findMany({
-    where: {
-      ativo: true,
-      papel: { in: [Papel.ATENDENTE, Papel.SUPERVISOR, Papel.ADMIN] },
-    },
+  // Notificar atendentes, supervisores e admins
+  const papeisNotificaveis = await prisma.papelRbac.findMany({
+    where: { nome: { in: ["ATENDENTE", "SUPERVISOR", "ADMIN"] } },
     select: { id: true },
+  });
+  const notificaveis = await prisma.usuarioPapel.findMany({
+    where: { papelId: { in: papeisNotificaveis.map((p) => p.id) } },
+    select: { userId: true },
   });
   if (notificaveis.length) {
     await prisma.notificacao.createMany({
       data: notificaveis.map((u) => ({
-        userId: u.id,
+        userId: u.userId,
         titulo: "Novo cadastro de cliente",
         mensagem: `${user.nome} (${user.email}) se cadastrou no sistema e está aguardando a definição de perfil.`,
         link: "/usuarios",
@@ -87,8 +131,9 @@ export async function cadastrar(data: {
     });
   }
 
-  const token = signToken(user);
-  return { token, user };
+  const permissoes = await buscarPermissoes(user.id);
+  const token = signToken({ id: user.id, nome: user.nome, email: user.email, permissoes });
+  return { token, user: { ...user, permissoes } };
 }
 
 export async function recuperarSenha(email: string) {

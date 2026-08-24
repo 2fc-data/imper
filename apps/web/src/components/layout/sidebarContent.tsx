@@ -1,6 +1,5 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Papel } from "@imper/shared";
 import { cn } from "../../lib/utils";
 
 interface SidebarButtonProps {
@@ -98,35 +97,12 @@ export function DashboardSidebar() {
 }
 
 export function UsuariosSidebar({
-  valor,
-  onChange,
   viewAtiva,
   onNavegar,
 }: {
-  valor: Papel | null;
-  onChange: (p: Papel | null) => void;
-  viewAtiva: "analises" | "lista";
-  onNavegar: (view: "analises" | "lista") => void;
+  viewAtiva: "analises" | "lista" | "novo";
+  onNavegar: (view: "analises" | "lista" | "novo") => void;
 }) {
-  const papeis: Papel[] = [
-    Papel.ADMIN,
-    Papel.SUPERVISOR,
-    Papel.ATENDENTE,
-    Papel.TECNICO,
-    Papel.ALMOXARIFE,
-    Papel.CONTABILIDADE,
-    Papel.CLIENTE,
-  ];
-  const rotulo: Record<Papel, string> = {
-    [Papel.ADMIN]: "Administrador",
-    [Papel.SUPERVISOR]: "Supervisor",
-    [Papel.ATENDENTE]: "Atendente",
-    [Papel.TECNICO]: "Técnico",
-    [Papel.ALMOXARIFE]: "Almoxarife",
-    [Papel.CONTABILIDADE]: "Contabilidade",
-    [Papel.CLIENTE]: "Cliente",
-  };
-
   return (
     <>
       <SidebarButton
@@ -144,25 +120,12 @@ export function UsuariosSidebar({
         Lista de Usuários
       </SidebarButton>
       <SidebarButton
-        active={valor === null}
-        onClick={() => onChange(null)}
-        icon={icone("M12 2a10 10 0 100 20 10 10 0 000-20zM2 12h20")}
+        active={viewAtiva === "novo"}
+        onClick={() => onNavegar("novo")}
+        icon={icone("M12 4v16m8-8H4")}
       >
-        Todos os perfis
+        Novo Usuário
       </SidebarButton>
-      {papeis.map((p) => (
-        <SidebarButton
-          key={p}
-          active={valor === p}
-          onClick={() => onChange(valor === p ? null : p)}
-          icon={icone("M16 11a1 1 0 01-1 1H9a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3z")}
-        >
-          {rotulo[p]}
-        </SidebarButton>
-      ))}
-      <SidebarNote>
-        Filtra a lista por perfil. Clique novamente para limpar o filtro.
-      </SidebarNote>
     </>
   );
 }
@@ -559,6 +522,29 @@ export function VisitasSidebar({
         Agendar Visita
       </SidebarButton>
       
+    </>
+  );
+}
+
+export function RbacSidebar({
+  viewAtiva,
+  onNavegar,
+}: {
+  viewAtiva: "papeis" | "permissoes";
+  onNavegar: (view: "papeis" | "permissoes") => void;
+}) {
+  return (
+    <>
+      <SidebarButton
+        active={viewAtiva === "papeis"}
+        onClick={() => onNavegar("papeis")}
+        icon={icone("M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z")}
+      >
+        Papéis
+      </SidebarButton>
+      <SidebarNote>
+        Clique em um papel para gerenciar suas permissões.
+      </SidebarNote>
     </>
   );
 }

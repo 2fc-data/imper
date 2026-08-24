@@ -12,7 +12,6 @@ import {
   listarUsuarios,
   Usuario,
 } from "../lib/api";
-import { Papel } from "@imper/shared";
 
 const rotulosTipo: Record<TipoAgendamento, string> = {
   VISITA: "Visita",
@@ -418,16 +417,8 @@ export function NovoAgendamentoForm({ onSuccess, onCancel }: NovoAgendamentoForm
   useEffect(() => {
     listarUsuarios()
       .then((data) => {
-        const profissionais = data.filter((u) =>
-          (
-            [
-              Papel.ADMIN,
-              Papel.SUPERVISOR,
-              Papel.ATENDENTE,
-              Papel.TECNICO,
-            ] as Papel[]
-          ).includes(u.papel),
-        );
+        const papeisValidos = ["ADMIN", "SUPERVISOR", "ATENDENTE", "TECNICO"];
+        const profissionais = data.filter((u) => papeisValidos.includes(u.papel));
         setUsuarios(profissionais);
       })
       .catch((err) => console.error("Erro ao listar usuários:", err));

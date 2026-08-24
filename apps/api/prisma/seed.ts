@@ -1,5 +1,115 @@
-import { PrismaClient, Papel, TipoMaterial, TipoItemServico, UnidadeMedida } from "@prisma/client";
+import { PrismaClient, TipoMaterial, TipoItemServico, UnidadeMedida } from "@prisma/client";
 import bcrypt from "bcryptjs";
+
+// ============================================================
+// RBAC — PAPEIS & PERMISSÕES
+// ============================================================
+
+const PAPEIS_RBAC = [
+  { nome: "ADMIN", descricao: "Acesso total ao sistema" },
+  { nome: "SUPERVISOR", descricao: "Supervisão de equipes e operações" },
+  { nome: "TECNICO", descricao: "Execução de serviços técnicos" },
+  { nome: "ALMOXARIFE", descricao: "Controle de estoque e materiais" },
+  { nome: "CONTABILIDADE", descricao: "Gestão financeira" },
+  { nome: "ATENDENTE", descricao: "Atendimento ao cliente e triagem" },
+  { nome: "CLIENTE", descricao: "Acesso restrito ao próprio acompanhamento" },
+] as const;
+
+const PERMISSOES = [
+  // Usuários
+  { chave: "criar_usuario", descricao: "Criar novos usuários", categoria: "usuarios" },
+  { chave: "editar_usuario", descricao: "Editar dados de usuários", categoria: "usuarios" },
+  { chave: "excluir_usuario", descricao: "Excluir usuários do sistema", categoria: "usuarios" },
+  { chave: "definir_perfil", descricao: "Definir perfil de acesso de usuários", categoria: "usuarios" },
+
+  // Atendimentos
+  { chave: "criar_atendimento", descricao: "Criar novos atendimentos", categoria: "atendimentos" },
+  { chave: "editar_atendimento", descricao: "Editar atendimentos existentes", categoria: "atendimentos" },
+
+  // Ordens de Serviço
+  { chave: "criar_os", descricao: "Criar ordens de serviço", categoria: "ordens_servico" },
+  { chave: "editar_os", descricao: "Editar ordens de serviço", categoria: "ordens_servico" },
+  { chave: "aprovar_os", descricao: "Aprovar ordens de serviço", categoria: "ordens_servico" },
+  { chave: "iniciar_os", descricao: "Iniciar execução de OS", categoria: "ordens_servico" },
+  { chave: "concluir_os", descricao: "Concluir ordens de serviço", categoria: "ordens_servico" },
+  { chave: "cancelar_os", descricao: "Cancelar ordens de serviço", categoria: "ordens_servico" },
+  { chave: "confirmar_obra", descricao: "Confirmar conclusão da obra", categoria: "ordens_servico" },
+  { chave: "entregar_os", descricao: "Entregar OS ao cliente", categoria: "ordens_servico" },
+
+  // Financeiro
+  { chave: "ver_financeiro", descricao: "Acessar dados financeiros", categoria: "financeiro" },
+  { chave: "criar_pagamento", descricao: "Registrar pagamentos", categoria: "financeiro" },
+  { chave: "aprovar_compra", descricao: "Aprovar compras", categoria: "financeiro" },
+  { chave: "recusar_compra", descricao: "Recusar compras", categoria: "financeiro" },
+  { chave: "receber_compra", descricao: "Receber compras", categoria: "financeiro" },
+
+  // Estoque
+  { chave: "gerenciar_estoque", descricao: "Gerenciar estoque de materiais", categoria: "estoque" },
+  { chave: "criar_material", descricao: "Cadastrar novos materiais", categoria: "estoque" },
+  { chave: "editar_material", descricao: "Editar materiais existentes", categoria: "estoque" },
+  { chave: "entrada_estoque", descricao: "Registrar entradas no estoque", categoria: "estoque" },
+  { chave: "saida_estoque", descricao: "Registrar saídas do estoque", categoria: "estoque" },
+  { chave: "criar_separacao", descricao: "Criar separações de materiais", categoria: "estoque" },
+  { chave: "separar_item", descricao: "Separar itens para OS", categoria: "estoque" },
+
+  // Equipamentos
+  { chave: "gerenciar_equipamentos", descricao: "Gerenciar equipamentos", categoria: "equipamentos" },
+  { chave: "criar_equipamento", descricao: "Cadastrar equipamentos", categoria: "equipamentos" },
+  { chave: "editar_equipamento", descricao: "Editar equipamentos", categoria: "equipamentos" },
+  { chave: "excluir_equipamento", descricao: "Excluir equipamentos", categoria: "equipamentos" },
+  { chave: "retirar_equipamento", descricao: "Retirar equipamentos para uso", categoria: "equipamentos" },
+  { chave: "registrar_manutencao", descricao: "Registrar manutenções", categoria: "equipamentos" },
+
+  // EPIs
+  { chave: "entregar_epi", descricao: "Entregar EPIs a colaboradores", categoria: "epis" },
+
+  // Relatórios
+  { chave: "ver_analises", descricao: "Acessar análises e relatórios", categoria: "relatorios" },
+  { chave: "gerar_relatorios", descricao: "Gerar relatórios", categoria: "relatorios" },
+  { chave: "ver_os", descricao: "Visualizar ordens de serviço", categoria: "relatorios" },
+  { chave: "ver_orcamentos", descricao: "Visualizar orçamentos", categoria: "relatorios" },
+  { chave: "ver_compras", descricao: "Visualizar compras", categoria: "relatorios" },
+
+  // Configurações
+  { chave: "editar_configuracoes", descricao: "Editar configurações do sistema", categoria: "configuracoes" },
+  { chave: "gerenciar_cargos", descricao: "Gerenciar cargos", categoria: "configuracoes" },
+  { chave: "gerenciar_servicos", descricao: "Gerenciar catálogo de serviços", categoria: "configuracoes" },
+  { chave: "gerenciar_agendamentos", descricao: "Gerenciar agendamentos", categoria: "configuracoes" },
+  { chave: "gerenciar_visitas", descricao: "Gerenciar visitas técnicas", categoria: "configuracoes" },
+  { chave: "gerenciar_papeis", descricao: "Gerenciar papéis e permissões do RBAC", categoria: "configuracoes" },
+
+  // OS (para técnico)
+  { chave: "ver_visitas", descricao: "Visualizar visitas técnicas", categoria: "relatorios" },
+  { chave: "realizar_visita", descricao: "Registrar realização de visita", categoria: "atendimentos" },
+
+  // Minha OS (cliente)
+  { chave: "ver_minha_os", descricao: "Visualizar própria OS", categoria: "relatorios" },
+] as const;
+
+// Mapeamento de permissões por papel
+const PERMISSOES_POR_PAPEL: Record<string, readonly string[]> = {
+  ADMIN: PERMISSOES.map((p) => p.chave),
+  SUPERVISOR: PERMISSOES.filter((p) => !["editar_configuracoes", "gerenciar_cargos"].includes(p.chave)).map((p) => p.chave),
+  ATENDENTE: [
+    "ver_os", "criar_atendimento", "editar_atendimento", "criar_os",
+    "confirmar_obra", "entregar_os", "ver_orcamentos",
+    "gerenciar_agendamentos", "gerenciar_visitas", "gerenciar_equipamentos",
+  ],
+  TECNICO: [
+    "ver_os", "iniciar_os", "concluir_os", "editar_os",
+    "gerenciar_equipamentos", "retirar_equipamento", "registrar_manutencao",
+    "ver_visitas", "realizar_visita",
+  ],
+  ALMOXARIFE: [
+    "gerenciar_estoque", "criar_material", "entrada_estoque", "saida_estoque",
+    "criar_separacao", "separar_item", "ver_compras", "receber_compra",
+    "gerenciar_equipamentos", "entregar_epi",
+  ],
+  CONTABILIDADE: [
+    "ver_financeiro", "criar_pagamento", "ver_os", "ver_orcamentos", "ver_compras",
+  ],
+  CLIENTE: ["ver_minha_os"],
+};
 
 const prisma = new PrismaClient();
 
@@ -67,22 +177,27 @@ async function main() {
   const usuarios: Array<{
     nome: string;
     email: string;
-    papel: Papel;
+    papelNome: string;
     cargoId: number;
   }> = [
-    { nome: "Admin Sistema", email: "admin@imper.local", papel: Papel.ADMIN, cargoId: diretor.id },
-    { nome: "Supervisor A", email: "supervisor@imper.local", papel: Papel.SUPERVISOR, cargoId: supervisor.id },
-    { nome: "Técnico 1", email: "tecnico@imper.local", papel: Papel.TECNICO, cargoId: tecnicoSenior.id },
-    { nome: "Almoxarife A", email: "almoxarife@imper.local", papel: Papel.ALMOXARIFE, cargoId: almoxarife.id },
-    { nome: "Contabilidade", email: "contabilidade@imper.local", papel: Papel.CONTABILIDADE, cargoId: contabil.id },
-    { nome: "Atendente A", email: "atendente@imper.local", papel: Papel.ATENDENTE, cargoId: atendente.id },
+    { nome: "Admin Sistema", email: "admin@imper.local", papelNome: "ADMIN", cargoId: diretor.id },
+    { nome: "Supervisor A", email: "supervisor@imper.local", papelNome: "SUPERVISOR", cargoId: supervisor.id },
+    { nome: "Técnico 1", email: "tecnico@imper.local", papelNome: "TECNICO", cargoId: tecnicoSenior.id },
+    { nome: "Almoxarife A", email: "almoxarife@imper.local", papelNome: "ALMOXARIFE", cargoId: almoxarife.id },
+    { nome: "Contabilidade", email: "contabilidade@imper.local", papelNome: "CONTABILIDADE", cargoId: contabil.id },
+    { nome: "Atendente A", email: "atendente@imper.local", papelNome: "ATENDENTE", cargoId: atendente.id },
   ];
 
   for (const u of usuarios) {
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { nome: u.nome, papel: u.papel, cargoId: u.cargoId, ativo: true },
-      create: { ...u, senhaHash },
+      update: { nome: u.nome, cargoId: u.cargoId, ativo: true },
+      create: {
+        nome: u.nome,
+        email: u.email,
+        cargoId: u.cargoId,
+        senhaHash,
+      },
     });
   }
 
@@ -202,6 +317,58 @@ async function main() {
       where: { chave: c.chave },
       update: { valor: c.valor },
       create: c,
+    });
+  }
+
+  // ============================================================
+  // RBAC — PAPEIS & PERMISSÕES
+  // ============================================================
+  console.log("Criando papeis RBAC...");
+  const papelMap = new Map<string, number>();
+  for (const p of PAPEIS_RBAC) {
+    const criado = await prisma.papelRbac.upsert({
+      where: { nome: p.nome },
+      update: { descricao: p.descricao, ativo: true },
+      create: p,
+    });
+    papelMap.set(p.nome, criado.id);
+  }
+
+  console.log("Criando permissoes...");
+  const permissaoMap = new Map<string, number>();
+  for (const p of PERMISSOES) {
+    const criada = await prisma.permissao.upsert({
+      where: { chave: p.chave },
+      update: { descricao: p.descricao, categoria: p.categoria },
+      create: p,
+    });
+    permissaoMap.set(p.chave, criada.id);
+  }
+
+  console.log("Vinculando permissoes aos papeis...");
+  for (const [papelNome, permissoesChaves] of Object.entries(PERMISSOES_POR_PAPEL)) {
+    const papelId = papelMap.get(papelNome);
+    if (!papelId) continue;
+    for (const chave of permissoesChaves) {
+      const permissaoId = permissaoMap.get(chave);
+      if (!permissaoId) continue;
+      await prisma.papelPermissao.upsert({
+        where: { papelId_permissaoId: { papelId, permissaoId } },
+        update: {},
+        create: { papelId, permissaoId },
+      });
+    }
+  }
+
+  console.log("Vinculando usuarios aos papeis...");
+  for (const u of usuarios) {
+    const papelId = papelMap.get(u.papelNome);
+    const user = await prisma.user.findUnique({ where: { email: u.email }, select: { id: true } });
+    if (!papelId || !user) continue;
+    await prisma.usuarioPapel.upsert({
+      where: { userId_papelId: { userId: user.id, papelId } },
+      update: {},
+      create: { userId: user.id, papelId },
     });
   }
 

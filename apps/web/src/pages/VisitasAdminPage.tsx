@@ -13,7 +13,6 @@ import {
   Usuario,
   VisitaItem,
 } from "../lib/api";
-import { Papel } from "@imper/shared";
 
 const rotulosStatus: Record<StatusVisita, string> = {
   AGENDADA: "Agendada",
@@ -382,11 +381,8 @@ export function AgendarVisitaForm({ onSuccess, onCancel }: AgendarVisitaFormProp
       .catch((err) => console.error("Erro ao listar atendimentos:", err));
     listarUsuarios()
       .then((data) => {
-        setTecnicos(
-          data.filter((u) =>
-            ([Papel.TECNICO, Papel.ADMIN, Papel.SUPERVISOR] as Papel[]).includes(u.papel),
-          ),
-        );
+        const papeisValidos = ["TECNICO", "ADMIN", "SUPERVISOR"];
+        setTecnicos(data.filter((u) => papeisValidos.includes(u.papel)));
       })
       .catch((err) => console.error("Erro ao listar técnicos:", err));
   }, []);
