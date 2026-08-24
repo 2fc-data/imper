@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -33,12 +34,13 @@ fs.mkdirSync(config.uploadsDir, { recursive: true });
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({ crossOriginEmbedderPolicy: false }));
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use("/uploads", express.static(config.uploadsDir));
+app.use(express.static(path.resolve(__dirname, "../../web/dist")));
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
@@ -66,9 +68,23 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() });
 });
 
+const webDist = path.resolve(__dirname, "../../web/dist");
+const spaIndex = path.join(webDist, "index.html");
+console.log(`SPA dist: ${webDist} (exists: ${fs.existsSync(webDist)})`);
+
+const API_PREFIXES = ["/auth", "/usuarios", "/rbac", "/health", "/uploads"];
+app.get("*path", (req, res, next) => {
+  if (API_PREFIXES.some((p) => req.path.startsWith(p))) return next();
+  if (fs.existsSync(spaIndex)) {
+    res.sendFile(spaIndex);
+  } else {
+    res.status(404).json({ error: "spa_not_found", message: "Frontend não encontrado" });
+  }
+});
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-  console.log(`API ImperMeab escutando em http://localhost:${config.port}`);
+app.listen(config.port, "0.0.0.0", () => {
+  console.log(`API ImperMeab escutando em http://0.0.0.0:${config.port}`);
 });
