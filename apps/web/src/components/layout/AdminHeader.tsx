@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 
@@ -43,7 +44,7 @@ export function AdminHeader({
         </svg>
       </button>
 
-      <div className="flex items-center gap-2">
+      <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <svg
             viewBox="0 0 24 24"
@@ -59,7 +60,7 @@ export function AdminHeader({
           </svg>
         </div>
         <span className="text-base font-semibold tracking-tight uppercase">Imperpoços</span>
-      </div>
+      </Link>
 
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
