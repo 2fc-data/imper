@@ -72,28 +72,7 @@ const icone = (d: string) => (
 );
 
 export function DashboardSidebar() {
-  return (
-    <>
-      <SidebarLink to="/atendimentos" icon={icone("M12 3a3 3 0 100 6 3 3 0 000-6zM8 21v-2a4 4 0 018 0v2")}>
-        Novo atendimento
-      </SidebarLink>
-      <SidebarLink
-        to="/orcamentos"
-        icon={icone("M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2")}
-      >
-        Novo orçamento
-      </SidebarLink>
-      <SidebarLink to="/os" icon={icone("M9 12h6M9 16h6M8 8h8M20 12a8 8 0 11-16 0 8 8 0 0116 0z")}>
-        Nova OS
-      </SidebarLink>
-      <SidebarLink
-        to="/materiais"
-        icon={icone("M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10")}
-      >
-        Materiais
-      </SidebarLink>
-    </>
-  );
+  return null;
 }
 
 export function UsuariosSidebar({

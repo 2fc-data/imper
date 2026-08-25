@@ -4,6 +4,7 @@ import L from "leaflet";
 import { m, useInView } from "framer-motion";
 import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 import { useCidades } from "../lib/useCidades";
+import heroBg from "../assets/Hero_Imper_optimized.webp";
 import "leaflet/dist/leaflet.css";
 
 const COR_MARCADOR = "oklch(70% 0.14 227)";
@@ -88,32 +89,41 @@ export default function AreaAtuacaoPage() {
             </div>
           )}
           {!loading && !error && pontos.length > 0 && bounds && (
-            <m.div variants={fadeUp} className="relative rounded-xl border bg-card p-3">
-              <MapContainer
-                center={[pontos[0].lat, pontos[0].lng]}
-                zoom={11}
-                scrollWheelZoom={false}
-                className="z-0 h-[360px] w-full rounded-lg"
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <m.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="relative rounded-xl border bg-card p-3">
+                <MapContainer
+                  center={[pontos[0].lat, pontos[0].lng]}
+                  zoom={11}
+                  scrollWheelZoom={false}
+                  className="z-0 h-[360px] w-full rounded-lg"
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <FitBounds bounds={bounds} />
+                  {pontos.map((p) => (
+                    <Marker
+                      key={p.id}
+                      position={[p.lat, p.lng]}
+                      icon={marcador}
+                    >
+                      <Popup>
+                        <span className="font-medium">
+                          {p.nome} - {p.uf}
+                        </span>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+              </div>
+              <div className="hidden sm:flex items-center justify-center rounded-xl border bg-card overflow-hidden">
+                <img
+                  src={heroBg}
+                  alt="Imper Pinturas"
+                  className="h-full w-full object-cover rounded-lg"
                 />
-                <FitBounds bounds={bounds} />
-                {pontos.map((p) => (
-                  <Marker
-                    key={p.id}
-                    position={[p.lat, p.lng]}
-                    icon={marcador}
-                  >
-                    <Popup>
-                      <span className="font-medium">
-                        {p.nome} - {p.uf}
-                      </span>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+              </div>
             </m.div>
           )}
         </m.div>
