@@ -457,12 +457,7 @@ export default function EquipamentosAdminPage({
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-2">
                         <CardTitle className="text-base">
-                          {e.codigo}{" "}
-                          {e.numeroPatrimonio && (
-                            <span className="text-xs font-normal text-muted-foreground">
-                              — {e.numeroPatrimonio}
-                            </span>
-                          )}
+                          {e.descricao}
                         </CardTitle>
                         <BadgeAtivoEquipamento ativo={e.ativo} />
                       </div>
@@ -470,7 +465,9 @@ export default function EquipamentosAdminPage({
                         {e.status?.nome}
                       </span>
                     </div>
-                    <CardDescription>{e.descricao}</CardDescription>
+                    <CardDescription className="text-sm">
+                      {e.numeroPatrimonio || ""}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="text-xs text-muted-foreground">

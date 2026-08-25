@@ -678,11 +678,18 @@ model Assinatura {
 model Material {
   id               Int                @id @default(autoincrement())
   nome             String             @db.VarChar(150)
+  modelo           String?            @db.VarChar(150)
   tipo             TipoMaterial       @default(MATERIAL)
   unidade          UnidadeMedida
   quantidadeMinima Decimal?           @db.Decimal(12, 3)
   custoUnitario    Decimal?           @db.Decimal(12, 2)
   status           StatusMaterial     @default(ATIVO)
+
+  marcaId          Int?
+  marca            Marca?             @relation(fields: [marcaId], references: [id], onDelete: SetNull)
+  corId            Int?
+  cor              Cor?               @relation(fields: [corId], references: [id], onDelete: SetNull)
+
   movimentos       MovimentoEstoque[]
   itensCompra      CompraItem[]
   itensSeparacao   SeparacaoItem[]
@@ -693,6 +700,8 @@ model Material {
   updatedAt        DateTime           @updatedAt
 
   @@index([nome])
+  @@index([marcaId])
+  @@index([corId])
   @@map("materiais")
 }
 
@@ -965,17 +974,18 @@ model SubcategoriaEquipamento {
   @@map("subcategorias_equipamentos")
 }
 
-model MarcaEquipamento {
+model Marca {
   id           Int           @id @default(autoincrement())
   nome         String        @db.VarChar(120)
   ativo        Boolean       @default(true)
   ordem        Int           @default(0)
   equipamentos Equipamento[]
+  epis         Epi[]
+  materiais    Material[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  Epi          Epi[]
 
-  @@map("marcas_equipamentos")
+  @@map("marcas")
 }
 
 model Fornecedor {
@@ -1043,6 +1053,32 @@ model TipoManutencao {
   @@map("tipos_manutencao")
 }
 
+model Cor {
+  id        Int       @id @default(autoincrement())
+  nome      String    @db.VarChar(80)
+  codigoHex String?   @db.VarChar(7)
+  ativo     Boolean   @default(true)
+  ordem     Int       @default(0)
+  epis      Epi[]
+  materiais Material[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("cores")
+}
+
+model TamanhoEquipamento {
+  id        Int       @id @default(autoincrement())
+  nome      String    @db.VarChar(30)
+  ordem     Int       @default(0)
+  ativo     Boolean   @default(true)
+  epis      Epi[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("tamanhos_equipamentos")
+}
+
 model Equipamento {
   id                  Int                      @id @default(autoincrement())
   codigo              String                   @unique @db.VarChar(50)
@@ -1051,7 +1087,7 @@ model Equipamento {
   modelo              String?                  @db.VarChar(120)
   numeroSerie         String?                  @db.VarChar(120)
   marcaId             Int?
-  marca               MarcaEquipamento?        @relation(fields: [marcaId], references: [id], onDelete: SetNull)
+  marca               Marca?                   @relation(fields: [marcaId], references: [id], onDelete: SetNull)
   categoriaId         Int?
   categoria           CategoriaEquipamento?    @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
   subcategoriaId      Int?
@@ -1124,6 +1160,7 @@ model Epi {
   id               Int       @id @default(autoincrement())
   codigo           String    @unique @db.VarChar(50)
   nome             String    @db.VarChar(150)
+  modelo           String?   @db.VarChar(150)
   numeroCa         String?   @db.VarChar(50)
   dataValidade     DateTime?
   quantidade       Decimal   @default(0) @db.Decimal(12, 3)
@@ -1131,11 +1168,15 @@ model Epi {
   ativo            Boolean   @default(true)
 
   marcaId        Int?
-  marca          MarcaEquipamento?        @relation(fields: [marcaId], references: [id], onDelete: SetNull)
+  marca          Marca?            @relation(fields: [marcaId], references: [id], onDelete: SetNull)
   categoriaId    Int?
   categoria      CategoriaEquipamento?    @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
   subcategoriaId Int?
   subcategoria   SubcategoriaEquipamento? @relation(fields: [subcategoriaId], references: [id], onDelete: SetNull)
+  corId          Int?
+  cor            Cor?              @relation(fields: [corId], references: [id], onDelete: SetNull)
+  tamanhoId      Int?
+  tamanho        TamanhoEquipamento?      @relation(fields: [tamanhoId], references: [id], onDelete: SetNull)
   localizacaoId  Int?
   localizacao    Localizacao?             @relation(fields: [localizacaoId], references: [id], onDelete: SetNull)
   fornecedorId   Int?
@@ -1147,6 +1188,8 @@ model Epi {
 
   @@index([nome])
   @@index([categoriaId])
+  @@index([corId])
+  @@index([tamanhoId])
   @@map("epis")
 }
 

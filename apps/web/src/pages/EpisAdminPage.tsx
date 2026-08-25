@@ -429,7 +429,7 @@ export default function EpisAdminPage({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-base">
-                    {e.codigo} — {e.nome}
+                    {e.nome}
                   </CardTitle>
                   <BadgeAtivo ativo={e.ativo} />
                 </div>
@@ -439,7 +439,7 @@ export default function EpisAdminPage({
                     : "—"}
                 </span>
               </div>
-              <CardDescription>
+              <CardDescription className="text-sm">
                 CA: {e.numeroCa ?? "—"} · Estoque: {e.quantidade}{" "}
                 {e.quantidadeMinima !== null && `(mín. ${e.quantidadeMinima})`}
               </CardDescription>

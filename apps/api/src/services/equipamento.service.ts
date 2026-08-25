@@ -37,7 +37,7 @@ export const equipamentoService = {
       await Promise.all([
         prisma.categoriaEquipamento.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
         prisma.subcategoriaEquipamento.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
-        prisma.marcaEquipamento.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
+        prisma.marca.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
         prisma.fornecedor.findMany({ orderBy: { nome: "asc" } }),
         prisma.localizacao.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
         prisma.statusEquipamento.findMany({ orderBy: [{ ativo: "desc" }, { ordem: "asc" }] }),
@@ -93,7 +93,7 @@ export const equipamentoService = {
   },
 
   // --- Lookups simples ---
-  marca: crudLookup(prisma.marcaEquipamento, "Marca"),
+  marca: crudLookup(prisma.marca, "Marca"),
   localizacao: crudLookup(prisma.localizacao, "Localização"),
   status: crudLookup(prisma.statusEquipamento, "Status"),
   estadoConservacao: crudLookup(prisma.estadoConservacao, "Estado de conservação"),

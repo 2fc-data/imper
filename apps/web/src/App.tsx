@@ -94,7 +94,6 @@ function UsuariosRoute() {
       }
     >
       <UsuariosPage
-        key={viewAtiva}
         viewAtiva={viewAtiva}
         onNavegar={setViewAtiva}
       />
@@ -110,7 +109,7 @@ function AtendimentosRoute() {
       requiredPermissions={["criar_atendimento", "editar_atendimento"]}
       sidebar={<AtendimentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <AtendimentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+      <AtendimentosAdminPage initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -123,7 +122,7 @@ function AgendamentosRoute() {
       requiredPermissions={["criar_atendimento", "editar_atendimento"]}
       sidebar={<AgendamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <AgendamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+      <AgendamentosAdminPage initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -136,7 +135,7 @@ function VisitasRoute() {
       requiredPermissions={["editar_os", "iniciar_os", "confirmar_obra"]}
       sidebar={<VisitasSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <VisitasAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+      <VisitasAdminPage initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -149,7 +148,7 @@ function OrcamentosRoute() {
       requiredPermissions={["aprovar_compra", "ver_financeiro"]}
       sidebar={<OrcamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <OrcamentosAdminPage key={viewAtiva} initialView={viewAtiva} onNavegar={setViewAtiva} />
+      <OrcamentosAdminPage initialView={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -170,7 +169,7 @@ function OSRoute() {
       ]}
       sidebar={<OSSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <OSAdminPage key={viewAtiva} viewAtiva={viewAtiva} onGoToOrcamentos={() => navigate("/orcamentos")} />
+      <OSAdminPage viewAtiva={viewAtiva} onGoToOrcamentos={() => navigate("/orcamentos")} />
     </ProtectedLayout>
   );
 }
@@ -183,7 +182,7 @@ function EquipamentosRoute() {
       requiredPermissions={["gerenciar_estoque", "gerenciar_equipamentos"]}
       sidebar={<EquipamentosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <EquipamentosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <EquipamentosAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -196,7 +195,7 @@ function ManutencoesRoute() {
       requiredPermissions={["editar_os", "iniciar_os", "concluir_os"]}
       sidebar={<ManutencoesSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <ManutencoesAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <ManutencoesAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -211,7 +210,7 @@ function EpisRoute() {
       requiredPermissions={["gerenciar_epis", "gerenciar_estoque"]}
       sidebar={<EpisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <EpisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <EpisAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -226,7 +225,7 @@ function MateriaisRoute() {
       requiredPermissions={["gerenciar_estoque", "criar_material", "entrada_estoque"]}
       sidebar={<MateriaisSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <MateriaisAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <MateriaisAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -239,7 +238,7 @@ function ServicosRoute() {
       requiredPermissions={["criar_servico", "editar_servico"]}
       sidebar={<ServicosSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <ServicosAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <ServicosAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }
@@ -252,7 +251,7 @@ function RbacRoute() {
       requiredPermissions={["gerenciar_papeis"]}
       sidebar={<RbacSidebar viewAtiva={viewAtiva} onNavegar={setViewAtiva} />}
     >
-      <RbacAdminPage key={viewAtiva} viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
+      <RbacAdminPage viewAtiva={viewAtiva} onNavegar={setViewAtiva} />
     </ProtectedLayout>
   );
 }

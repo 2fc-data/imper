@@ -1,22 +1,17 @@
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "../../auth/AuthContext";
 import { itensPara, iniciais, type NavItem } from "../../lib/nav";
 import { cn } from "../../lib/utils";
 
+type MenuModo = "operacional" | "analitico";
+const STORAGE_KEY = "sidebar-menu-modo";
+
 interface AdminSidebarProps {
   openOnMobile: boolean;
   onClose: () => void;
   onLogout: () => void;
-}
-
-function RotuloSecao({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-      {children}
-    </p>
-  );
 }
 
 function ItemMenu({ item, end }: { item: NavItem; end?: boolean }) {
@@ -37,12 +32,68 @@ function ItemMenu({ item, end }: { item: NavItem; end?: boolean }) {
   );
 }
 
+function MenuToggle({
+  value,
+  onChange,
+}: {
+  value: MenuModo;
+  onChange: (m: MenuModo) => void;
+}) {
+  return (
+    <div className="flex rounded-lg border bg-card/60 p-0.5">
+      <button
+        type="button"
+        onClick={() => onChange("operacional")}
+        className={cn(
+          "flex-1 cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
+          value === "operacional"
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        Operacional
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("analitico")}
+        className={cn(
+          "flex-1 cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
+          value === "analitico"
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        Analítico
+      </button>
+    </div>
+  );
+}
+
 export function AdminSidebar({ openOnMobile, onClose, onLogout }: AdminSidebarProps) {
   const { pathname } = useLocation();
   const { user } = useAuth();
+
+  const defaultModo: MenuModo = user?.papel === "ADMIN" ? "analitico" : "operacional";
+
+  const [menuAtivo, setMenuAtivo] = useState<MenuModo>(() => {
+    const salvo = localStorage.getItem(STORAGE_KEY) as MenuModo | null;
+    if (salvo === "operacional" || salvo === "analitico") return salvo;
+    return defaultModo;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, menuAtivo);
+  }, [menuAtivo]);
+
+  const handleMenuChange = useCallback((novo: MenuModo) => {
+    setMenuAtivo(novo);
+  }, []);
+
   const itens = itensPara(user?.permissoes ?? []);
-  const analiticos = itens.filter((item) => item.to === "/painel");
-  const operacionais = itens.filter((item) => item.to !== "/painel");
+  const itensFiltrados =
+    menuAtivo === "analitico"
+      ? itens.filter((item) => item.to === "/painel")
+      : itens.filter((item) => item.to !== "/painel");
 
   useEffect(() => {
     onClose();
@@ -51,27 +102,15 @@ export function AdminSidebar({ openOnMobile, onClose, onLogout }: AdminSidebarPr
 
   const navItems = (
     <>
-      {analiticos.length > 0 && (
-        <div>
-          <RotuloSecao>Menu Analítico</RotuloSecao>
-          <nav aria-label="Menu analítico" className="mt-2 flex flex-col gap-1">
-            {analiticos.map((item) => (
-              <ItemMenu key={item.to} item={item} end />
-            ))}
-          </nav>
-        </div>
-      )}
-
-      {operacionais.length > 0 && (
-        <div>
-          <RotuloSecao>Menu operacional</RotuloSecao>
-          <nav aria-label="Menu operacional" className="mt-2 flex flex-col gap-1">
-            {operacionais.map((item) => (
-              <ItemMenu key={item.to} item={item} />
-            ))}
-          </nav>
-        </div>
-      )}
+      <MenuToggle value={menuAtivo} onChange={handleMenuChange} />
+      <nav
+        aria-label={menuAtivo === "analitico" ? "Menu analítico" : "Menu operacional"}
+        className="mt-3 flex flex-col gap-1"
+      >
+        {itensFiltrados.map((item) => (
+          <ItemMenu key={item.to} item={item} end={menuAtivo === "analitico"} />
+        ))}
+      </nav>
     </>
   );
 
