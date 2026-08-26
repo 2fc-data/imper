@@ -155,7 +155,7 @@ export async function recuperarSenha(email: string) {
   });
 
   const resetUrl = `${config.publicBaseUrl}/redefinir-senha?token=${token}`;
-  console.log(`[recuperar-senha] Link de redefinição: ${resetUrl}`);
+  // console.log(`[recuperar-senha] Link de redefinição: ${resetUrl}`);
 
   if (config.isDev) return { ok: true, devToken: token };
   return { ok: true };
