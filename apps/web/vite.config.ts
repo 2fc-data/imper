@@ -11,7 +11,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg"],
+      includeAssets: ["favicon_imper.webp"],
       manifest: {
         name: "ImperMeab - Gestão de Impermeabilização",
         short_name: "ImperMeab",
@@ -23,9 +23,9 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/favicon.svg",
+            src: "/favicon_imper.webp",
             sizes: "any",
-            type: "image/svg+xml",
+            type: "image/webp",
             purpose: "any",
           },
         ],
