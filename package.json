@@ -2,7 +2,7 @@
   "name": "imper-v01",
   "version": "0.1.0",
   "private": true,
-  "description": "Sistema de gestão de impermeabilização (mobile-first) - monorepo",
+  "description": "Sistema de gestão - monorepo",
   "workspaces": [
     "apps/*",
     "packages/*"
