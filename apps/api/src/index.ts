@@ -39,6 +39,7 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://darkseagreen-eagle-232257.hostingersite.com",
+    "https://cornflowerblue-stork-313024.hostingersite.com",
   ],
   credentials: true,
 }));
