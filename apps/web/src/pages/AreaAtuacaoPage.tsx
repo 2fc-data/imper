@@ -117,7 +117,7 @@ export default function AreaAtuacaoPage() {
                   ))}
                 </MapContainer>
               </div>
-              <div className="hidden sm:flex items-center justify-center rounded-xl border bg-card overflow-hidden">
+              <div className="hidden sm:flex items-center justify-center rounded-xl border bg-card overflow-hidden p-3">
                 <img
                   src={heroBg}
                   alt="Imper Pinturas"
