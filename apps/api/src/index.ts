@@ -38,7 +38,7 @@ app.use(helmet({ crossOriginEmbedderPolicy: false }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://cornflowerblue-stork-313024.hostingersite.com",
+    "https://darkseagreen-eagle-232257.hostingersite.com",
   ],
   credentials: true,
 }));
