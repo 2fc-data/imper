@@ -39,7 +39,6 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://darkseagreen-eagle-232257.hostingersite.com",
-    "https://cornflowerblue-stork-313024.hostingersite.com",
   ],
   credentials: true,
 }));
@@ -79,7 +78,7 @@ const webDist = path.resolve(__dirname, "../../web/dist");
 const spaIndex = path.join(webDist, "index.html");
 // console.log(`SPA dist: ${webDist} (exists: ${fs.existsSync(webDist)})`);
 
-const API_PREFIXES = ["/auth", "/usuarios", "/rbac", "/health", "/uploads"];
+const API_PREFIXES = ["/auth", "/usuarios", "/rbac", "/health", "/uploads", "/publico"];
 app.get("*path", (req, res, next) => {
   if (API_PREFIXES.some((p) => req.path.startsWith(p))) return next();
   if (fs.existsSync(spaIndex)) {
