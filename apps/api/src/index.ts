@@ -36,13 +36,10 @@ const app = express();
 
 app.use(helmet({ crossOriginEmbedderPolicy: false }));
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://darkseagreen-eagle-232257.hostingersite.com",
-    "https://cornflowerblue-stork-313024.hostingersite.com",
-  ],
+  origin: config.corsOrigins.length > 0 ? config.corsOrigins : ["http://localhost:5173"],
   credentials: true,
 }));
+app.options("*", cors());
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
