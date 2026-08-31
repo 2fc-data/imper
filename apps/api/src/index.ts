@@ -88,6 +88,10 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() });
 });
 
+app.listen(config.port, "0.0.0.0", () => {
+  console.log(`API Impermeab escutando em http://0.0.0.0:${config.port}`);
+}); 
+
 const webDist = path.resolve(__dirname, "../../web/dist");
 const spaIndex = path.join(webDist, "index.html");
 // console.log(`SPA dist: ${webDist} (exists: ${fs.existsSync(webDist)})`);
@@ -105,6 +109,4 @@ app.get("*path", (req, res, next) => {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(config.port, "0.0.0.0", () => {
-  console.log(`API Impermeab escutando em http://0.0.0.0:${config.port}`);
-});
+
