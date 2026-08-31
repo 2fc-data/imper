@@ -35,11 +35,27 @@ fs.mkdirSync(config.uploadsDir, { recursive: true });
 const app = express();
 
 app.use(helmet({ crossOriginEmbedderPolicy: false }));
-app.use(cors({
-  origin: config.corsOrigins.length > 0 ? config.corsOrigins : ["http://localhost:5173"],
+const allowedOrigins = [
+  "https://darkseagreen-eagle-232257.hostingersite.com",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: (origin: string | undefined, callback: Function) => {
+    // Permite requisições sem origin, como health checks do servidor
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Origem não permitida pelo CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-}));
-app.options("*", cors());
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
